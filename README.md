@@ -14,18 +14,17 @@ To use the A.R. Drone SDK 2.0 with Xcode (4.5) do the following:
 
 ###Building the Libraries
 _*Note:* We are using the Examples' libraries as it compiles a complete set of static libraries_
-_Libraries were added from: https://github.com/mikehamer/ARDrone\_SDK\_2\_0\_OSX_
 _More detailed instructions can be found in: ARDrone/README.textile_
 
 ###Clean and rebuild the libraries
-\$> cd into ARDrone/
-\$> cd Examples/OSX
-\$> make USE\_OSX=yes clean
-\$> make USE\_OSX=yes
-\$> cd -
+$> cd into ARDrone/
+$> cd Examples/OSX
+$> make USE\_OSX=yes clean
+$> make USE\_OSX=yes
+$> cd -
 
 ###Copy the libraries into _*'Libraries'*_ folder
-#> find . -name "lib*.a" -exec cp "{}" ../Libraries/ \;
+$> find . -name "lib*.a" -exec cp "{}" ../Libraries/ \;
 
 ###Add the Search Paths to your Xcode Build Settings
 Search for "Search Paths" and enter the following in each row
@@ -34,9 +33,9 @@ Search for "Search Paths" and enter the following in each row
 
 ###Add the Static Libraries to your Xcode Build Phases
 Under *_Link Binary With Libraries_*:
-	1. Click the *"+"*
-	2. Select *"Add Other"*
-	3. Select the following libraries under *"Libraries"*:
-		* libpc_ardrone.a
-		* libsdk.a
-		* libvlib.a
+- Click the *"+"*
+- Select *"Add Other"*
+- Select the following libraries under *"Libraries"*:
+	* libpc_ardrone.a
+	* libsdk.a
+	* libvlib.a

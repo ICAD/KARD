@@ -17,14 +17,14 @@ _*Note:* We are using the Examples' libraries as it compiles a complete set of s
 _More detailed instructions can be found in: ARDrone/README.textile_
 
 ###Clean and rebuild the libraries
-$> cd into ARDrone/
-$> cd Examples/OSX
-$> make USE\_OSX=yes clean
-$> make USE\_OSX=yes
-$> cd -
+	$> cd into ARDrone/
+	$> cd Examples/OSX
+	$> make USE\_OSX=yes clean
+	$> make USE\_OSX=yes
+	$> cd -
 
 ###Copy the libraries into _*'Libraries'*_ folder
-$> find . -name "lib*.a" -exec cp "{}" ../Libraries/ \;
+	$> find . -name "lib*.a" -exec cp "{}" ../Libraries/ \;
 
 ###Add the Search Paths to your Xcode Build Settings
 Search for "Search Paths" and enter the following in each row

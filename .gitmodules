@@ -1,0 +1,3 @@
+[submodule "ARDrone"]
+	path = ARDrone
+	url = https://github.com/mikehamer/ARDrone_SDK_2_0_OSX.git

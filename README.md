@@ -28,8 +28,8 @@ _More detailed instructions can be found in: ARDrone/README.textile_
 
 ###Add the Search Paths to your Xcode Build Settings
 Search for "Search Paths" and enter the following in each row
-1. Header Search Paths: $(SRCROOT)/ARDrone/ARDroneLib/**
-2. Library Search Paths: $(SRCROOT)/Libraries
+- Header Search Paths: $(SRCROOT)/ARDrone/ARDroneLib/**
+- Library Search Paths: $(SRCROOT)/Libraries
 
 ###Add the Static Libraries to your Xcode Build Phases
 Under *_Link Binary With Libraries_*:

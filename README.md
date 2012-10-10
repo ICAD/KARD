@@ -3,24 +3,25 @@ The KARD Project is to allow the A.R. Drone to be controlled via the Kinect gest
 
 #Getting the Environment Setup for Kinect & A.R. Drone
 
-##Using Kinect and OpenNI/PrimeSense in Xcode (4.5)
+##Using Kinect and OpenNI/PrimeSense in Xcode
 Use the script *_install_mac_kinect.sh*
 * Command line options:
 	* "--devel": use the Unstable libraries
 	* "uninstall": remove all OpenNI/PrimeSense/Kinect/libusb packages
 	
 ##Using A.R. Drone with Xcode
-To use the A.R. Drone SDK 2.0 with Xcode (4.5) do the following:
+To use the A.R. Drone SDK 2.0 with Xcode do the following:
 
 ###Building the Libraries
-_*Note:* We are using the Examples' libraries as it compiles a complete set of static libraries_
+_*Note:* We are using the Examples build as it compiles a complete set of static libraries we will be using_
+
 _More detailed instructions can be found in: ARDrone/README.textile_
 
 ###Clean and rebuild the libraries
 	$> cd into ARDrone/
 	$> cd Examples/OSX
-	$> make USE\_OSX=yes clean
-	$> make USE\_OSX=yes
+	$> make USE_OSX=yes clean
+	$> make USE_OSX=yes
 	$> cd -
 
 ###Copy the libraries into _*'Libraries'*_ folder
@@ -39,3 +40,7 @@ Under *_Link Binary With Libraries_*:
 	* libpc_ardrone.a
 	* libsdk.a
 	* libvlib.a
+- Select the following libraries under *"/usr/local/Cellar/lib"*:
+	* libavcodec.a
+	* libswscale.a
+	* libavutil.a

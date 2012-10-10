@@ -12,6 +12,11 @@
 		2F1E8BD116248D5D00BA29D3 /* libsdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F1E8BD016248D5D00BA29D3 /* libsdk.a */; };
 		2F1E8BD316248DAD00BA29D3 /* libpc_ardrone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F1E8BD216248DAD00BA29D3 /* libpc_ardrone.a */; };
 		2F1E8BD516248DBA00BA29D3 /* libvlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F1E8BD416248DBA00BA29D3 /* libvlib.a */; };
+		2F3E31101624B0350040B19B /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F3E310F1624B0350040B19B /* libavutil.a */; };
+		2F3E31121624B05A0040B19B /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F3E31111624B05A0040B19B /* libavcodec.a */; };
+		2F3E31141624B0A50040B19B /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F3E31131624B0A50040B19B /* libswscale.a */; };
+		2F3E311C1625CABD0040B19B /* libcurses.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F3E311B1625CABD0040B19B /* libcurses.dylib */; };
+		2F3E3122162625C00040B19B /* threads.c in Sources */ = {isa = PBXBuildFile; fileRef = 2F3E3121162625C00040B19B /* threads.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -34,6 +39,12 @@
 		2F1E8BD016248D5D00BA29D3 /* libsdk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libsdk.a; path = Libraries/libsdk.a; sourceTree = "<group>"; };
 		2F1E8BD216248DAD00BA29D3 /* libpc_ardrone.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpc_ardrone.a; path = Libraries/libpc_ardrone.a; sourceTree = "<group>"; };
 		2F1E8BD416248DBA00BA29D3 /* libvlib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvlib.a; path = Libraries/libvlib.a; sourceTree = "<group>"; };
+		2F3E310F1624B0350040B19B /* libavutil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavutil.a; path = /usr/local/Cellar/ffmpeg/0.8.7/lib/libavutil.a; sourceTree = "<absolute>"; };
+		2F3E31111624B05A0040B19B /* libavcodec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavcodec.a; path = /usr/local/Cellar/ffmpeg/0.8.7/lib/libavcodec.a; sourceTree = "<absolute>"; };
+		2F3E31131624B0A50040B19B /* libswscale.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libswscale.a; path = /usr/local/Cellar/ffmpeg/0.8.7/lib/libswscale.a; sourceTree = "<absolute>"; };
+		2F3E311B1625CABD0040B19B /* libcurses.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcurses.dylib; path = usr/lib/libcurses.dylib; sourceTree = SDKROOT; };
+		2F3E311D162624D40040B19B /* threads.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = threads.h; sourceTree = "<group>"; };
+		2F3E3121162625C00040B19B /* threads.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = threads.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,6 +52,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2F3E311C1625CABD0040B19B /* libcurses.dylib in Frameworks */,
+				2F3E31141624B0A50040B19B /* libswscale.a in Frameworks */,
+				2F3E31121624B05A0040B19B /* libavcodec.a in Frameworks */,
+				2F3E31101624B0350040B19B /* libavutil.a in Frameworks */,
 				2F1E8BD516248DBA00BA29D3 /* libvlib.a in Frameworks */,
 				2F1E8BD316248DAD00BA29D3 /* libpc_ardrone.a in Frameworks */,
 				2F1E8BD116248D5D00BA29D3 /* libsdk.a in Frameworks */,
@@ -53,9 +68,8 @@
 		2F1E8BB1162480B800BA29D3 = {
 			isa = PBXGroup;
 			children = (
-				2F1E8BD416248DBA00BA29D3 /* libvlib.a */,
-				2F1E8BD216248DAD00BA29D3 /* libpc_ardrone.a */,
-				2F1E8BD016248D5D00BA29D3 /* libsdk.a */,
+				2F3E310E1624B0060040B19B /* Libraries */,
+				2F3E310C1624AFFE0040B19B /* Frameworks */,
 				2F1E8BBF162480B800BA29D3 /* KARD */,
 				2F1E8BBD162480B800BA29D3 /* Products */,
 			);
@@ -74,8 +88,31 @@
 			children = (
 				2F1E8BC0162480B800BA29D3 /* main.c */,
 				2F1E8BC2162480B800BA29D3 /* KARD.1 */,
+				2F3E311D162624D40040B19B /* threads.h */,
+				2F3E3121162625C00040B19B /* threads.c */,
 			);
 			path = KARD;
+			sourceTree = "<group>";
+		};
+		2F3E310C1624AFFE0040B19B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		2F3E310E1624B0060040B19B /* Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				2F3E311B1625CABD0040B19B /* libcurses.dylib */,
+				2F3E31131624B0A50040B19B /* libswscale.a */,
+				2F3E31111624B05A0040B19B /* libavcodec.a */,
+				2F3E310F1624B0350040B19B /* libavutil.a */,
+				2F1E8BD416248DBA00BA29D3 /* libvlib.a */,
+				2F1E8BD216248DAD00BA29D3 /* libpc_ardrone.a */,
+				2F1E8BD016248D5D00BA29D3 /* libsdk.a */,
+			);
+			name = Libraries;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -130,6 +167,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2F1E8BC1162480B800BA29D3 /* main.c in Sources */,
+				2F3E3122162625C00040B19B /* threads.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -185,6 +223,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -193,7 +232,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/ARDrone/ARDroneLib/**";
-				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/Libraries/";
+				LIBRARY_SEARCH_PATHS = (
+					"$(SRCROOT)/Libraries/",
+					/usr/local/Cellar/ffmpeg/0.8.7/lib,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -202,7 +244,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/ARDrone/ARDroneLib/**";
-				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/Libraries/";
+				LIBRARY_SEARCH_PATHS = (
+					"$(SRCROOT)/Libraries/",
+					/usr/local/Cellar/ffmpeg/0.8.7/lib,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

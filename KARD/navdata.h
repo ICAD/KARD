@@ -22,5 +22,4 @@ C_RESULT demo_navdata_client_process( const navdata_unpacked_t* const navdata );
 /* Relinquish the local resources after the event loop exit */
 C_RESULT demo_navdata_client_release( void );
 
-
 #endif

@@ -7,12 +7,8 @@
 //
 
 #include "control.h"
-#include "navdata.h"
 
-
-// Globals
 int32_t exit_ihm_program = 1;
-
 
 /*------------------------------------------------------
  ARDRONE CONTROLS
@@ -92,16 +88,17 @@ DEFINE_THREAD_ROUTINE(main_application_thread, data) {
         phi = theta = gaz = yaw = 0;
         
         switch(input) {
-            case '2':
-                ardrone_tool_set_ui_pad_select(1);
-                break;
             case '1':
                 printf("Take Off\n");
                 ardrone_tool_set_ui_pad_start(1);
                 break;
-            case '0':
+            case '2':
                 printf("Land\n");
                 ardrone_tool_set_ui_pad_start(0);
+                break;
+            case '3':
+                printf("Emergency\n");
+                ardrone_tool_set_ui_pad_select(1);
                 break;
             case 'w':
                 // forward
@@ -129,25 +126,25 @@ DEFINE_THREAD_ROUTINE(main_application_thread, data) {
                 //ardrone_tool_set_ui_pad_l2(1); // RIGHT
                 phi = 1;
                 break;
-            case KEY_UP:
+            case 'i':
                 // ascend
                 printf("ASCEND\n");
                 //ardrone_tool_set_ui_pad_ah(1);
                 gaz = 1;
                 break;
-            case KEY_DOWN:
+            case 'j':
                 // descend
                 printf("DESCEND\n");
                 //ardrone_tool_set_ui_pad_ab(1);
                 gaz = -1;
                 break;
-            case KEY_LEFT:
+            case 'k':
                 // rotate left
                 printf("ROTATE LEFT\n");
                 //ardrone_tool_set_ui_pad_
                 yaw = -1;
                 break;
-            case KEY_RIGHT:
+            case 'l':
                 // rotate right
                 printf("ROTATE RIGHT\n");
                 yaw = 1;
@@ -170,10 +167,7 @@ DEFINE_THREAD_ROUTINE(main_application_thread, data) {
     return C_OK;
 }
 
-/* Registering to navdata client */
-BEGIN_NAVDATA_HANDLER_TABLE
-    NAVDATA_HANDLER_TABLE_ENTRY(demo_navdata_client_init, demo_navdata_client_process, demo_navdata_client_release, NULL)
-END_NAVDATA_HANDLER_TABLE
+
 
 /* Implementing thread table in which you add routines of your application and those provided by the SDK */
 BEGIN_THREAD_TABLE
@@ -182,4 +176,3 @@ BEGIN_THREAD_TABLE
     THREAD_TABLE_ENTRY( navdata_update, 20 )
     THREAD_TABLE_ENTRY( video_stage, 20 )
 END_THREAD_TABLE
-

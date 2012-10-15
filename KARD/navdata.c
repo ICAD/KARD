@@ -34,3 +34,8 @@ C_RESULT demo_navdata_client_process( const navdata_unpacked_t* const navdata ) 
 C_RESULT demo_navdata_client_release( void ) {
     return C_OK;
 }
+
+/* Registering to navdata client */
+BEGIN_NAVDATA_HANDLER_TABLE
+    NAVDATA_HANDLER_TABLE_ENTRY(demo_navdata_client_init, demo_navdata_client_process, demo_navdata_client_release, NULL)
+END_NAVDATA_HANDLER_TABLE

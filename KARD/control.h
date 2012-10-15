@@ -15,9 +15,11 @@
 #include <ardrone_control.h>
 #include <ardrone_tool/UI/ardrone_input.h>
 #include <ardrone_tool/Control/ardrone_control.h>
+#include <VP_Os/vp_os_types.h>
 
 #include "navdata.h"
-#include <ncurses.h>
+//#include "controller.h"
+#include <curses.h>
 
 /* The delegate object calls this method during initialization of an ARDrone application */
 C_RESULT ardrone_tool_init_custom(void);

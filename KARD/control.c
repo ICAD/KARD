@@ -16,14 +16,19 @@ int32_t exit_ihm_program = 1;
 /* The delegate object calls this method during initialization of an ARDrone application */
 C_RESULT ardrone_tool_init_custom(void) {
     /* Registering for a new device of game controller */
-    //ardrone_tool_input_add( &gamepad );
+    //ardrone_tool_input_add( &input_controller );
     
     /* Start all threads of your application */
     //START_THREAD( video_stage, NULL );
+    
+    initscr();              // initialize the curses screen
+    noecho();               // don't repeat our inputs
+    cbreak();               // no buffer
+    keypad(stdscr, TRUE);   // assign keyboard
+    
     START_THREAD( main_application_thread , NULL );
     return C_OK;
 }
-
 
 /* The delegate object calls this method when the event loop exit */
 C_RESULT ardrone_tool_shutdown_custom(void) {
@@ -32,7 +37,9 @@ C_RESULT ardrone_tool_shutdown_custom(void) {
     
     /* Unregistering for the current device */
     //ardrone_tool_input_remove( &gamepad );
+    endwin();
     JOIN_THREAD(main_application_thread);
+    //ardrone_tool_input_remove(&input_controller);
     return C_OK;
 }
 
@@ -51,16 +58,16 @@ C_RESULT signal_exit() {
 /*------------------------------------------------------
  KARD'S ROUTINES
  ------------------------------------------------------*/
+/*C_RESULT ardrone_tool_update_custom(void) {
+    
+    return C_OK;
+}*/
+
 DEFINE_THREAD_ROUTINE(main_application_thread, data) {
     int input;
     
     //ardrone_at_set_progress_cmd_with_magneto()
     //ardrone_at_configuration_set_flying_mode(ARDRONE_MAGNETO_CMD_ENABLE, NULL, NULL, NULL);
-    
-    initscr();              // initialize the curses screen
-    noecho();               // don't repeat our inputs
-    cbreak();               // no buffer
-    keypad(stdscr, TRUE);   // assign keyboard
     
     // our commands to be packaged
     int enable = 0;     // 0: hover             | 1: send commands
@@ -68,13 +75,14 @@ DEFINE_THREAD_ROUTINE(main_application_thread, data) {
     float theta = 0;    // 0-1.0: strafe right  | -1.0-0: strafe left
     float gaz = 0;      // 0-1.0: ascend        | -1.0-0: descend
     float yaw = 0;      // 0-1.0: turn right    | -1.0-0: turn left
+    input_state_t* input_state;
     
     do {
-        //sleep(ARDRONE_REFRESH_MS);
+        input_state = ardrone_tool_input_get_state();
         
         input = getch();
         
-        //printf( "You pressed %c(%d)\n", input, input );
+        printf( "You pressed %c(%d)\n", input, input );
         // RESET OUR STUFF
         //ardrone_tool_set_ui_pad_ah(0); // UP
         //ardrone_tool_set_ui_pad_ab(0); // DOWN
@@ -84,8 +92,6 @@ DEFINE_THREAD_ROUTINE(main_application_thread, data) {
         
         //reset the values
         enable = 1;
-        
-        phi = theta = gaz = yaw = 0;
         
         switch(input) {
             case '1':
@@ -151,28 +157,19 @@ DEFINE_THREAD_ROUTINE(main_application_thread, data) {
                 break;
             default:
                 printf("Default\n");
-                //enable = 0;
+                enable = 0;
                 break;
         }
-        
         //send the commands
-        ardrone_tool_set_progressive_cmd(enable, phi, theta, gaz, yaw, 0.0, 0.0);
+        
+        printf("\nCurrent state: %i\n", input_state->pcmd.flag);
+        if(input != '1' || input != '2' || input != '3') {
+            ardrone_tool_set_progressive_cmd(enable, phi, theta, gaz, yaw, 0.0, 0.0);
+        }
         
         refresh();
-    } while( 0);
+    } while (1);
     
-    endwin();
-    
-    printf("ENDED LOOP");
     return C_OK;
 }
 
-
-
-/* Implementing thread table in which you add routines of your application and those provided by the SDK */
-BEGIN_THREAD_TABLE
-    THREAD_TABLE_ENTRY( main_application_thread, 20 )
-    THREAD_TABLE_ENTRY( ardrone_control, 20 )
-    THREAD_TABLE_ENTRY( navdata_update, 20 )
-    THREAD_TABLE_ENTRY( video_stage, 20 )
-END_THREAD_TABLE

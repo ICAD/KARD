@@ -18,6 +18,7 @@
 		2F3E311C1625CABD0040B19B /* libcurses.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F3E311B1625CABD0040B19B /* libcurses.dylib */; };
 		2F3E3122162625C00040B19B /* control.c in Sources */ = {isa = PBXBuildFile; fileRef = 2F3E3121162625C00040B19B /* control.c */; };
 		2FC2FE17162C7E6F003EF17F /* navdata.c in Sources */ = {isa = PBXBuildFile; fileRef = 2FC2FE16162C7E6F003EF17F /* navdata.c */; };
+		2FE44E88162C9B550032C624 /* controller.c in Sources */ = {isa = PBXBuildFile; fileRef = 2FE44E87162C9B550032C624 /* controller.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -50,6 +51,8 @@
 		2FC2FE16162C7E6F003EF17F /* navdata.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = navdata.c; sourceTree = "<group>"; };
 		2FC2FE18162C7E8E003EF17F /* kard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = kard.h; sourceTree = "<group>"; };
 		2FC2FE19162C8222003EF17F /* api.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = api.h; sourceTree = "<group>"; };
+		2FE44E87162C9B550032C624 /* controller.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = controller.c; sourceTree = "<group>"; };
+		2FE44E8A162C9E000032C624 /* controller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = controller.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +102,8 @@
 				2FC2FE18162C7E8E003EF17F /* kard.h */,
 				2F1E8BC0162480B800BA29D3 /* kard.c */,
 				2F1E8BC2162480B800BA29D3 /* KARD.1 */,
+				2FE44E87162C9B550032C624 /* controller.c */,
+				2FE44E8A162C9E000032C624 /* controller.h */,
 			);
 			path = KARD;
 			sourceTree = "<group>";
@@ -178,6 +183,7 @@
 				2F1E8BC1162480B800BA29D3 /* kard.c in Sources */,
 				2F3E3122162625C00040B19B /* control.c in Sources */,
 				2FC2FE17162C7E6F003EF17F /* navdata.c in Sources */,
+				2FE44E88162C9B550032C624 /* controller.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

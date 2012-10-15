@@ -151,7 +151,7 @@ DEFINE_THREAD_ROUTINE(main_application_thread, data) {
                 break;
             default:
                 printf("Default\n");
-                enable = 0;
+                //enable = 0;
                 break;
         }
         

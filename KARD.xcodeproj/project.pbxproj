@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2F1E8BC1162480B800BA29D3 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 2F1E8BC0162480B800BA29D3 /* main.c */; };
+		2F1E8BC1162480B800BA29D3 /* kard.c in Sources */ = {isa = PBXBuildFile; fileRef = 2F1E8BC0162480B800BA29D3 /* kard.c */; };
 		2F1E8BC3162480B800BA29D3 /* KARD.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2F1E8BC2162480B800BA29D3 /* KARD.1 */; };
 		2F1E8BD116248D5D00BA29D3 /* libsdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F1E8BD016248D5D00BA29D3 /* libsdk.a */; };
 		2F1E8BD316248DAD00BA29D3 /* libpc_ardrone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F1E8BD216248DAD00BA29D3 /* libpc_ardrone.a */; };
@@ -16,7 +16,8 @@
 		2F3E31121624B05A0040B19B /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F3E31111624B05A0040B19B /* libavcodec.a */; };
 		2F3E31141624B0A50040B19B /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F3E31131624B0A50040B19B /* libswscale.a */; };
 		2F3E311C1625CABD0040B19B /* libcurses.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F3E311B1625CABD0040B19B /* libcurses.dylib */; };
-		2F3E3122162625C00040B19B /* threads.c in Sources */ = {isa = PBXBuildFile; fileRef = 2F3E3121162625C00040B19B /* threads.c */; };
+		2F3E3122162625C00040B19B /* control.c in Sources */ = {isa = PBXBuildFile; fileRef = 2F3E3121162625C00040B19B /* control.c */; };
+		2FC2FE17162C7E6F003EF17F /* navdata.c in Sources */ = {isa = PBXBuildFile; fileRef = 2FC2FE16162C7E6F003EF17F /* navdata.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -34,7 +35,7 @@
 
 /* Begin PBXFileReference section */
 		2F1E8BBC162480B800BA29D3 /* KARD */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = KARD; sourceTree = BUILT_PRODUCTS_DIR; };
-		2F1E8BC0162480B800BA29D3 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
+		2F1E8BC0162480B800BA29D3 /* kard.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = kard.c; sourceTree = "<group>"; };
 		2F1E8BC2162480B800BA29D3 /* KARD.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = KARD.1; sourceTree = "<group>"; };
 		2F1E8BD016248D5D00BA29D3 /* libsdk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libsdk.a; path = Libraries/libsdk.a; sourceTree = "<group>"; };
 		2F1E8BD216248DAD00BA29D3 /* libpc_ardrone.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpc_ardrone.a; path = Libraries/libpc_ardrone.a; sourceTree = "<group>"; };
@@ -43,8 +44,12 @@
 		2F3E31111624B05A0040B19B /* libavcodec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavcodec.a; path = /usr/local/Cellar/ffmpeg/0.8.7/lib/libavcodec.a; sourceTree = "<absolute>"; };
 		2F3E31131624B0A50040B19B /* libswscale.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libswscale.a; path = /usr/local/Cellar/ffmpeg/0.8.7/lib/libswscale.a; sourceTree = "<absolute>"; };
 		2F3E311B1625CABD0040B19B /* libcurses.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcurses.dylib; path = usr/lib/libcurses.dylib; sourceTree = SDKROOT; };
-		2F3E311D162624D40040B19B /* threads.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = threads.h; sourceTree = "<group>"; };
-		2F3E3121162625C00040B19B /* threads.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = threads.c; sourceTree = "<group>"; };
+		2F3E311D162624D40040B19B /* control.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = control.h; sourceTree = "<group>"; };
+		2F3E3121162625C00040B19B /* control.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = control.c; sourceTree = "<group>"; };
+		2FC2FE14162C7E66003EF17F /* navdata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = navdata.h; sourceTree = "<group>"; };
+		2FC2FE16162C7E6F003EF17F /* navdata.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = navdata.c; sourceTree = "<group>"; };
+		2FC2FE18162C7E8E003EF17F /* kard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = kard.h; sourceTree = "<group>"; };
+		2FC2FE19162C8222003EF17F /* api.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = api.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,10 +91,14 @@
 		2F1E8BBF162480B800BA29D3 /* KARD */ = {
 			isa = PBXGroup;
 			children = (
-				2F1E8BC0162480B800BA29D3 /* main.c */,
+				2FC2FE19162C8222003EF17F /* api.h */,
+				2F3E311D162624D40040B19B /* control.h */,
+				2F3E3121162625C00040B19B /* control.c */,
+				2FC2FE14162C7E66003EF17F /* navdata.h */,
+				2FC2FE16162C7E6F003EF17F /* navdata.c */,
+				2FC2FE18162C7E8E003EF17F /* kard.h */,
+				2F1E8BC0162480B800BA29D3 /* kard.c */,
 				2F1E8BC2162480B800BA29D3 /* KARD.1 */,
-				2F3E311D162624D40040B19B /* threads.h */,
-				2F3E3121162625C00040B19B /* threads.c */,
 			);
 			path = KARD;
 			sourceTree = "<group>";
@@ -166,8 +175,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2F1E8BC1162480B800BA29D3 /* main.c in Sources */,
-				2F3E3122162625C00040B19B /* threads.c in Sources */,
+				2F1E8BC1162480B800BA29D3 /* kard.c in Sources */,
+				2F3E3122162625C00040B19B /* control.c in Sources */,
+				2FC2FE17162C7E6F003EF17F /* navdata.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -188,7 +198,9 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -218,6 +230,8 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;

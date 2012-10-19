@@ -20,4 +20,18 @@ C_RESULT close_controller(void);
 
 input_device_t input_controller;
 
+enum controller_input {
+    ASCEND = 'i',
+    DESCEND = 'k',
+    ROTATE_RIGHT = 'l',
+    ROTATE_LEFT = 'j',
+    FORWARD = 'w',
+    REVERSE = 's',
+    STRAFE_LEFT = 'a',
+    STRAFE_RIGHT = 'd',
+    TAKE_OFF = '1',
+    LAND = '2',
+    EMERGENCY = '3'
+};
+
 #endif

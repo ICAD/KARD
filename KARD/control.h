@@ -14,11 +14,14 @@
 #include "api.h"
 #include <ardrone_control.h>
 #include <ardrone_tool/UI/ardrone_input.h>
+#include <ardrone_tool/ardrone_tool.h>
+#include <ardrone_tool/ardrone_version.h>
 #include <ardrone_tool/Control/ardrone_control.h>
+#include <ardrone_tool/ardrone_tool_configuration.h>
 #include <VP_Os/vp_os_types.h>
 
 #include "navdata.h"
-//#include "controller.h"
+#include "controller.h"
 #include <curses.h>
 
 /* The delegate object calls this method during initialization of an ARDrone application */

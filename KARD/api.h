@@ -9,19 +9,19 @@
 #ifndef KARD_constants_h
 #define KARD_constants_h
 
+// STANDARD LIBRARIES
 #include <stdio.h>
+
+/*===========================
+ ARDRONE LIBRARIES
+ ===========================*/
 #include <ardrone_api.h>
 #include <Common/config.h>
 #include <VP_Api/vp_api_thread_helper.h>
 #include <ardrone_tool.h>
-
-
-// Video Headers
 #include <ATcodec/ATcodec_api.h>
 #include <VP_Os/vp_os_print.h>
 #include <VP_Os/vp_os_signal.h>
-#include <ardrone_tool/video/video_com_stage.h>
-#include <ardrone_tool/Video/video_stage.h>
 
 /* Constants */
 #define RECORDING_PORT      5553 //TCP
@@ -31,4 +31,14 @@
 #define VIDEO_CONTROL_PORT  5559 //TCP
 #define AT_BUFFER_SIZE      1024
 
+/*===========================
+ OPENNI/PRIMESENSE LIBRARIES
+ ===========================*/
+/*
+#include <GLUT/GLUT.h>
+#include <XnOpenNI.h>
+#include <XnList.h>
+#include <XnCppWrapper.h>
+#include <XnCodecIDs.h>
+#include <math.h>*/
 #endif

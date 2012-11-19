@@ -23,6 +23,9 @@
 		2FB3762B165ACFB3009D6263 /* libOpenNI.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FB3762A165ACFB3009D6263 /* libOpenNI.dylib */; };
 		2FC2FE17162C7E6F003EF17F /* navdata.c in Sources */ = {isa = PBXBuildFile; fileRef = 2FC2FE16162C7E6F003EF17F /* navdata.c */; };
 		2FE44E88162C9B550032C624 /* controller.c in Sources */ = {isa = PBXBuildFile; fileRef = 2FE44E87162C9B550032C624 /* controller.c */; };
+		2FE951AD165ADE0D001A7849 /* display_stage.c in Sources */ = {isa = PBXBuildFile; fileRef = 2FE951A7165ADE0D001A7849 /* display_stage.c */; };
+		2FE951AE165ADE0D001A7849 /* post_stage.c in Sources */ = {isa = PBXBuildFile; fileRef = 2FE951A9165ADE0D001A7849 /* post_stage.c */; };
+		2FE951AF165ADE0D001A7849 /* pre_stage.c in Sources */ = {isa = PBXBuildFile; fileRef = 2FE951AB165ADE0D001A7849 /* pre_stage.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -63,6 +66,12 @@
 		2FC2FE19162C8222003EF17F /* api.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = api.h; sourceTree = "<group>"; };
 		2FE44E87162C9B550032C624 /* controller.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = controller.c; sourceTree = "<group>"; };
 		2FE44E8A162C9E000032C624 /* controller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = controller.h; sourceTree = "<group>"; };
+		2FE951A7165ADE0D001A7849 /* display_stage.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = display_stage.c; sourceTree = "<group>"; };
+		2FE951A8165ADE0D001A7849 /* display_stage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = display_stage.h; sourceTree = "<group>"; };
+		2FE951A9165ADE0D001A7849 /* post_stage.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = post_stage.c; sourceTree = "<group>"; };
+		2FE951AA165ADE0D001A7849 /* post_stage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = post_stage.h; sourceTree = "<group>"; };
+		2FE951AB165ADE0D001A7849 /* pre_stage.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pre_stage.c; sourceTree = "<group>"; };
+		2FE951AC165ADE0D001A7849 /* pre_stage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pre_stage.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,6 +120,7 @@
 		2F1E8BBF162480B800BA29D3 /* KARD */ = {
 			isa = PBXGroup;
 			children = (
+				2FE951A6165ADE0D001A7849 /* Video */,
 				2FB37621165ACF35009D6263 /* Vision */,
 				2FC2FE19162C8222003EF17F /* api.h */,
 				2F3E311D162624D40040B19B /* control.h */,
@@ -162,6 +172,19 @@
 				2FB3762D165ACFE1009D6263 /* SamplesConfig.xml */,
 			);
 			name = Data;
+			sourceTree = "<group>";
+		};
+		2FE951A6165ADE0D001A7849 /* Video */ = {
+			isa = PBXGroup;
+			children = (
+				2FE951A7165ADE0D001A7849 /* display_stage.c */,
+				2FE951A8165ADE0D001A7849 /* display_stage.h */,
+				2FE951A9165ADE0D001A7849 /* post_stage.c */,
+				2FE951AA165ADE0D001A7849 /* post_stage.h */,
+				2FE951AB165ADE0D001A7849 /* pre_stage.c */,
+				2FE951AC165ADE0D001A7849 /* pre_stage.h */,
+			);
+			path = Video;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -220,6 +243,9 @@
 				2FC2FE17162C7E6F003EF17F /* navdata.c in Sources */,
 				2FE44E88162C9B550032C624 /* controller.c in Sources */,
 				2FB37625165ACF43009D6263 /* vision.c in Sources */,
+				2FE951AD165ADE0D001A7849 /* display_stage.c in Sources */,
+				2FE951AE165ADE0D001A7849 /* post_stage.c in Sources */,
+				2FE951AF165ADE0D001A7849 /* pre_stage.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

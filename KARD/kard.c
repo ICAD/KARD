@@ -7,7 +7,6 @@
 //
 #include "kard.h"
 
-
 int main(int argc, char * argv[])
 {
     return ardrone_tool_main(argc, argv);

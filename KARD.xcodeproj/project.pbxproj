@@ -17,6 +17,10 @@
 		2F3E31141624B0A50040B19B /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F3E31131624B0A50040B19B /* libswscale.a */; };
 		2F3E311C1625CABD0040B19B /* libcurses.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F3E311B1625CABD0040B19B /* libcurses.dylib */; };
 		2F3E3122162625C00040B19B /* control.c in Sources */ = {isa = PBXBuildFile; fileRef = 2F3E3121162625C00040B19B /* control.c */; };
+		2FB37625165ACF43009D6263 /* vision.c in Sources */ = {isa = PBXBuildFile; fileRef = 2FB37623165ACF43009D6263 /* vision.c */; };
+		2FB37627165ACFA1009D6263 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FB37626165ACFA1009D6263 /* OpenGL.framework */; };
+		2FB37629165ACFA5009D6263 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FB37628165ACFA5009D6263 /* GLUT.framework */; };
+		2FB3762B165ACFB3009D6263 /* libOpenNI.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FB3762A165ACFB3009D6263 /* libOpenNI.dylib */; };
 		2FC2FE17162C7E6F003EF17F /* navdata.c in Sources */ = {isa = PBXBuildFile; fileRef = 2FC2FE16162C7E6F003EF17F /* navdata.c */; };
 		2FE44E88162C9B550032C624 /* controller.c in Sources */ = {isa = PBXBuildFile; fileRef = 2FE44E87162C9B550032C624 /* controller.c */; };
 /* End PBXBuildFile section */
@@ -47,6 +51,12 @@
 		2F3E311B1625CABD0040B19B /* libcurses.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcurses.dylib; path = usr/lib/libcurses.dylib; sourceTree = SDKROOT; };
 		2F3E311D162624D40040B19B /* control.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = control.h; sourceTree = "<group>"; };
 		2F3E3121162625C00040B19B /* control.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = control.c; sourceTree = "<group>"; };
+		2FB37623165ACF43009D6263 /* vision.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vision.c; sourceTree = "<group>"; };
+		2FB37624165ACF43009D6263 /* vision.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vision.h; sourceTree = "<group>"; };
+		2FB37626165ACFA1009D6263 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		2FB37628165ACFA5009D6263 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
+		2FB3762A165ACFB3009D6263 /* libOpenNI.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libOpenNI.dylib; path = "../../../../usr/local/Cellar/openni/unstable-1.5.4.0/lib/libOpenNI.dylib"; sourceTree = "<group>"; };
+		2FB3762D165ACFE1009D6263 /* SamplesConfig.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = SamplesConfig.xml; sourceTree = "<group>"; };
 		2FC2FE14162C7E66003EF17F /* navdata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = navdata.h; sourceTree = "<group>"; };
 		2FC2FE16162C7E6F003EF17F /* navdata.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = navdata.c; sourceTree = "<group>"; };
 		2FC2FE18162C7E8E003EF17F /* kard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = kard.h; sourceTree = "<group>"; };
@@ -60,6 +70,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2FB3762B165ACFB3009D6263 /* libOpenNI.dylib in Frameworks */,
+				2FB37629165ACFA5009D6263 /* GLUT.framework in Frameworks */,
+				2FB37627165ACFA1009D6263 /* OpenGL.framework in Frameworks */,
 				2F3E311C1625CABD0040B19B /* libcurses.dylib in Frameworks */,
 				2F3E31141624B0A50040B19B /* libswscale.a in Frameworks */,
 				2F3E31121624B05A0040B19B /* libavcodec.a in Frameworks */,
@@ -76,6 +89,10 @@
 		2F1E8BB1162480B800BA29D3 = {
 			isa = PBXGroup;
 			children = (
+				2FB3762C165ACFC9009D6263 /* Data */,
+				2FB3762A165ACFB3009D6263 /* libOpenNI.dylib */,
+				2FB37628165ACFA5009D6263 /* GLUT.framework */,
+				2FB37626165ACFA1009D6263 /* OpenGL.framework */,
 				2F3E310E1624B0060040B19B /* Libraries */,
 				2F3E310C1624AFFE0040B19B /* Frameworks */,
 				2F1E8BBF162480B800BA29D3 /* KARD */,
@@ -94,6 +111,7 @@
 		2F1E8BBF162480B800BA29D3 /* KARD */ = {
 			isa = PBXGroup;
 			children = (
+				2FB37621165ACF35009D6263 /* Vision */,
 				2FC2FE19162C8222003EF17F /* api.h */,
 				2F3E311D162624D40040B19B /* control.h */,
 				2F3E3121162625C00040B19B /* control.c */,
@@ -127,6 +145,23 @@
 				2F1E8BD016248D5D00BA29D3 /* libsdk.a */,
 			);
 			name = Libraries;
+			sourceTree = "<group>";
+		};
+		2FB37621165ACF35009D6263 /* Vision */ = {
+			isa = PBXGroup;
+			children = (
+				2FB37623165ACF43009D6263 /* vision.c */,
+				2FB37624165ACF43009D6263 /* vision.h */,
+			);
+			name = Vision;
+			sourceTree = "<group>";
+		};
+		2FB3762C165ACFC9009D6263 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				2FB3762D165ACFE1009D6263 /* SamplesConfig.xml */,
+			);
+			name = Data;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -184,6 +219,7 @@
 				2F3E3122162625C00040B19B /* control.c in Sources */,
 				2FC2FE17162C7E6F003EF17F /* navdata.c in Sources */,
 				2FE44E88162C9B550032C624 /* controller.c in Sources */,
+				2FB37625165ACF43009D6263 /* vision.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -251,10 +287,15 @@
 		2F1E8BC7162480B800BA29D3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				HEADER_SEARCH_PATHS = "$(SRCROOT)/ARDrone/ARDroneLib/**";
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/ARDrone/ARDroneLib/**",
+					/usr/local/include/ni,
+					"/usr/local/include/**",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(SRCROOT)/Libraries/",
 					/usr/local/Cellar/ffmpeg/0.8.7/lib,
+					"\"/usr/local/Cellar/openni/unstable-1.5.4.0/lib\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -263,10 +304,15 @@
 		2F1E8BC8162480B800BA29D3 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				HEADER_SEARCH_PATHS = "$(SRCROOT)/ARDrone/ARDroneLib/**";
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/ARDrone/ARDroneLib/**",
+					/usr/local/include/ni,
+					"/usr/local/include/**",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(SRCROOT)/Libraries/",
 					/usr/local/Cellar/ffmpeg/0.8.7/lib,
+					"\"/usr/local/Cellar/openni/unstable-1.5.4.0/lib\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

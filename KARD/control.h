@@ -32,4 +32,5 @@ bool_t ardrone_tool_exit();
 C_RESULT signal_exit();
 
 /* KARD's main application thread */
+PROTO_THREAD_ROUTINE(kinect, data);
 PROTO_THREAD_ROUTINE(main_application_thread, data);

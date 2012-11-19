@@ -7,6 +7,7 @@
 //
 
 #include "control.h"
+#include "vision.h"
 
 int32_t exit_ihm_program = 1;
 
@@ -27,6 +28,7 @@ C_RESULT ardrone_tool_init_custom(void) {
     keypad(stdscr, TRUE);   // assign keyboard
     
     START_THREAD( main_application_thread , NULL );
+    START_THREAD( kinect , NULL );
     return C_OK;
 }
 
@@ -39,6 +41,7 @@ C_RESULT ardrone_tool_shutdown_custom(void) {
     //ardrone_tool_input_remove( &gamepad );
     endwin();
     JOIN_THREAD(main_application_thread);
+    JOIN_THREAD(kinect);
     //ardrone_tool_input_remove(&input_controller);
     return C_OK;
 }
@@ -62,6 +65,11 @@ C_RESULT signal_exit() {
     
     return C_OK;
 }*/
+DEFINE_THREAD_ROUTINE(kinect, data) {
+    kvInitVision();
+    kvStartVision();
+    return C_OK;
+}
 
 DEFINE_THREAD_ROUTINE(main_application_thread, data) {
     int input;

@@ -17,6 +17,10 @@ _*Note:* We are using the Examples build as it compiles a complete set of static
 
 _More detailed instructions can be found in: ARDrone/README.textile_
 
+###Install OpenCV
+OpenCV will be used for video and other image processing work. Although, there are private OpenCV.frameworks available we will be usin this instead. To install it, we are using brew:
+	$> brew install opencv
+
 ###Clean and rebuild the libraries
 	$> cd into ARDrone/
 	$> cd Examples/OSX
@@ -26,16 +30,19 @@ _More detailed instructions can be found in: ARDrone/README.textile_
 
 ###Copy the libraries into _*'Libraries'*_ folder
 	$> find . -name "lib*.a" -exec cp "{}" ../Libraries/ \;
+	$> find . -type f \( -iname "libvlib.a" -or -iname "libpc_ardrone.a" -or -iname "libsdk.a" -or -iname "libpc_ardrone_notool.a" \) -exec cp "{}" ../Libraries/ \;
 
 ###Add the Search Paths to your Xcode Build Settings
 Search for "Search Paths" and enter the following in each row
 - Header Search Paths: $(SRCROOT)/ARDrone/ARDroneLib/**
 - Library Search Paths: $(SRCROOT)/Libraries
 
-###Add the Static Libraries to your Xcode Build Phases
+###Add the Libraries/Frameworks to your Xcode Build Phases
 Under *_Link Binary With Libraries_*:
 - Click the *"+"*
 - Select *"Add Other"*
+- Select the following Frameworks:
+	* GLKit.framework
 - Select the following libraries under *"Libraries"*:
 	* libpc_ardrone.a
 	* libsdk.a

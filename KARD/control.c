@@ -180,5 +180,3 @@ DEFINE_THREAD_ROUTINE(main_application_thread, data) {
     
     return C_OK;
 }
-
->>>>>>> master

@@ -27,8 +27,8 @@ C_RESULT ardrone_tool_init_custom(void) {
     cbreak();               // no buffer
     keypad(stdscr, TRUE);   // assign keyboard
     
-    START_THREAD( main_application_thread , NULL );
     START_THREAD( kinect , NULL );
+    START_THREAD( main_application_thread , NULL );
     return C_OK;
 }
 
@@ -40,8 +40,8 @@ C_RESULT ardrone_tool_shutdown_custom(void) {
     /* Unregistering for the current device */
     //ardrone_tool_input_remove( &gamepad );
     endwin();
-    JOIN_THREAD(main_application_thread);
     JOIN_THREAD(kinect);
+    JOIN_THREAD(main_application_thread);
     //ardrone_tool_input_remove(&input_controller);
     return C_OK;
 }
@@ -180,3 +180,4 @@ DEFINE_THREAD_ROUTINE(main_application_thread, data) {
     
     return C_OK;
 }
+

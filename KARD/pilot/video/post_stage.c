@@ -20,7 +20,6 @@ const vp_api_stage_funcs_t post_stage_funcs = {
 
 C_RESULT post_stage_open (post_stage_cfg_t *cfg)
 {
-    printf("\n\n post_stage_open \n\n");
     cfg->outputFile = NULL;
     if (NULL != cfg->outputName && 0 < strlen (cfg->outputName))
     {

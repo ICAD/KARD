@@ -29,6 +29,16 @@ XnDepthMetaData *   kvDEPTH_MD_PTR;
 XnBool              kvDRAW_BONES = TRUE;
 
 //============================================================
+// ENUMS
+//============================================================
+enum KARD_WINDOW_ENUM {
+    KARD_WINDOW_WIDTH   = 480,
+    KARD_WINDOW_HEIGHT  = 640,
+    KARD_WINDOW_X       = 100,
+    KARD_WINDOW_Y       = 100
+};
+
+//============================================================
 // DEFINES
 //============================================================
 #ifdef __APPLE__

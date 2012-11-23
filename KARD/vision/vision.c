@@ -3,7 +3,6 @@
 //============================================================
 // INCLUDES
 //============================================================
-#include "api.h"
 #include "vision.h"
 #include <stdio.h>
 #include <math.h>
@@ -42,7 +41,8 @@ enum KARD_WINDOW_ENUM {
 // DEFINES
 //============================================================
 #ifdef __APPLE__
-    #define SAMPLE_XML_PATH "SamplesConfig.xml"
+    //#define SAMPLE_XML_PATH "SamplesConfig.xml"
+    #define SAMPLE_XML_PATH "/Users/tyler/KARD/KARD/data/SamplesConfig.xml"
 #elif __linux
     #define SAMPLE_XML_PATH "../data/SamplesConfig.xml"
 #endif
@@ -119,12 +119,12 @@ void kvSendKeyUp(char charCode) {
     switch(charCode) {
         case 'f':
             printf("TAKE-OFF\n");
-            ardrone_tool_set_ui_pad_start(1);
+            //ardrone_tool_set_ui_pad_start(1);
             //ardrone_tool_set_ui_pad_select(1);
             break;
         case 'd':
             printf("LAND\n");
-            ardrone_tool_set_ui_pad_start(0);
+            //ardrone_tool_set_ui_pad_start(0);
             break;
         default:
             printf("EMERGENCY\n");
@@ -434,10 +434,10 @@ void kvDrawStickFigure(XnNodeHandle hUserNode, XnNodeHandle hDepthNode, XnDepthM
 }
 
 // function: kvDrawBoundaries
-// description: draws the limits of the canvas
+// description: draws the boundaries around the skeleton when a pose is detected
 void kvDrawBoundaries (XnNodeHandle hDepthNode, XnPoint3D refL, XnPoint3D refR, XnPoint3D Left, XnPoint3D Right) {
     // draw boundary box
-    float zLDiff,zRDiff;
+    float zLDiff, zRDiff;
     
     // convert points
     xnConvertRealWorldToProjective(hDepthNode, 1, &refL, &refL);
@@ -449,63 +449,67 @@ void kvDrawBoundaries (XnNodeHandle hDepthNode, XnPoint3D refL, XnPoint3D refR, 
     zRDiff = refR.Z - Right.Z;
     glLineWidth(3.0);
     
-    //--Top Left HanD
-    glBegin(GL_LINES);
-    glVertex3f( (refL.X-345)/320,-1*(refL.Y-200)/240, -1.0f);
-    glVertex3f( (refL.X-295)/320,-1*(refL.Y-200)/240, -1.0f);
-    glEnd();
-    //--Bottom
+    //---------------------------------------------
+    // LEFT HAND
+    //---------------------------------------------
+    // TOP
     glBegin(GL_LINES);
     glVertex3f( (refL.X-345)/320,-1*(refL.Y-270)/240, -1.0f);
     glVertex3f( (refL.X-295)/320,-1*(refL.Y-270)/240, -1.0f);
     glEnd();
-    //--Left
-    glBegin(GL_LINES);
-    glVertex3f( (refL.X-345)/320,-1*(refL.Y-210)/240, -1.0f);
-    glVertex3f( (refL.X-345)/320,-1*(refL.Y-270)/240, -1.0f);
-    glEnd();
-    //--Right
-    glBegin(GL_LINES);
-    glVertex3f( (refL.X-345)/320,-1*(refL.Y-210)/240, -1.0f);
-    glVertex3f( (refL.X-345)/320,-1*(refL.Y-270)/240, -1.0f);
-    glEnd();
-    
+    // RIGHT
     glBegin(GL_LINES);
     glVertex3f( (refL.X-295)/320,-1*(refL.Y-210)/240, -1.0f);
     glVertex3f( (refL.X-295)/320,-1*(refL.Y-270)/240, -1.0f);
     glEnd();
-    //--RIght Hand Top
+    // BOTTOM
     glBegin(GL_LINES);
-    glVertex3f( (refR.X-335)/320,-1*(refR.Y-210)/240, -1.0f);
-    glVertex3f( (refR.X-305)/320,-1*(refR.Y-210)/240, -1.0f);
+    glVertex3f( (refL.X-345)/320,-1*(refL.Y-200)/240, -1.0f);
+    glVertex3f( (refL.X-295)/320,-1*(refL.Y-200)/240, -1.0f);
     glEnd();
-    //--Bottom
+    // LEFT
+    glBegin(GL_LINES);
+    glVertex3f( (refL.X-345)/320,-1*(refL.Y-210)/240, -1.0f);
+    glVertex3f( (refL.X-345)/320,-1*(refL.Y-270)/240, -1.0f);
+    glEnd();
+    
+    //---------------------------------------------
+    // RIGHT HAND
+    //---------------------------------------------
+    // TOP
     glBegin(GL_LINES);
     glVertex3f( (refR.X-345)/320,-1*(refR.Y-270)/240, -1.0f);
     glVertex3f( (refR.X-295)/320,-1*(refR.Y-270)/240, -1.0f);
     glEnd();
-    //--Left
-    glBegin(GL_LINES);
-    glVertex3f( (refR.X-345)/320,-1*(refR.Y-210)/240, -1.0f);
-    glVertex3f( (refR.X-345)/320,-1*(refR.Y-270)/240, -1.0f);
-    glEnd();
-    //--Right
+    // RIGHT
     glBegin(GL_LINES);
     glVertex3f( (refR.X-295)/320,-1*(refR.Y-210)/240, -1.0f);
     glVertex3f( (refR.X-295)/320,-1*(refR.Y-270)/240, -1.0f);
     glEnd();
+    // BOTTOM
+    glBegin(GL_LINES);
+    glVertex3f( (refR.X-335)/320,-1*(refR.Y-210)/240, -1.0f);
+    glVertex3f( (refR.X-305)/320,-1*(refR.Y-210)/240, -1.0f);
+    glEnd();
+    // LEFT
+    glBegin(GL_LINES);
+    glVertex3f( (refR.X-345)/320,-1*(refR.Y-210)/240, -1.0f);
+    glVertex3f( (refR.X-345)/320,-1*(refR.Y-270)/240, -1.0f);
+    glEnd();
     
-    
+    //---------------------------------------------
+    // CROSSHAIR
+    //---------------------------------------------
+    // SPHERE
+    glPushMatrix();
+    glTranslatef(0, 0.8f,0);
+    glutSolidSphere(.05f,40,100);
+    glPopMatrix();
+    // VERTICAL
     glBegin(GL_LINES);
     glVertex3f( 0,.9, -1.0f);
     glVertex3f( 0,.7, -1.0f);
     glEnd();
-    
-    
-    glPushMatrix();
-    glTranslatef(0, 0.8f,0);
-    glutSolidSphere(.025f,20,20);
-    glPopMatrix();
 }
 
 //------------------------------------------------------------
@@ -592,8 +596,8 @@ void XN_CALLBACK_TYPE kvPoseDetected(XnNodeHandle hUserNode, const XnChar* pose,
 // function: kvHandsBodyMovementLogic
 // description: handles keypresses based on skeleton pose
 void kvHandsBodyMovementLogic(XnNodeHandle hDepthNode, XnPoint3D refL,XnPoint3D refR,XnPoint3D Left,XnPoint3D Right) {
-    float xLDiff,xRDiff,zLDiff,zRDiff,yLDiff,yRDiff;
-    XnPoint3D cL,cR,cLR,cRR; // change these!!! once testing is done
+    float xLDiff, xRDiff, zLDiff, zRDiff, yLDiff, yRDiff;
+    XnPoint3D cL, cR, cLR, cRR;
     
     xnConvertRealWorldToProjective(hDepthNode, 1, &refL, &cLR);
     xnConvertRealWorldToProjective(hDepthNode, 1, &refR, &cRR);
@@ -608,19 +612,18 @@ void kvHandsBodyMovementLogic(XnNodeHandle hDepthNode, XnPoint3D refL,XnPoint3D 
     yLDiff=cLR.Y-cL.Y;
     yRDiff=cRR.Y-cR.Y;
     
-    
-    if (xLDiff>20 && xRDiff<-20) {
+    if (xLDiff > 20 && xRDiff < -20) {
         kvSendKeyDown('w');
         kvSendKeyUp('w');
-    } else if (xLDiff<-20 && xRDiff>20) {
+    } else if (xLDiff < -20 && xRDiff > 20) {
         kvSendKeyDown('s');
         kvSendKeyUp('s');
     }
     
-    if (zLDiff>100 ) {
+    if (zLDiff > 100 ) {
         kvSendKeyUp('d');
         kvSendKeyDown('a');
-    } else if (zRDiff>100 ) {
+    } else if (zRDiff > 100 ) {
         kvSendKeyUp('a');
         kvSendKeyDown('d');
     } else {
@@ -628,11 +631,11 @@ void kvHandsBodyMovementLogic(XnNodeHandle hDepthNode, XnPoint3D refL,XnPoint3D 
         kvSendKeyUp('d');
     }
     
-    if (yLDiff>20 && yRDiff>20 ) {
+    if (yLDiff > 20 && yRDiff > 20 ) {
         //SendVKDown(VK_PRIOR);
         //SendVKUp(VK_NEXT);
         printf("up\n");
-    } else if (yRDiff<-20 && yLDiff<-20) {
+    } else if (yRDiff < -20 && yLDiff < -20) {
         printf("Down\n");
         //SendVKDown(VK_NEXT);
         //SendVKUp(VK_PRIOR);

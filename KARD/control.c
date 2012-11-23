@@ -19,14 +19,7 @@ C_RESULT ardrone_tool_init_custom(void) {
     /* Registering for a new device of game controller */
     //ardrone_tool_input_add( &input_controller );
     
-    /* Start all threads of your application */
-    //START_THREAD( video_stage, NULL );
-    
-    initscr();              // initialize the curses screen
-    noecho();               // don't repeat our inputs
-    cbreak();               // no buffer
-    keypad(stdscr, TRUE);   // assign keyboard
-    
+    /* Start all threads */
     START_THREAD( kinect , NULL );
     START_THREAD( main_application_thread , NULL );
     return C_OK;
@@ -35,11 +28,10 @@ C_RESULT ardrone_tool_init_custom(void) {
 /* The delegate object calls this method when the event loop exit */
 C_RESULT ardrone_tool_shutdown_custom(void) {
     /* Relinquish all threads of your application */
-    //JOIN_THREAD( video_stage );
     
     /* Unregistering for the current device */
     //ardrone_tool_input_remove( &gamepad );
-    endwin();
+    
     JOIN_THREAD(kinect);
     JOIN_THREAD(main_application_thread);
     //ardrone_tool_input_remove(&input_controller);
@@ -71,6 +63,7 @@ DEFINE_THREAD_ROUTINE(kinect, data) {
     return C_OK;
 }
 
+/* CURRENTLY NOT ASSIGNED A PORTION IN THREAD_TABLE */
 DEFINE_THREAD_ROUTINE(main_application_thread, data) {
     int input;
     

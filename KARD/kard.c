@@ -9,8 +9,11 @@
 
 int main(int argc, char * argv[])
 {
-    kvInitVision(argc, argv);
-    return ardrone_tool_main(argc, argv);
+    if(kvInitVision(argc, argv) == XN_STATUS_OK) {
+        kvStartVision();
+    }
+    
+    //return ardrone_tool_main(argc, argv);
 }
 
 DEFINE_THREAD_ROUTINE(kinect, data) {

@@ -6,6 +6,7 @@
 //============================================================
 // INCLUDES
 //============================================================
+#include "api.h"
 #include <XnOpenNI.h>
 
 //============================================================
@@ -82,7 +83,7 @@ void kvDrawBones(XnNodeHandle hUserNode, XnNodeHandle hDepthNode, XnUserID user)
 void kvDrawStickFigure(XnNodeHandle hUserNode, XnNodeHandle hDepthNode, XnDepthMetaData * pDepthMD) ;
 
 // function: kvDrawBoundaries
-// description: draws the limits of the canvas
+// description: draws the boundaries around the skeleton when a pose is detected
 void kvDrawBoundaries (XnNodeHandle hDepthNode, XnPoint3D refL, XnPoint3D refR, XnPoint3D Left, XnPoint3D Right);
 
 //------------------------------------------------------------

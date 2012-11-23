@@ -7,6 +7,9 @@
 #include <stdio.h>
 #include <math.h>
 #include <GL/glew.h>
+#include <ardrone_control.h>
+#include <ardrone_tool/UI/ardrone_input.h>
+#include <ardrone_tool/Control/ardrone_control.h>
 
 #ifdef __APPLE__
     #include <OpenGL/gl.h>
@@ -21,19 +24,58 @@
 //============================================================
 // GLOBALS
 //============================================================
+// NI Contexts/Production Nodes
+//------------------------------------------------------------
 XnContext *         kvCONTEXT_PTR;
 XnNodeHandle        kvUSER_NODE_HANDLE;
 XnNodeHandle        kvDEPTH_NODE_HANDLE;
 XnDepthMetaData *   kvDEPTH_MD_PTR;
-XnBool              kvDRAW_BONES = TRUE;
+//------------------------------------------------------------
+// State Flags
+//------------------------------------------------------------
+XnBool              kvDRAW_BONES = TRUE;        // Bone Lines
+XnBool              kvDRAW_BOUNDARIES = TRUE;   // Scene Bounds
+XnBool              kvIS_FLYING = FALSE;
+//------------------------------------------------------------
+// Registration Points
+//------------------------------------------------------------
+float               kvLIMIT_HAND_UPPER = 180.0; // NEED TO SET THIS IN CALIBRATION
+float               kvLIMIT_HAND_LOWER = -170.0; // SET THIS IN CALIBRATION
+float               kvLIMIT_DEADZONE_UPPER_Y = 50;
+float               kvLIMIT_DEADZONE_LOWER_Y = -50;
+float               kvLIMIT_CENTER_Y = 0.0;
+float               kvLIMIT_CENTER_X = 0.0;
+float               kvLIMIT_TORSO_Y;
+float               kvLIMIT_TORSO_X;
+float               kvLIMIT_HEAD_UPPER_Y;
+float               kvLIMIT_HEAD_LOWER_Y;
+//------------------------------------------------------------
+// Boundary Active Flags
+//------------------------------------------------------------
+float               kvHAND_ACTIVE = FALSE;
+//------------------------------------------------------------
+// Colors
+//------------------------------------------------------------
+// FLY
+float               kvCOLOR_FLY_R = 173.0/255.0;
+float               kvCOLOR_FLY_G = 255.0/255.0;
+float               kvCOLOR_FLY_B = 47.0/255.0;
+// LAND
+float               kvCOLOR_LAND_R = 255.0/255.0;
+float               kvCOLOR_LAND_G = 0.0/255.0;
+float               kvCOLOR_LAND_B = 0.0/255.0;
+// ACTIVE
+float               kvCOLOR_ACTIVE_R = 255.0/255.0;
+float               kvCOLOR_ACTIVE_G = 165.0/255.0;
+float               kvCOLOR_ACTIVE_B = 0.0/255.0;
 
 //============================================================
 // ENUMS
 //============================================================
 enum KARD_WINDOW_ENUM {
-    KARD_WINDOW_WIDTH   = 480,
-    KARD_WINDOW_HEIGHT  = 640,
-    KARD_WINDOW_X       = 100,
+    KARD_WINDOW_WIDTH   = 640,
+    KARD_WINDOW_HEIGHT  = 480,
+    KARD_WINDOW_X       = 300,
     KARD_WINDOW_Y       = 100
 };
 
@@ -42,7 +84,7 @@ enum KARD_WINDOW_ENUM {
 //============================================================
 #ifdef __APPLE__
     //#define SAMPLE_XML_PATH "SamplesConfig.xml"
-    #define SAMPLE_XML_PATH "/Users/tyler/KARD/KARD/data/SamplesConfig.xml"
+    #define SAMPLE_XML_PATH "/Users/tyler/Projects/KARD/KARD/data/SamplesConfig.xml"
 #elif __linux
     #define SAMPLE_XML_PATH "../data/SamplesConfig.xml"
 #endif
@@ -72,8 +114,12 @@ void kvKeyPress(int key, int x, int y) {
             printf("VISION: KEYDOWN DOWN\n");
             break;
         case GLUT_KEY_F5:
-            printf("VISION: KEYDOWN KEY");
+            printf("VISION: TOGGLE BONES\n");
             kvDRAW_BONES = !kvDRAW_BONES;
+            break;
+        case GLUT_KEY_F6:
+            printf("VISION: TOGGLE BOUNDARIES\n");
+            kvDRAW_BOUNDARIES = !kvDRAW_BOUNDARIES;
             break;
     }
 }
@@ -104,7 +150,7 @@ void kvKeyRelease(int key, int x, int y) {
 // TODO: CHECK IF THIS IS NEEDED
 void kvSendKeyDown(char charCode) {
     //SendVKDown((unsigned short)VkKeyScanA(charCode));
-    printf("SendKeyDown: %c\n", charCode);
+    //printf("SendKeyDown: %c\n", charCode);
     
     
 }
@@ -113,21 +159,21 @@ void kvSendKeyDown(char charCode) {
 // TODO: CHECK IF THIS IS NEEDED
 void kvSendKeyUp(char charCode) {
     //SendVKUp((unsigned short)VkKeyScanA(charCode));
-    printf("SendKeyUp: %c\n", charCode);
+    //printf("SendKeyUp: %c\n", charCode);
     
 
     switch(charCode) {
         case 'f':
-            printf("TAKE-OFF\n");
+            //printf("TAKE-OFF\n");
             //ardrone_tool_set_ui_pad_start(1);
             //ardrone_tool_set_ui_pad_select(1);
             break;
         case 'd':
-            printf("LAND\n");
+            //printf("LAND\n");
             //ardrone_tool_set_ui_pad_start(0);
             break;
         default:
-            printf("EMERGENCY\n");
+            //printf("EMERGENCY\n");
             break;
     }
 }
@@ -145,29 +191,72 @@ void kvInitScene() {
 // description: renders the GL context
 void kvRenderScene() {
     static float angle = 0.0f, deltaAngle = 0.0f;
-    static float cx = 0.02f, cy = 0.0f;
+    float handOffsetY = 0.3f;
     
     angle += deltaAngle;
     kvOrientMe(angle);
     
+    // clear the GL buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
+    // set the domain lines for user actions
     glColor3f(0.9f, 0.0f, 0.0f);
+    glLineWidth(2.0f);
     
-    glBegin(GL_QUADS);
-    glVertex3f(-10.0f, (-1 * cy) + 0.01f, -1.0f);
-    glVertex3f(-10.0f, (-1 * cy) - 0.01f, -1.0f);
-    glVertex3f( 10.0f, (-1 * cy) - 0.01f, -1.0f);
-    glVertex3f( 10.0f, (-1 * cy) + 0.01f, -1.0f);
-    glEnd();
+    if(kvDRAW_BOUNDARIES) {
+        //---------------------
+        // DRAW SCENE BOUNDARIES
+        //---------------------
+        // HORIZONTAL CROSSHAIR
+        glBegin(GL_LINES);
+            glVertex3f(-10.0f, kvLIMIT_CENTER_Y, -1.0f);
+            glVertex3f( 10.0f, kvLIMIT_CENTER_Y, -1.0f);
+        glEnd();
+        // VERTICAL CROSSHAIR
+        glBegin(GL_LINES);
+            glVertex3f( kvLIMIT_CENTER_X, -10.0f, -1.0f);
+            glVertex3f( kvLIMIT_CENTER_X, 10.0f, -1.0f);
+        glEnd();
+        
+        // set color feedback for Drone state
+        if (kvHAND_ACTIVE) {
+            glColor3f( kvCOLOR_ACTIVE_R, kvCOLOR_ACTIVE_G, kvCOLOR_ACTIVE_B );
+        } else if (kvIS_FLYING) {
+            glColor3f( kvCOLOR_FLY_R, kvCOLOR_FLY_G, kvCOLOR_FLY_B );
+        } else {
+            glColor3f( kvCOLOR_LAND_R, kvCOLOR_LAND_G, kvCOLOR_LAND_B);
+        }
+        
+        //---------------------
+        // HAND BOUNDARIES
+        //---------------------
+        // UPPER LIMIT
+        glBegin(GL_LINES);
+            glVertex3f(-10.0f, (-kvLIMIT_CENTER_Y + handOffsetY), -1.0f);
+            glVertex3f( 10.0f, (-kvLIMIT_CENTER_Y + handOffsetY), -1.0f);
+        glEnd();
+        // LOWER LIMIT
+        glBegin(GL_LINES);
+            glVertex3f(-10.0f, (-kvLIMIT_CENTER_Y - handOffsetY), -1.0f);
+            glVertex3f( 10.0f, (-kvLIMIT_CENTER_Y - handOffsetY), -1.0f);
+        glEnd();
+        //---------------------
+        // DEAD ZONE
+        //---------------------
+        glColor3f( 1.0, 1.0, 1.0);
+        // UPPER LIMIT
+        glBegin(GL_LINES);
+        glVertex3f(-10.0f, 0.1, -1.0f);
+        glVertex3f( 10.0f, 0.1, -1.0f);
+        glEnd();
+        // LOWER LIMIT
+        glBegin(GL_LINES);
+        glVertex3f(-10.0f, -0.1, -1.0f);
+        glVertex3f( 10.0f, -0.1, -1.0f);
+        glEnd();
+    }
     
-    glBegin(GL_QUADS);
-    glVertex3f( (cx + 0.01f), -10.0f, -1.0f);
-    glVertex3f( (cx - 0.01f), -10.0f, -1.0f);
-    glVertex3f( (cx - 0.01f), 10.0f, -1.0f);
-    glVertex3f( (cx + 0.01f), 10.0f, -1.0f);
-    glEnd();
-    
+    // UPDATE THE NODES
     xnWaitAndUpdateAll(kvCONTEXT_PTR);
     kvDrawStickFigure(kvUSER_NODE_HANDLE, kvDEPTH_NODE_HANDLE, kvDEPTH_MD_PTR);
     
@@ -237,7 +326,8 @@ XnStatus kvInitVision() {
 
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
     glutInitWindowPosition(KARD_WINDOW_X, KARD_WINDOW_Y);
-    glutInitWindowSize(KARD_WINDOW_HEIGHT, KARD_WINDOW_WIDTH);
+    glutInitWindowSize(KARD_WINDOW_WIDTH, KARD_WINDOW_HEIGHT);
+    
     glutCreateWindow("KARD Skeleton Tracking");
     
     // Initialize the GL scene
@@ -576,6 +666,7 @@ void XN_CALLBACK_TYPE kvCalibrationEnd(XnNodeHandle hUserNode, XnUserID user, Xn
     
     // check if calibration worked otherwise restart the pose detection
     if (bSuccess) {
+        // set the points
         xnStartSkeletonTracking(hUserNode, user);
     } else {
         xnStartPoseDetection(hUserNode, "Psi", user);
@@ -594,24 +685,59 @@ void XN_CALLBACK_TYPE kvPoseDetected(XnNodeHandle hUserNode, const XnChar* pose,
 // RUNNING EVENTS
 //------------------------------------------------------------
 // function: kvHandsBodyMovementLogic
-// description: handles keypresses based on skeleton pose
-void kvHandsBodyMovementLogic(XnNodeHandle hDepthNode, XnPoint3D refL,XnPoint3D refR,XnPoint3D Left,XnPoint3D Right) {
+// description: handles the piloting logic
+void kvHandsBodyMovementLogic(XnNodeHandle hDepthNode, XnPoint3D refL, XnPoint3D refR, XnPoint3D Left, XnPoint3D Right) {
+    // the differences between points x, y, z
     float xLDiff, xRDiff, zLDiff, zRDiff, yLDiff, yRDiff;
+    // hand points
     XnPoint3D cL, cR, cLR, cRR;
     
     xnConvertRealWorldToProjective(hDepthNode, 1, &refL, &cLR);
     xnConvertRealWorldToProjective(hDepthNode, 1, &refR, &cRR);
     xnConvertRealWorldToProjective(hDepthNode, 1, &Left, &cL);
     xnConvertRealWorldToProjective(hDepthNode, 1, &Right, &cR);
-    //printf("RL: %f L: %f \n RR: %f R: %f\n",cLR.Z,cL.Z,cRR.Z,cR.Z);
+    //printf("RL: %f\tL: %f \nRR: %f\tR: %f\n",cLR.Z,cL.Z,cRR.Z,cR.Z);
     
-    xLDiff=cLR.X-cL.X;
-    xRDiff=cRR.X-cR.X;
-    zLDiff=cLR.Z-cL.Z;
-    zRDiff=cRR.Z-cR.Z;
-    yLDiff=cLR.Y-cL.Y;
-    yRDiff=cRR.Y-cR.Y;
+    xLDiff = cLR.X - cL.X;
+    xRDiff = cRR.X - cR.X;
+    zLDiff = cLR.Z - cL.Z;
+    zRDiff = cRR.Z - cR.Z;
+    yLDiff = cLR.Y - cL.Y;
+    yRDiff = cRR.Y - cR.Y;
     
+    // Assumptions:
+    // Since we are in this state, we don't have to assume UPPER/LOWER limits of the hands
+    // We only need to check against Center X/Y and the DEAD ZONE
+    
+    // check that we are out of the DEADZONE
+    if (!(Right.Y < kvLIMIT_DEADZONE_UPPER_Y && Right.Y > kvLIMIT_DEADZONE_LOWER_Y &&
+          Left.Y < kvLIMIT_DEADZONE_UPPER_Y && Left.Y > kvLIMIT_DEADZONE_LOWER_Y)) {
+        if(Right.Y < kvLIMIT_DEADZONE_UPPER_Y && Right.Y > kvLIMIT_DEADZONE_LOWER_Y &&
+           Left.Y > kvLIMIT_DEADZONE_UPPER_Y) {
+            printf("TURN LEFT\n");
+            ardrone_tool_set_progressive_cmd(1, 0, 0.1, 0, 0, 0, 0);
+        } else if(Left.Y < kvLIMIT_DEADZONE_UPPER_Y && Left.Y > kvLIMIT_DEADZONE_LOWER_Y &&
+                  Right.Y > kvLIMIT_DEADZONE_UPPER_Y) {
+            printf("TURN RIGHT\n");
+        } else if(Right.Y > kvLIMIT_CENTER_Y &&
+           Left.Y > kvLIMIT_CENTER_Y) {                 // ASCEND
+            printf("ASCEND\n");
+        } else if(Right.Y < kvLIMIT_CENTER_Y &&
+                  Left.Y < kvLIMIT_CENTER_Y) {          // DESCEND
+            printf("DESCEND\n");
+        } else if(Right.Y > kvLIMIT_CENTER_Y &&
+                  Left.Y < kvLIMIT_CENTER_Y) {          // TILT LEFT
+            printf("TILT LEFT\n");
+        } else if(Right.Y < kvLIMIT_CENTER_Y &&
+                  Left.Y > kvLIMIT_CENTER_Y) {          // TILT RIGHT
+            printf("TILT RIGHT\n");
+        }
+        
+        // FORWARD BACK
+        //if ( Right.)
+    }
+    /* OLD SECONDLIFE CODE */
+    /*
     if (xLDiff > 20 && xRDiff < -20) {
         kvSendKeyDown('w');
         kvSendKeyUp('w');
@@ -634,15 +760,15 @@ void kvHandsBodyMovementLogic(XnNodeHandle hDepthNode, XnPoint3D refL,XnPoint3D 
     if (yLDiff > 20 && yRDiff > 20 ) {
         //SendVKDown(VK_PRIOR);
         //SendVKUp(VK_NEXT);
-        printf("up\n");
+        //printf("up\n");
     } else if (yRDiff < -20 && yLDiff < -20) {
-        printf("Down\n");
+        //printf("Down\n");
         //SendVKDown(VK_NEXT);
         //SendVKUp(VK_PRIOR);
     } else{
         //SendVKUp(VK_PRIOR);
         //SendVKUp(VK_NEXT);
-    }
+    }*/
 }
 
 // function: kvSetJointPoint
@@ -659,83 +785,71 @@ void kvSetJointPoint(XnNodeHandle hUserNode, XnUserID user, XnSkeletonJoint join
 // description: handles the hand motions
 void kvHandsLocationLogic(XnNodeHandle hUserNode, XnNodeHandle hDepthNode, XnUserID user) {
     //-----!!!!! One thing to think about is that if we move forward or back that we might want to reset the initHands values could change...
-    static int count=0;
-    static XnBool flyPressed = FALSE;
-    static XnBool initHands = FALSE;
-    static XnBool steady = FALSE;
-    static float r = 1.0f, g = 0.0f, b = 0.0f;
+    //static int timer=0;
+    //static float r = 1.0f, g = 0.0f, b = 0.0f;
     
-    //printf("FLY PRESSED: %s\n", ((flyPressed) ? "YES" : "NO"));
+    static XnPoint3D refLeftHand, refRightHand;
+    XnPoint3D leftHandPoint, rightHandPoint, headPoint, torsoPoint;
     
-    static XnPoint3D refLeftHand,refRightHand;
-    XnPoint3D lPoint,rPoint,head,torso;
+    // some boundary limits for hands to cross
+    kvLIMIT_HEAD_UPPER_Y = headPoint.Y + 20;
+    kvLIMIT_HEAD_LOWER_Y = headPoint.Y + 10;
+    kvLIMIT_TORSO_Y = torsoPoint.Y - 50;
     
-    kvSetJointPoint(hUserNode, user, XN_SKEL_LEFT_HAND, &lPoint);
-    kvSetJointPoint(hUserNode, user, XN_SKEL_RIGHT_HAND, &rPoint);
-    kvSetJointPoint(hUserNode, user, XN_SKEL_HEAD, &head);
-    kvSetJointPoint(hUserNode, user, XN_SKEL_TORSO, &torso);
+    // timers
+    //int frameTimer = 10;     // the time wait between a steady buffer
     
-    if (lPoint.Y > (torso.Y - 50) &&
-        lPoint.Y < (head.Y + 10) &&
-        rPoint.Y > (torso.Y - 50) &&
-        rPoint.Y < (head.Y + 10)) {
-        //This has been modded from original design to only look for both hands in position
-        if (!steady) {
-            if (++count > 8) {
-                steady = TRUE;
-                count = 0;
-            }
-        } else {
-            //***-- it is now steady; check to see if this is first time through set ref hand points think about using states in the class for this//
-            if (!initHands) {
-                refLeftHand = lPoint;
-                refRightHand = rPoint;
-                initHands = TRUE;
-            }
-            
-            r = 0;
-            b = 1.0f;
-            g = 0.0f;
-            
-            
-            // FIX
-            kvHandsBodyMovementLogic(hDepthNode, refLeftHand, refRightHand, lPoint, rPoint);
-            kvDrawBoundaries(hDepthNode, refLeftHand, refRightHand, lPoint, rPoint);
-        }
+    kvSetJointPoint(hUserNode, user, XN_SKEL_LEFT_HAND, &leftHandPoint);
+    kvSetJointPoint(hUserNode, user, XN_SKEL_RIGHT_HAND, &rightHandPoint);
+    kvSetJointPoint(hUserNode, user, XN_SKEL_HEAD, &headPoint);
+    kvSetJointPoint(hUserNode, user, XN_SKEL_TORSO, &torsoPoint);
+    
+    //printf("leftHandPoint.Y: %f\n", leftHandPoint.Y);
+    //printf("rightHandPoint.Y: %f\n", rightHandPoint.Y);
+    
+    // check if hands are within application bounds
+    if ( leftHandPoint.Y <= kvLIMIT_HAND_UPPER &&
+         leftHandPoint.Y >= kvLIMIT_HAND_LOWER &&
+         rightHandPoint.Y <= kvLIMIT_HAND_UPPER &&
+        rightHandPoint.Y >= kvLIMIT_HAND_LOWER) {
+        kvHAND_ACTIVE = TRUE;
         
-        flyPressed = FALSE;
-    } else if (lPoint.Y > (head.Y + 20) && rPoint.Y > (head.Y + 20)) {
-        // Checks if both hands are above head if so switch on flying
-        if (!flyPressed) {
-            g = 1.0f;
-            b = 1.0f;
-            r = 0.0f;
+        // provide user a little buffer time between the FLY/LAND commands
+        if ( kvIS_FLYING ) {
+            refLeftHand = leftHandPoint;
+            refRightHand = rightHandPoint;
             
-            steady = FALSE;
-            count = 0;
-            initHands = FALSE;
-            flyPressed = TRUE;
-            
-            printf("FLY\n");
-            
-            kvSendKeyDown('f');
-            kvSendKeyUp('f');
-            
-            
+            kvHandsBodyMovementLogic(hDepthNode, refLeftHand, refRightHand, leftHandPoint, rightHandPoint);
         }
     } else {
-        /*
-         We also reset the values of false and steady as well as initHands,
-         again a states could probably increase readability as well as redundancy.
-         Also need to make sure that the up down and left right buttons are sent back up
-         */
-        steady = FALSE;
-        count = 0;
-        initHands = FALSE;
-        flyPressed = FALSE;
-        //SendVKUp(VK_PRIOR);
-        //SendVKUp(VK_NEXT);
-        kvSendKeyUp('a');
-        kvSendKeyUp('d');
+        kvHAND_ACTIVE = FALSE;
+        
+        // it isn't so lets check for fly or land
+        if (leftHandPoint.Y > kvLIMIT_HAND_UPPER &&
+            rightHandPoint.Y > kvLIMIT_HAND_UPPER) {
+            // check current state of the Drone
+            if (!kvIS_FLYING) {
+                // reset the check values
+                //steady = FALSE;
+                //timer = frameTimer;
+                //initHands = FALSE;
+                kvIS_FLYING = TRUE;
+                
+                printf("FLY\n");
+                // send fly command to Drone
+                ardrone_tool_set_ui_pad_start(1);
+                //ardrone_tool_set_ui_pad_select(1);
+            }
+        } else if (leftHandPoint.Y < kvLIMIT_HAND_LOWER &&
+                   rightHandPoint.Y < kvLIMIT_HAND_LOWER) {
+            // check current state of the Drone and land it if it is flying
+            if (kvIS_FLYING) {
+                kvIS_FLYING = FALSE;
+                
+                printf("LAND\n");
+                ardrone_tool_set_ui_pad_start(0);
+                // send land command
+            }
+        }
     }
 }

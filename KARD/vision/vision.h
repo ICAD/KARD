@@ -120,7 +120,7 @@ void XN_CALLBACK_TYPE kvPoseDetected(XnNodeHandle hUserNode, const XnChar* pose,
 // RUNNING EVENTS
 //------------------------------------------------------------
 // function: kvHandsBodyMovementLogic
-// description: handles keypresses based on skeleton pose
+// description: handles the piloting logic
 void kvHandsBodyMovementLogic(XnNodeHandle hDepthNode, XnPoint3D refL,XnPoint3D refR,XnPoint3D Left,XnPoint3D Right);
 
 // function: kvSetJointPoint

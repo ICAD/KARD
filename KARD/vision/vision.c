@@ -84,7 +84,7 @@ enum KARD_WINDOW_ENUM {
 //============================================================
 #ifdef __APPLE__
     //#define SAMPLE_XML_PATH "SamplesConfig.xml"
-    #define SAMPLE_XML_PATH "/Users/tyler/Projects/KARD/KARD/data/SamplesConfig.xml"
+    #define SAMPLE_XML_PATH "/Users/mayromlo/Desktop/KARD/KARD/data/SamplesConfig.xml"
 #elif __linux
     #define SAMPLE_XML_PATH "../data/SamplesConfig.xml"
 #endif
@@ -110,9 +110,6 @@ void kvKeyPress(int key, int x, int y) {
         case GLUT_KEY_UP :
             printf("VISION: KEYDOWN UP\n");
             break;
-        case GLUT_KEY_DOWN :
-            printf("VISION: KEYDOWN DOWN\n");
-            break;
         case GLUT_KEY_F5:
             printf("VISION: TOGGLE BONES\n");
             kvDRAW_BONES = !kvDRAW_BONES;
@@ -120,6 +117,12 @@ void kvKeyPress(int key, int x, int y) {
         case GLUT_KEY_F6:
             printf("VISION: TOGGLE BOUNDARIES\n");
             kvDRAW_BOUNDARIES = !kvDRAW_BOUNDARIES;
+            break;
+        case GLUT_KEY_DOWN:
+            printf("VISION: TOGGLE EMERGENCY\n");
+            break;
+        default:
+            // no handle
             break;
     }
 }
@@ -142,38 +145,6 @@ void kvKeyRelease(int key, int x, int y) {
             break;
         default:
             // no handle
-            break;
-    }
-}
-
-// function: kvSendKeyDown()
-// TODO: CHECK IF THIS IS NEEDED
-void kvSendKeyDown(char charCode) {
-    //SendVKDown((unsigned short)VkKeyScanA(charCode));
-    //printf("SendKeyDown: %c\n", charCode);
-    
-    
-}
-
-// function: kvSendKeyUp()
-// TODO: CHECK IF THIS IS NEEDED
-void kvSendKeyUp(char charCode) {
-    //SendVKUp((unsigned short)VkKeyScanA(charCode));
-    //printf("SendKeyUp: %c\n", charCode);
-    
-
-    switch(charCode) {
-        case 'f':
-            //printf("TAKE-OFF\n");
-            //ardrone_tool_set_ui_pad_start(1);
-            //ardrone_tool_set_ui_pad_select(1);
-            break;
-        case 'd':
-            //printf("LAND\n");
-            //ardrone_tool_set_ui_pad_start(0);
-            break;
-        default:
-            //printf("EMERGENCY\n");
             break;
     }
 }
@@ -709,33 +680,79 @@ void kvHandsBodyMovementLogic(XnNodeHandle hDepthNode, XnPoint3D refL, XnPoint3D
     // Since we are in this state, we don't have to assume UPPER/LOWER limits of the hands
     // We only need to check against Center X/Y and the DEAD ZONE
     
+    // our commands to be packaged
+    int enable = 0;     // 0: hover             | 1: send commands
+    float phi = 0;      // 0-1.0: bend forward  | -1.0-0: bend backwards
+    float theta = 0;    // 0-1.0: strafe right  | -1.0-0: strafe left
+    float gaz = 0;      // 0-1.0: ascend        | -1.0-0: descend
+    float yaw = 0;      // 0-1.0: turn right    | -1.0-0: turn left
+    float psi = 0.0;
+    float psi_accuracy = 0.0;
+    
     // check that we are out of the DEADZONE
     if (!(Right.Y < kvLIMIT_DEADZONE_UPPER_Y && Right.Y > kvLIMIT_DEADZONE_LOWER_Y &&
           Left.Y < kvLIMIT_DEADZONE_UPPER_Y && Left.Y > kvLIMIT_DEADZONE_LOWER_Y)) {
+        
         if(Right.Y < kvLIMIT_DEADZONE_UPPER_Y && Right.Y > kvLIMIT_DEADZONE_LOWER_Y &&
            Left.Y > kvLIMIT_DEADZONE_UPPER_Y) {
+            
             printf("TURN LEFT\n");
-            ardrone_tool_set_progressive_cmd(1, 0, 0.1, 0, 0, 0, 0);
+            yaw = -0.5;
+            
         } else if(Left.Y < kvLIMIT_DEADZONE_UPPER_Y && Left.Y > kvLIMIT_DEADZONE_LOWER_Y &&
                   Right.Y > kvLIMIT_DEADZONE_UPPER_Y) {
+            
             printf("TURN RIGHT\n");
-        } else if(Right.Y > kvLIMIT_CENTER_Y &&
-           Left.Y > kvLIMIT_CENTER_Y) {                 // ASCEND
+            yaw = 0.5;
+            
+        } else if(Right.Y < kvLIMIT_DEADZONE_UPPER_Y && Right.Y > kvLIMIT_DEADZONE_LOWER_Y &&
+                  Left.Y < kvLIMIT_DEADZONE_LOWER_Y) {
+            
+            printf("BACKWARD\n");
+            theta = -1;
+            
+        } else if(Left.Y < kvLIMIT_DEADZONE_UPPER_Y && Left.Y > kvLIMIT_DEADZONE_LOWER_Y &&
+                  Right.Y < kvLIMIT_DEADZONE_LOWER_Y) {
+            
+            printf("FORWARD\n");
+            theta = 1;
+            
+        } else if(Right.Y > kvLIMIT_DEADZONE_UPPER_Y &&
+           Left.Y > kvLIMIT_DEADZONE_UPPER_Y) {                 // ASCEND
+            
             printf("ASCEND\n");
-        } else if(Right.Y < kvLIMIT_CENTER_Y &&
-                  Left.Y < kvLIMIT_CENTER_Y) {          // DESCEND
+            gaz = 0.3;
+            
+        } else if(Right.Y < kvLIMIT_DEADZONE_LOWER_Y &&
+                  Left.Y < kvLIMIT_DEADZONE_LOWER_Y) {          // DESCEND
+            
             printf("DESCEND\n");
-        } else if(Right.Y > kvLIMIT_CENTER_Y &&
-                  Left.Y < kvLIMIT_CENTER_Y) {          // TILT LEFT
+            gaz = -0.3;
+            
+        } else if(Right.Y > kvLIMIT_DEADZONE_UPPER_Y &&
+                  Left.Y < kvLIMIT_DEADZONE_LOWER_Y) {          // TILT LEFT
+            
             printf("TILT LEFT\n");
-        } else if(Right.Y < kvLIMIT_CENTER_Y &&
-                  Left.Y > kvLIMIT_CENTER_Y) {          // TILT RIGHT
+            phi = 0.3;
+            
+        } else if(Right.Y < kvLIMIT_DEADZONE_LOWER_Y &&
+                  Left.Y > kvLIMIT_DEADZONE_UPPER_Y) {          // TILT RIGHT
+            
             printf("TILT RIGHT\n");
+            phi = -0.3;
+            
         }
         
         // FORWARD BACK
         //if ( Right.)
+        //theta = 1;
+        // BACKWARD
+        //theta = -1;
     }
+    
+    // send the command
+    ardrone_tool_set_progressive_cmd(1, phi, theta, gaz, yaw, psi, psi_accuracy);
+    
     /* OLD SECONDLIFE CODE */
     /*
     if (xLDiff > 20 && xRDiff < -20) {
@@ -825,7 +842,11 @@ void kvHandsLocationLogic(XnNodeHandle hUserNode, XnNodeHandle hDepthNode, XnUse
         kvHAND_ACTIVE = FALSE;
         
         // it isn't so lets check for fly or land
-        if (leftHandPoint.Y > kvLIMIT_HAND_UPPER &&
+        if(leftHandPoint.Y > kvLIMIT_HAND_UPPER &&
+           rightHandPoint.Y < kvLIMIT_HAND_LOWER) {
+            
+            ardrone_tool_set_ui_pad_select(1);
+        } else if (leftHandPoint.Y > kvLIMIT_HAND_UPPER &&
             rightHandPoint.Y > kvLIMIT_HAND_UPPER) {
             // check current state of the Drone
             if (!kvIS_FLYING) {
@@ -838,7 +859,6 @@ void kvHandsLocationLogic(XnNodeHandle hUserNode, XnNodeHandle hDepthNode, XnUse
                 printf("FLY\n");
                 // send fly command to Drone
                 ardrone_tool_set_ui_pad_start(1);
-                //ardrone_tool_set_ui_pad_select(1);
             }
         } else if (leftHandPoint.Y < kvLIMIT_HAND_LOWER &&
                    rightHandPoint.Y < kvLIMIT_HAND_LOWER) {

@@ -23,12 +23,6 @@ void kvKeyPress(int key, int x, int y);
 // description: delegate for GLUT Keyup
 void kvKeyRelease(int key, int x, int y);
 
-// function: kvSendKeyDown()
-void kvSendKeyDown(char charCode);
-
-// function: kvSendKeyUp()
-void kvSendKeyUp(char charCode);
-
 //------------------------------------------------------------
 // KARD VISION INITIALIZER
 //------------------------------------------------------------

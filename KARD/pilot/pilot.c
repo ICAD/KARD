@@ -248,8 +248,8 @@ C_RESULT ardrone_tool_init_custom (void)
     /**
      * Start the video thread (and the video recorder thread for AR.Drone 2)
      */
-    START_THREAD(video_stage, params);
     START_THREAD(kinect, params);
+    START_THREAD(video_stage, params);
     video_stage_init();
 
     if (2 <= ARDRONE_VERSION ()) {

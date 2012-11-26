@@ -9,7 +9,10 @@
 
 int main(int argc, char * argv[])
 {
-    if(1) {
+    XnBool kUSE_ARDRONE = TRUE;
+    //XnBool kUSE_ARDRONE = FALSE;
+    
+    if(kUSE_ARDRONE) {
         kvInitVision(argc, argv);
         return ardrone_tool_main(argc, argv);
     } else {

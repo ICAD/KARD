@@ -39,16 +39,23 @@ XnBool              kvIS_FLYING = FALSE;
 //------------------------------------------------------------
 // Registration Points
 //------------------------------------------------------------
-float               kvLIMIT_HAND_UPPER = 180.0; // NEED TO SET THIS IN CALIBRATION
-float               kvLIMIT_HAND_LOWER = -170.0; // SET THIS IN CALIBRATION
-float               kvLIMIT_DEADZONE_UPPER_Y = 50;
-float               kvLIMIT_DEADZONE_LOWER_Y = -50;
+float               kvLIMIT_HAND_UPPER = 230.0; // NEED TO SET THIS IN CALIBRATION
+float               kvLIMIT_HAND_LOWER = -120.0; // SET THIS IN CALIBRATION
+float               kvLIMIT_DEADZONE_UPPER_Y = 60;
+float               kvLIMIT_DEADZONE_LOWER_Y = -60;
 float               kvLIMIT_CENTER_Y = 0.0;
 float               kvLIMIT_CENTER_X = 0.0;
 float               kvLIMIT_TORSO_Y;
 float               kvLIMIT_TORSO_X;
 float               kvLIMIT_HEAD_UPPER_Y;
 float               kvLIMIT_HEAD_LOWER_Y;
+int                 kvHOVER_LIMIT = 70;
+XnPoint3D           kvORIGIN = { .X = 0.0, .Y = 0.0, .Z = 0.0 };
+XnPoint3D           kvRHAND_ORIGIN = { .X = 0.0, .Y = 0.0, .Z = 0.0 };
+XnPoint3D           kvLHAND_ORIGIN = { .X = 0.0, .Y = 0.0, .Z = 0.0 };
+int                 kvORIGIN_LIMIT_Z = 120;
+int                 kvORIGIN_LIMIT_X = 120;
+
 //------------------------------------------------------------
 // Boundary Active Flags
 //------------------------------------------------------------
@@ -162,7 +169,7 @@ void kvInitScene() {
 // description: renders the GL context
 void kvRenderScene() {
     static float angle = 0.0f, deltaAngle = 0.0f;
-    float handOffsetY = 0.3f;
+    float handOffsetY = 0.4f;
     
     angle += deltaAngle;
     kvOrientMe(angle);
@@ -639,6 +646,22 @@ void XN_CALLBACK_TYPE kvCalibrationEnd(XnNodeHandle hUserNode, XnUserID user, Xn
     if (bSuccess) {
         // set the points
         xnStartSkeletonTracking(hUserNode, user);
+        
+        // set our origin here
+        XnPoint3D torso, leftHand, rightHand;
+        
+        kvSetJointPoint(hUserNode, user, XN_SKEL_TORSO, &torso);
+        kvSetJointPoint(hUserNode, user, XN_SKEL_LEFT_HAND, &leftHand);
+        kvSetJointPoint(hUserNode, user, XN_SKEL_RIGHT_HAND, &rightHand);
+        
+        printf("TORSO: %f - %f - %f\n", torso.X, torso.Y, torso.Z);
+        //kvORIGIN.X = torso.X;
+        //kvORIGIN.Y = torso.Y;
+        //kvORIGIN.Z = torso.Z;
+        
+        //kvLHAND_ORIGIN.Z = leftHand.Z;
+        //kvRHAND_ORIGIN.Z = rightHand.Z;
+        
     } else {
         xnStartPoseDetection(hUserNode, "Psi", user);
     }
@@ -657,31 +680,34 @@ void XN_CALLBACK_TYPE kvPoseDetected(XnNodeHandle hUserNode, const XnChar* pose,
 //------------------------------------------------------------
 // function: kvHandsBodyMovementLogic
 // description: handles the piloting logic
-void kvHandsBodyMovementLogic(XnNodeHandle hDepthNode, XnPoint3D refL, XnPoint3D refR, XnPoint3D Left, XnPoint3D Right) {
+void kvHandsBodyMovementLogic(XnNodeHandle hDepthNode,
+                              XnPoint3D LeftHand,
+                              XnPoint3D RightHand,
+                              XnPoint3D Head,
+                              XnPoint3D Torso,
+                              XnPoint3D LeftShoulder,
+                              XnPoint3D RightShoulder) {
+    
     // the differences between points x, y, z
-    float xLDiff, xRDiff, zLDiff, zRDiff, yLDiff, yRDiff;
+   // float xLDiff, xRDiff, zLDiff, zRDiff, yLDiff, yRDiff;
     // hand points
-    XnPoint3D cL, cR, cLR, cRR;
+    //XnPoint3D cL, cR, cLR, cRR;
     
-    xnConvertRealWorldToProjective(hDepthNode, 1, &refL, &cLR);
-    xnConvertRealWorldToProjective(hDepthNode, 1, &refR, &cRR);
-    xnConvertRealWorldToProjective(hDepthNode, 1, &Left, &cL);
-    xnConvertRealWorldToProjective(hDepthNode, 1, &Right, &cR);
+    //xnConvertRealWorldToProjective(hDepthNode, 1, &refL, &cLR);
+    //xnConvertRealWorldToProjective(hDepthNode, 1, &refR, &cRR);
+    //xnConvertRealWorldToProjective(hDepthNode, 1, &Left, &cL);
+    //xnConvertRealWorldToProjective(hDepthNode, 1, &Right, &cR);
     //printf("RL: %f\tL: %f \nRR: %f\tR: %f\n",cLR.Z,cL.Z,cRR.Z,cR.Z);
-    
+    /*
     xLDiff = cLR.X - cL.X;
     xRDiff = cRR.X - cR.X;
     zLDiff = cLR.Z - cL.Z;
     zRDiff = cRR.Z - cR.Z;
     yLDiff = cLR.Y - cL.Y;
     yRDiff = cRR.Y - cR.Y;
-    
-    // Assumptions:
-    // Since we are in this state, we don't have to assume UPPER/LOWER limits of the hands
-    // We only need to check against Center X/Y and the DEAD ZONE
-    
+    */
     // our commands to be packaged
-    int enable = 0;     // 0: hover             | 1: send commands
+    int enable = 1;     // 0: hover             | 1: send commands
     float phi = 0;      // 0-1.0: bend forward  | -1.0-0: bend backwards
     float theta = 0;    // 0-1.0: strafe right  | -1.0-0: strafe left
     float gaz = 0;      // 0-1.0: ascend        | -1.0-0: descend
@@ -689,103 +715,62 @@ void kvHandsBodyMovementLogic(XnNodeHandle hDepthNode, XnPoint3D refL, XnPoint3D
     float psi = 0.0;
     float psi_accuracy = 0.0;
     
-    // check that we are out of the DEADZONE
-    if (!(Right.Y < kvLIMIT_DEADZONE_UPPER_Y && Right.Y > kvLIMIT_DEADZONE_LOWER_Y &&
-          Left.Y < kvLIMIT_DEADZONE_UPPER_Y && Left.Y > kvLIMIT_DEADZONE_LOWER_Y)) {
-        
-        if(Right.Y < kvLIMIT_DEADZONE_UPPER_Y && Right.Y > kvLIMIT_DEADZONE_LOWER_Y &&
-           Left.Y > kvLIMIT_DEADZONE_UPPER_Y) {
-            
-            printf("TURN LEFT\n");
-            yaw = -0.5;
-            
-        } else if(Left.Y < kvLIMIT_DEADZONE_UPPER_Y && Left.Y > kvLIMIT_DEADZONE_LOWER_Y &&
-                  Right.Y > kvLIMIT_DEADZONE_UPPER_Y) {
-            
-            printf("TURN RIGHT\n");
-            yaw = 0.5;
-            
-        } else if(Right.Y < kvLIMIT_DEADZONE_UPPER_Y && Right.Y > kvLIMIT_DEADZONE_LOWER_Y &&
-                  Left.Y < kvLIMIT_DEADZONE_LOWER_Y) {
-            
-            printf("BACKWARD\n");
-            theta = -1;
-            
-        } else if(Left.Y < kvLIMIT_DEADZONE_UPPER_Y && Left.Y > kvLIMIT_DEADZONE_LOWER_Y &&
-                  Right.Y < kvLIMIT_DEADZONE_LOWER_Y) {
-            
+    
+    if(abs((int)(Torso.Z - kvORIGIN.Z)) > kvORIGIN_LIMIT_Z) {
+        if(Torso.Z > kvORIGIN.Z) {
             printf("FORWARD\n");
-            theta = 1;
-            
-        } else if(Right.Y > kvLIMIT_DEADZONE_UPPER_Y &&
-           Left.Y > kvLIMIT_DEADZONE_UPPER_Y) {                 // ASCEND
-            
-            printf("ASCEND\n");
-            gaz = 0.3;
-            
-        } else if(Right.Y < kvLIMIT_DEADZONE_LOWER_Y &&
-                  Left.Y < kvLIMIT_DEADZONE_LOWER_Y) {          // DESCEND
-            
+            theta = 0.2;
+        } else if (Torso.Z < kvORIGIN.Z ) {
+            printf("BACKWARDS\n");
+            theta = -0.2;
+        }
+    }
+    
+    if((abs((int)(LeftHand.Z - kvLHAND_ORIGIN.Z)) > 150) &&
+       (abs((int)(RightHand.Z - kvRHAND_ORIGIN.Z)) > 150)) {
+        if(LeftHand.Z < kvLHAND_ORIGIN.Z && RightHand.Z > kvRHAND_ORIGIN.Z) {
+            printf("TURN RIGHT\n");
+            yaw = 0.2;
+        } else if (LeftHand.Z > kvLHAND_ORIGIN.Z && RightHand.Z < kvRHAND_ORIGIN.Z) {
+            printf("TURN LEFT\n");
+            yaw = -0.2;
+        }
+    }
+    
+    
+    
+    if((abs((int)(LeftShoulder.Y - LeftHand.Y)) < kvHOVER_LIMIT) &&
+              abs((int)(RightShoulder.Y - RightHand.Y)) < kvHOVER_LIMIT ) {
+        printf("HOVER\n");
+        
+        // send all 0's
+    } else {
+        // check elevation control
+        if(LeftHand.Y < LeftShoulder.Y &&
+           RightHand.Y < RightShoulder.Y) {
             printf("DESCEND\n");
-            gaz = -0.3;
-            
-        } else if(Right.Y > kvLIMIT_DEADZONE_UPPER_Y &&
-                  Left.Y < kvLIMIT_DEADZONE_LOWER_Y) {          // TILT LEFT
-            
-            printf("TILT LEFT\n");
-            phi = 0.3;
-            
-        } else if(Right.Y < kvLIMIT_DEADZONE_LOWER_Y &&
-                  Left.Y > kvLIMIT_DEADZONE_UPPER_Y) {          // TILT RIGHT
-            
-            printf("TILT RIGHT\n");
-            phi = -0.3;
-            
+            gaz = -0.2;
+        } else if(LeftHand.Y > LeftShoulder.Y &&
+                  RightHand.Y > RightShoulder.Y) {
+            printf("ASCEND\n");
+            gaz = 0.2;
         }
         
-        // FORWARD BACK
-        //if ( Right.)
-        //theta = 1;
-        // BACKWARD
-        //theta = -1;
+        // check tilt control
+        //printf("Head: %f\n", headPoint.X);
+        //printf("Torso: %f\n", torsoPoint.X);
+        if(abs((int)(Head.X - Torso.X)) > 10) {
+            if(Head.X < Torso.X) {
+                printf("TILT LEFT\n");
+                phi = -0.2;
+            } else {
+                printf("TILT RIGHT\n");
+                phi = 0.2;
+            }
+        }
     }
     
-    // send the command
-    ardrone_tool_set_progressive_cmd(1, phi, theta, gaz, yaw, psi, psi_accuracy);
-    
-    /* OLD SECONDLIFE CODE */
-    /*
-    if (xLDiff > 20 && xRDiff < -20) {
-        kvSendKeyDown('w');
-        kvSendKeyUp('w');
-    } else if (xLDiff < -20 && xRDiff > 20) {
-        kvSendKeyDown('s');
-        kvSendKeyUp('s');
-    }
-    
-    if (zLDiff > 100 ) {
-        kvSendKeyUp('d');
-        kvSendKeyDown('a');
-    } else if (zRDiff > 100 ) {
-        kvSendKeyUp('a');
-        kvSendKeyDown('d');
-    } else {
-        kvSendKeyUp('a');
-        kvSendKeyUp('d');
-    }
-    
-    if (yLDiff > 20 && yRDiff > 20 ) {
-        //SendVKDown(VK_PRIOR);
-        //SendVKUp(VK_NEXT);
-        //printf("up\n");
-    } else if (yRDiff < -20 && yLDiff < -20) {
-        //printf("Down\n");
-        //SendVKDown(VK_NEXT);
-        //SendVKUp(VK_PRIOR);
-    } else{
-        //SendVKUp(VK_PRIOR);
-        //SendVKUp(VK_NEXT);
-    }*/
+    ardrone_tool_set_progressive_cmd(enable, phi, theta, gaz, yaw, psi, psi_accuracy);
 }
 
 // function: kvSetJointPoint
@@ -805,71 +790,47 @@ void kvHandsLocationLogic(XnNodeHandle hUserNode, XnNodeHandle hDepthNode, XnUse
     //static int timer=0;
     //static float r = 1.0f, g = 0.0f, b = 0.0f;
     
-    static XnPoint3D refLeftHand, refRightHand;
-    XnPoint3D leftHandPoint, rightHandPoint, headPoint, torsoPoint;
-    
-    // some boundary limits for hands to cross
-    kvLIMIT_HEAD_UPPER_Y = headPoint.Y + 20;
-    kvLIMIT_HEAD_LOWER_Y = headPoint.Y + 10;
-    kvLIMIT_TORSO_Y = torsoPoint.Y - 50;
-    
-    // timers
-    //int frameTimer = 10;     // the time wait between a steady buffer
+    //static XnPoint3D refLeftHand, refRightHand;
+    static XnPoint3D leftHandPoint,
+                    rightHandPoint,
+                    headPoint,
+                    torsoPoint,
+                    hipPoint,
+                    leftShoulderPoint,
+                    rightShoulderPoint;
+
     
     kvSetJointPoint(hUserNode, user, XN_SKEL_LEFT_HAND, &leftHandPoint);
     kvSetJointPoint(hUserNode, user, XN_SKEL_RIGHT_HAND, &rightHandPoint);
-    kvSetJointPoint(hUserNode, user, XN_SKEL_HEAD, &headPoint);
     kvSetJointPoint(hUserNode, user, XN_SKEL_TORSO, &torsoPoint);
+    kvSetJointPoint(hUserNode, user, XN_SKEL_HEAD, &headPoint);
+    kvSetJointPoint(hUserNode, user, XN_SKEL_LEFT_HIP, &hipPoint);
+    kvSetJointPoint(hUserNode, user, XN_SKEL_LEFT_SHOULDER, &leftShoulderPoint);
+    kvSetJointPoint(hUserNode, user, XN_SKEL_RIGHT_SHOULDER, &rightShoulderPoint);
     
-    //printf("leftHandPoint.Y: %f\n", leftHandPoint.Y);
-    //printf("rightHandPoint.Y: %f\n", rightHandPoint.Y);
-    
-    // check if hands are within application bounds
-    if ( leftHandPoint.Y <= kvLIMIT_HAND_UPPER &&
-         leftHandPoint.Y >= kvLIMIT_HAND_LOWER &&
-         rightHandPoint.Y <= kvLIMIT_HAND_UPPER &&
-        rightHandPoint.Y >= kvLIMIT_HAND_LOWER) {
-        kvHAND_ACTIVE = TRUE;
-        
-        // provide user a little buffer time between the FLY/LAND commands
-        if ( kvIS_FLYING ) {
-            refLeftHand = leftHandPoint;
-            refRightHand = rightHandPoint;
-            
-            kvHandsBodyMovementLogic(hDepthNode, refLeftHand, refRightHand, leftHandPoint, rightHandPoint);
+    // check state and handoff accordingly
+    if(kvIS_FLYING) {
+        if(leftHandPoint.Y < hipPoint.Y && rightHandPoint.Y < hipPoint.Y) {
+            kvIS_FLYING = FALSE;
+            ardrone_tool_set_ui_pad_start(0);
+        } else {
+            kvHandsBodyMovementLogic(hDepthNode, leftHandPoint, rightHandPoint, headPoint, torsoPoint, leftShoulderPoint, rightShoulderPoint);
         }
     } else {
-        kvHAND_ACTIVE = FALSE;
-        
-        // it isn't so lets check for fly or land
-        if(leftHandPoint.Y > kvLIMIT_HAND_UPPER &&
-           rightHandPoint.Y < kvLIMIT_HAND_LOWER) {
+        if( leftHandPoint.Y > headPoint.Y && rightHandPoint.Y > headPoint.Y) {
             
+            printf("FLY\n");
+            kvIS_FLYING = TRUE;
+            
+            // set the Z origin for reference
+            kvORIGIN.Z = torsoPoint.Z;
+            kvLHAND_ORIGIN.Z = leftHandPoint.Z;
+            kvRHAND_ORIGIN.Z = rightHandPoint.Z;
+            
+            ardrone_tool_set_ui_pad_start(1);
+        } else if( leftHandPoint.Y < hipPoint.Y && rightHandPoint.Y > headPoint.Y) {
             ardrone_tool_set_ui_pad_select(1);
-        } else if (leftHandPoint.Y > kvLIMIT_HAND_UPPER &&
-            rightHandPoint.Y > kvLIMIT_HAND_UPPER) {
-            // check current state of the Drone
-            if (!kvIS_FLYING) {
-                // reset the check values
-                //steady = FALSE;
-                //timer = frameTimer;
-                //initHands = FALSE;
-                kvIS_FLYING = TRUE;
-                
-                printf("FLY\n");
-                // send fly command to Drone
-                ardrone_tool_set_ui_pad_start(1);
-            }
-        } else if (leftHandPoint.Y < kvLIMIT_HAND_LOWER &&
-                   rightHandPoint.Y < kvLIMIT_HAND_LOWER) {
-            // check current state of the Drone and land it if it is flying
-            if (kvIS_FLYING) {
-                kvIS_FLYING = FALSE;
-                
-                printf("LAND\n");
-                ardrone_tool_set_ui_pad_start(0);
-                // send land command
-            }
+            printf("EMERGENCY\n");
         }
     }
 }

@@ -162,7 +162,18 @@ void kvKeyRelease(int key, int x, int y) {
 // function: kvInitScene()
 // description: initializes the GL Scene
 void kvInitScene() {
+    //glutInit(<#int *argcp#>, <#char **argv#>);
+    glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
+    glutInitWindowSize(KARD_WINDOW_WIDTH, KARD_WINDOW_HEIGHT);
+    glutInitWindowPosition(KARD_WINDOW_X, KARD_WINDOW_Y);
+    glutCreateWindow("KARD | Kinect - AR.Drone");
+    glClearColor(0.0f, 0.0f, 0.0f, 0.5f);
+    glClearDepth(1.0f);
     glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+    
+    glTranslatef(-1, 1, 0);
 }
 
 // function: kvRenderScene
@@ -301,12 +312,6 @@ XnStatus kvInitVision() {
 	char *argv[] = { "KARD Vision", NULL };
 
     glutInit(&argc, argv);
-
-    glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
-    glutInitWindowPosition(KARD_WINDOW_X, KARD_WINDOW_Y);
-    glutInitWindowSize(KARD_WINDOW_WIDTH, KARD_WINDOW_HEIGHT);
-    
-    glutCreateWindow("KARD Skeleton Tracking");
     
     // Initialize the GL scene
     kvInitScene();

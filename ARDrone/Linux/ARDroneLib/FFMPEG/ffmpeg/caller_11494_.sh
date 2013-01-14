@@ -1,0 +1,3 @@
+#!/bin/sh
+./configure --libdir=/Users/tyler/working_osx/ARDrone/ARDroneLib/FFMPEG/ffmpeg/../../Soft/Build/targets_versions//ffmpeg_x86_64_PROD_MODE_Darwin_12.2.0_usrbingcc_4.2.1 --shlibdir=/Users/tyler/working_osx/ARDrone/ARDroneLib/FFMPEG/ffmpeg/../../Soft/Build/targets_versions//ffmpeg_x86_64_PROD_MODE_Darwin_12.2.0_usrbingcc_4.2.1 --incdir=/Users/tyler/working_osx/ARDrone/ARDroneLib/FFMPEG/ffmpeg/../Includes --cc="gcc" --disable-yasm --disable-shared --enable-static --disable-debug --disable-ffmpeg --disable-ffplay --disable-ffserver --disable-ffprobe --disable-doc --disable-everything --enable-decoder=mpeg4 --enable-decoder=h264 --enable-decoder=rawvideo --arch=x86_64
+

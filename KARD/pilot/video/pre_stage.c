@@ -32,7 +32,7 @@ bool_t hasPaVE (uint8_t *buffer)
 
 C_RESULT pre_stage_open (pre_stage_cfg_t *cfg)
 {
-	cvNamedWindow("Control", CV_WINDOW_AUTOSIZE);
+	//cvNamedWindow("Control", CV_WINDOW_AUTOSIZE);
 
     cfg->outputFile = NULL;
     if (NULL != cfg->outputName && 0 < strlen (cfg->outputName))

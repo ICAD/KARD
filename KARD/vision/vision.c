@@ -6,20 +6,9 @@
 #include "vision.h"
 #include <stdio.h>
 #include <math.h>
-#include <GL/glew.h>
 #include <ardrone_control.h>
 #include <ardrone_tool/UI/ardrone_input.h>
 #include <ardrone_tool/Control/ardrone_control.h>
-
-#ifdef __APPLE__
-    #include <OpenGL/gl.h>
-    #include <GLUT/glut.h>
-    #include <OpenGL/glext.h>
-#elif __linux
-    #include <GL/gl.h>
-    #include <GL/glut.h>
-    #include <GL/glext.h>
-#endif
 
 //============================================================
 // GLOBALS

@@ -83,7 +83,7 @@ void getActualFrameSize (display_stage_cfg_t *cfg, uint32_t *width, uint32_t *he
 
 C_RESULT display_stage_open (display_stage_cfg_t *cfg)
 {
-    cvNamedWindow("Camera", CV_WINDOW_AUTOSIZE);
+    //cvNamedWindow("Camera", CV_WINDOW_AUTOSIZE);
     // Check that we use RGB565
     if (2 != cfg->bpp)
     {
@@ -124,9 +124,9 @@ C_RESULT display_stage_transform (display_stage_cfg_t *cfg, vp_api_io_data_t *in
     getPicSizeFromBufferSize (in->size, &width, &height);
 
     IplImage *img = ipl_image_from_data((uint8_t*)in->buffers[0], 1, cfg->decoder_info->width, cfg->decoder_info->height);
-	cvShowImage("Camera",img);
-	cvReleaseImage(&img);
-	cvWaitKey(1);
+	//cvShowImage("Camera",img);
+	//cvReleaseImage(&img);
+	//cvWaitKey(1);
     return C_OK;
 }
 
@@ -139,7 +139,7 @@ C_RESULT display_stage_close (display_stage_cfg_t *cfg)
         cfg->frameBuffer = NULL;
     }
 
-	cvDestroyWindow("Camera");
+	//cvDestroyWindow("Camera");
 
     return C_OK;
 }

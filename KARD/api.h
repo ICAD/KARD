@@ -31,4 +31,11 @@
 #define VIDEO_CONTROL_PORT  5559 //TCP
 #define AT_BUFFER_SIZE      1024
 
+// OPENGL
+#include <GL/glew.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <GL/gl.h>
+#include <GL/glut.h>
+#include <GL/glext.h>
 #endif

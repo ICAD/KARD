@@ -16,15 +16,13 @@
 #include "navdata.h"
 #include "pilot.h"
 
-PROTO_THREAD_ROUTINE(kinect, data);
-PROTO_THREAD_ROUTINE(main_application_thread, data);
+PROTO_THREAD_ROUTINE(opengl, data);
 
 /**
  * Declare Threads / Navdata tables
  */
 BEGIN_THREAD_TABLE
-    THREAD_TABLE_ENTRY( kinect, 20 )
-    THREAD_TABLE_ENTRY( main_application_thread, 20 )
+    THREAD_TABLE_ENTRY( opengl, 20 )
     THREAD_TABLE_ENTRY( ardrone_control, 20 )
     THREAD_TABLE_ENTRY( navdata_update, 20 )
     THREAD_TABLE_ENTRY( video_stage, 20 )

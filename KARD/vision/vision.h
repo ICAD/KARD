@@ -28,22 +28,18 @@ void kvKeyRelease(int key, int x, int y);
 //------------------------------------------------------------
 // function: kvInitVision()
 // description: initializes the complete vision part of KARD
-XnStatus kvInitVision();
-
-// function: kvStartVision()
-// description: starts the OPENGL drawing loop
-void kvStartVision();
+XnStatus kvInitTracking(int * window);
 
 //------------------------------------------------------------
 // OPENGL
 //------------------------------------------------------------
-// function: kvInitScene()
+// function: kvInitTracking()
 // description: initializes the GL Scene
-void kvInitScene();
+void kvInitScene(int * window);
 
 // function: kvRenderScene
 // description: renders the GL context
-void kvRenderScene();
+void kvRenderTrackingScene();
 
 // function: kvOrientMe()
 // description: corrects orientation of tracked user

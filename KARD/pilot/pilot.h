@@ -35,4 +35,6 @@
 void controlCHandler (int signal);
 
 void kpInitPilot(int argc, char *argv[]);
-void kpInitHUD();
+void kpInitHUD(int * window);
+void kpRenderHUD();
+void kpRenderVideo();

@@ -69,6 +69,7 @@ void kdPrintText(float x, float y, float z, float r, float g, float b, float a, 
     //glLoadIdentity();
     int limit = strlen(text);
     int counter = -1;
+    
     while(counter++ <  limit - 1) {
         glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, text[counter]);
     }
@@ -93,40 +94,28 @@ void kpShowStatus() {
     kdPrintText(x, y-=0.15, 0, 1, 1, 1, 1, psiStatusText);
 }
 
-// function: kvRenderScene
-// description: renders the GL context
+
+void kpInitHUD(int * window) {
+    *window = glutCreateWindow("AR.Drone 2.0 | Status");
+    glutDisplayFunc(kpRenderHUD);
+    glTranslatef(-1, 1, 0);
+}
+
+void kpRenderVideo() {
+    
+}
+
 void kpRenderHUD() {
     // clear the GL buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(0.0f, 0.0f, 0.0f, 0.5f);
+    glLoadIdentity();
+    glClearColor(1, 1, 0.0f, 0.5f);
     glClearDepth(1.0f);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
     
     kpShowStatus();
-    
-    glBegin(GL_LINES);
-    glVertex3f(0,0,0);
-    glVertex3f( 1, 1, 1);
-    glEnd();
-    glutSwapBuffers();
-}
-
-void reshape () {
-    glViewport(0,0,300,300);
-    glutPostRedisplay();
-}
-
-
-void kpInitHUD() {
-    int HUDWindow = 0;
-    HUDWindow = glutCreateWindow("AR.Drone 2.0 | Status");
-    glutDisplayFunc(kpRenderHUD);
-    glutIdleFunc(kpRenderHUD);
-    glutReshapeFunc(reshape);
-    // move the origin to top-left instead of center
-    glTranslatef(-1, 1, 0);
 }
 
 /**
@@ -140,8 +129,7 @@ void kpInitPilot(int argc, char *argv[]) {
     char **prevargv = argv;
 
     int index = 0;
-    for (index = 1; index < argc; index++)
-    {
+    for (index = 1; index < argc; index++) {
         if ('-' == argv[index][0] &&
             'e' == argv[index][1]) {
             char *fullname = argv[index];
@@ -160,16 +148,6 @@ void kpInitPilot(int argc, char *argv[]) {
             videoChannel = ZAP_CHANNEL_VERT;
         }
     }
-
-    //return ardrone_tool_main (prevargc, prevargv);
-    
-    
-    //kpInitHUD();
-    
-    //glutDisplayFunc((void *)kvRenderScene2);
-    //glutIdleFunc((void *)kvRenderScene2);
-    
-    //kpStartVision();
 }
 
 C_RESULT ardrone_tool_init_custom (void)
@@ -334,12 +312,7 @@ C_RESULT ardrone_tool_init_custom (void)
     /**
      * Start the video thread (and the video recorder thread for AR.Drone 2)
      */
-    
-    int pargc = 1;
-    char *pargv[] = { "KARD Vision", NULL };
-    glutInit(&pargc, pargv);
-    glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
-    START_THREAD(kinect, params);
+    START_THREAD(opengl, params);
     START_THREAD(main_application_thread, params);
     START_THREAD(video_stage, params);
     video_stage_init();

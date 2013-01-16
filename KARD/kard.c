@@ -9,70 +9,69 @@
 
 #include <string.h>
 
-XnBool kUSE_ARDRONE = TRUE;
-XnBool kUSE_VISION = FALSE;
+XnBool kUSE_ARDRONE = FALSE;
+XnBool kUSE_VISION = TRUE;
+// OpenGL Windows
+int kKINECT_WINDOW = 0;
+int kARDRONE_STATUS_WINDOW = 0;
+int kARDRONE_VIDEO_WINDOW = 0;
 
 void kInitGLUT() {
-    //init params for GLUT
     int pargc = 1;
-    char *pargv[] = { "KARD Vision", NULL };
+    char *pargv[] = { "KARD Project", NULL };
     glutInit(&pargc, pargv);
-    
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
 }
 
-void * startARDrone(void *arg) {
-    int argc = 0;
-    char * argv[] = { "", NULL };
+void kRenderWindows() {
+    if(kKINECT_WINDOW) {
+        //printf("Rendering Kinect Window\n");
+        glutSetWindow(kKINECT_WINDOW);
+        kvRenderTrackingScene();
+    }
     
-    kpInitPilot(argc, argv);
-    printf("Finished initializing AR.Drone.\nStarting AR.Drone Main Loop\n");
-    printf("Finished running ardrone_tool_main\n");
-    printf("Initialized\n");
+    if(kARDRONE_STATUS_WINDOW) {
+        glutSetWindow(kARDRONE_STATUS_WINDOW);
+        kpRenderHUD();
+    }
+    
+    if(kARDRONE_VIDEO_WINDOW) {
+        glutSetWindow(kARDRONE_VIDEO_WINDOW);
+        kpRenderVideo();
+    }
+}
+
+void kRenderOpenGL() {
+    printf("Started OpenGL Thread\n");
+    glutIdleFunc(kRenderWindows);
+    glutMainLoop();
 }
 
 int main(int argc, char * argv[]) {
-    //kInitGLUT();
+    // initialize the OpenGL context
+    kInitGLUT();
     
     // check what functionality to run as
     if(kUSE_ARDRONE && kUSE_VISION) {
         printf("KARD: Using both vision/pilot\n");
-        if(kvInitVision(argc, argv) == XN_STATUS_OK) {
-            kpInitPilot(argc, argv);
-            return ardrone_tool_main(argc, argv);
-        }
+        kvInitTracking(&kKINECT_WINDOW);
+        kpInitHUD(&kARDRONE_STATUS_WINDOW);
         return C_OK;
     } else if(kUSE_VISION) {
         printf("KARD: Using only vision\n");
-        if(kvInitVision(argc, argv) == XN_STATUS_OK) {
-            kvStartVision();
-        }
-        
+        kvInitTracking(&kKINECT_WINDOW);
+        kRenderOpenGL();
         return C_OK;
     } else if(kUSE_ARDRONE) {
         printf("KARD: Using only pilot\n");
-        // fork threads
-        // create thread for AR.Drone
-        //pthread_t threadARDrone;
-        
-        //pthread_create(&threadARDrone, NULL, &startARDrone, NULL);
-        //pthread_join(threadARDrone, NULL);
-        
-        // call the main loop
-        return ardrone_tool_main(argc, argv);
+        kpInitHUD(&kARDRONE_STATUS_WINDOW);
     } else {
         return C_FAIL;
     }
 }
 
-DEFINE_THREAD_ROUTINE(kinect, data) {
-    printf("video\n");
-    if(kUSE_VISION) { kvStartVision(); }
-    //else { glutMainLoop(); }
-    
-    kpInitHUD();
-    printf("Starting glutMainLoop()");
-    glutMainLoop();
+DEFINE_THREAD_ROUTINE(opengl, data) {
+    kRenderOpenGL();
     return C_OK;
 }
 

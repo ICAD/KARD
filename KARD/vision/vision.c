@@ -80,7 +80,7 @@ enum KARD_WINDOW_ENUM {
 //============================================================
 #ifdef __APPLE__
     //#define SAMPLE_XML_PATH "SamplesConfig.xml"
-    #define SAMPLE_XML_PATH "/Users/mayromlo/Desktop/KARD/KARD/data/SamplesConfig.xml"
+    #define SAMPLE_XML_PATH "/Users/tyler/Library/Developer/Xcode/DerivedData/KARD-fxnsamrlbgbrbjcrxwjwrksdotgz/Build/Products/Debug/SamplesConfig.xml"
 #elif __linux
     #define SAMPLE_XML_PATH "../data/SamplesConfig.xml"
 #endif
@@ -150,24 +150,30 @@ void kvKeyRelease(int key, int x, int y) {
 //------------------------------------------------------------
 // function: kvInitScene()
 // description: initializes the GL Scene
-void kvInitScene() {
-    //glutInit(<#int *argcp#>, <#char **argv#>);
-    glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
+void kvInitScene(int * window) {
+    printf("Initializing Kinect OpenGL Scene\n");
+    
     glutInitWindowSize(KARD_WINDOW_WIDTH, KARD_WINDOW_HEIGHT);
     glutInitWindowPosition(KARD_WINDOW_X, KARD_WINDOW_Y);
-    glutCreateWindow("KARD | Kinect - AR.Drone");
+    *window = glutCreateWindow("AR.Drone Status");
+    
     glClearColor(0.0f, 0.0f, 0.0f, 0.5f);
     glClearDepth(1.0f);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-    
     glTranslatef(-1, 1, 0);
+    
+    glutDisplayFunc(kvRenderTrackingScene);
+    glutSpecialFunc(kvKeyPress);
+    glutSpecialUpFunc(kvKeyRelease);
 }
 
-// function: kvRenderScene
+// function: kvRenderTrackingScene
 // description: renders the GL context
-void kvRenderScene() {
+void kvRenderTrackingScene() {
+    //printf("kvRenderTrackingScene\n");
+    glLoadIdentity();
     static float angle = 0.0f, deltaAngle = 0.0f;
     float handOffsetY = 0.4f;
     
@@ -185,16 +191,6 @@ void kvRenderScene() {
         //---------------------
         // DRAW SCENE BOUNDARIES
         //---------------------
-        // HORIZONTAL CROSSHAIR
-        glBegin(GL_LINES);
-            glVertex3f(-10.0f, kvLIMIT_CENTER_Y, -1.0f);
-            glVertex3f( 10.0f, kvLIMIT_CENTER_Y, -1.0f);
-        glEnd();
-        // VERTICAL CROSSHAIR
-        glBegin(GL_LINES);
-            glVertex3f( kvLIMIT_CENTER_X, -10.0f, -1.0f);
-            glVertex3f( kvLIMIT_CENTER_X, 10.0f, -1.0f);
-        glEnd();
         
         // set color feedback for Drone state
         if (kvHAND_ACTIVE) {
@@ -205,32 +201,15 @@ void kvRenderScene() {
             glColor3f( kvCOLOR_LAND_R, kvCOLOR_LAND_G, kvCOLOR_LAND_B);
         }
         
-        //---------------------
-        // HAND BOUNDARIES
-        //---------------------
-        // UPPER LIMIT
+        // HORIZONTAL CROSSHAIR
         glBegin(GL_LINES);
-            glVertex3f(-10.0f, (-kvLIMIT_CENTER_Y + handOffsetY), -1.0f);
-            glVertex3f( 10.0f, (-kvLIMIT_CENTER_Y + handOffsetY), -1.0f);
+            glVertex3f(-10.0f, kvLIMIT_CENTER_Y, -1.0f);
+            glVertex3f( 10.0f, kvLIMIT_CENTER_Y, -1.0f);
         glEnd();
-        // LOWER LIMIT
+        // VERTICAL CROSSHAIR
         glBegin(GL_LINES);
-            glVertex3f(-10.0f, (-kvLIMIT_CENTER_Y - handOffsetY), -1.0f);
-            glVertex3f( 10.0f, (-kvLIMIT_CENTER_Y - handOffsetY), -1.0f);
-        glEnd();
-        //---------------------
-        // DEAD ZONE
-        //---------------------
-        glColor3f( 1.0, 1.0, 1.0);
-        // UPPER LIMIT
-        glBegin(GL_LINES);
-        glVertex3f(-10.0f, 0.1, -1.0f);
-        glVertex3f( 10.0f, 0.1, -1.0f);
-        glEnd();
-        // LOWER LIMIT
-        glBegin(GL_LINES);
-        glVertex3f(-10.0f, -0.1, -1.0f);
-        glVertex3f( 10.0f, -0.1, -1.0f);
+            glVertex3f( kvLIMIT_CENTER_X, -10.0f, -1.0f);
+            glVertex3f( kvLIMIT_CENTER_X, 10.0f, -1.0f);
         glEnd();
     }
     
@@ -256,11 +235,11 @@ void kvOrientMe(float theta) {
 }
 
 //------------------------------------------------------------
-// KARD VISION INITIALIZER
+// KARD KINECT INITIALIZER
 //------------------------------------------------------------
-// function: kvInitVision()
-// description: initializes the complete vision part of KARD
-XnStatus kvInitVision() {
+// function: kvInitTracking()
+// description: initializes the complete skeleon tracking part of KARD
+XnStatus kvInitTracking(int * window) {
     XnStatus nRetVal = XN_STATUS_OK;
     XnNodeHandle hScriptNode;
     XnEnumerationErrors * pErrors = NULL;
@@ -296,31 +275,8 @@ XnStatus kvInitVision() {
     
     xnStartGeneratingAll(kvCONTEXT_PTR);
     
-	// fake init params
-	int argc = 1;
-	char *argv[] = { "KARD Vision", NULL };
-
-    glutInit(&argc, argv);
-    
-    // Initialize the GL scene
-    kvInitScene();
-    
-    glutIgnoreKeyRepeat(1);
-    
-    // set GLUT KEYPRESS delegates
-    glutSpecialFunc(kvKeyPress);
-    glutSpecialUpFunc(kvKeyRelease);
-    
-    glutDisplayFunc((void *)kvRenderScene);
-    glutIdleFunc((void *)kvRenderScene);
-    
+    kvInitScene(window);
     return nRetVal;
-}
-
-// function: kvStartVision()
-// description: starts the OPENGL drawing loop
-void kvStartVision() {
-	glutMainLoop();
 }
 
 //------------------------------------------------------------
@@ -484,11 +440,6 @@ void kvDrawStickFigure(XnNodeHandle hUserNode, XnNodeHandle hDepthNode, XnDepthM
             
             if(kvDRAW_BONES) kvDrawBones(hUserNode, hDepthNode, users[i]);
             kvHandsLocationLogic(hUserNode, hDepthNode, users[i]);
-            
-            /*mouse->Sendposition1(users[i],i,XN_SKEL_LEFT_SHOULDER,XN_SKEL_LEFT_ELBOW, XN_SKEL_LEFT_HAND,g_DepthGenerator,g_UserGenerator);
-             mouse->Sendposition1(users[i],i,XN_SKEL_RIGHT_SHOULDER,XN_SKEL_RIGHT_ELBOW, XN_SKEL_RIGHT_HAND,g_DepthGenerator,g_UserGenerator);
-             mouse->Sendposition(users[i],i,XN_SKEL_RIGHT_HAND,"RH",g_DepthGenerator,g_UserGenerator);
-             mouse->Sendposition(users[i],i,XN_SKEL_LEFT_HAND,"LH",g_DepthGenerator,g_UserGenerator);*/
         }
     }
     
@@ -681,25 +632,6 @@ void kvHandsBodyMovementLogic(XnNodeHandle hDepthNode,
                               XnPoint3D Torso,
                               XnPoint3D LeftShoulder,
                               XnPoint3D RightShoulder) {
-    
-    // the differences between points x, y, z
-   // float xLDiff, xRDiff, zLDiff, zRDiff, yLDiff, yRDiff;
-    // hand points
-    //XnPoint3D cL, cR, cLR, cRR;
-    
-    //xnConvertRealWorldToProjective(hDepthNode, 1, &refL, &cLR);
-    //xnConvertRealWorldToProjective(hDepthNode, 1, &refR, &cRR);
-    //xnConvertRealWorldToProjective(hDepthNode, 1, &Left, &cL);
-    //xnConvertRealWorldToProjective(hDepthNode, 1, &Right, &cR);
-    //printf("RL: %f\tL: %f \nRR: %f\tR: %f\n",cLR.Z,cL.Z,cRR.Z,cR.Z);
-    /*
-    xLDiff = cLR.X - cL.X;
-    xRDiff = cRR.X - cR.X;
-    zLDiff = cLR.Z - cL.Z;
-    zRDiff = cRR.Z - cR.Z;
-    yLDiff = cLR.Y - cL.Y;
-    yRDiff = cRR.Y - cR.Y;
-    */
     // our commands to be packaged
     int enable = 1;     // 0: hover             | 1: send commands
     float phi = 0;      // 0-1.0: bend forward  | -1.0-0: bend backwards

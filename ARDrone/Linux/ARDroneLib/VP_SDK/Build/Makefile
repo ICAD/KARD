@@ -83,7 +83,7 @@ before_check:
 
 
 #------------------------------------------------------------------------------------------------------------------------
-TARGETS=vlib parrotOS_core parrotOS_utils parrotOS_drivers parrotOS_devs parrotOS_codec libplf sdk lib app
+TARGETS=vlib libplf sdk lib app  
 
 # When building on Ubuntu, only the final application (USE_APP) depends on the above-mentioned libraries.
 # The iPhone applications do not use USE_APP; the above-mentioned libraries must therefore be built

@@ -6,7 +6,6 @@
 #include "vision.h"
 #include <stdio.h>
 #include <math.h>
-#include <ardrone_control.h>
 #include <ardrone_tool/UI/ardrone_input.h>
 #include <ardrone_tool/Control/ardrone_control.h>
 
@@ -79,10 +78,9 @@ enum KARD_WINDOW_ENUM {
 // DEFINES
 //============================================================
 #ifdef __APPLE__
-    //#define SAMPLE_XML_PATH "SamplesConfig.xml"
-    #define SAMPLE_XML_PATH "/Users/tyler/Library/Developer/Xcode/DerivedData/KARD-fxnsamrlbgbrbjcrxwjwrksdotgz/Build/Products/Debug/SamplesConfig.xml"
-#elif __linux
     #define SAMPLE_XML_PATH "../data/SamplesConfig.xml"
+#elif __linux
+    #define SAMPLE_XML_PATH "data/SamplesConfig.xml"
 #endif
 
 #define CHECK_RC(rc, what)	\

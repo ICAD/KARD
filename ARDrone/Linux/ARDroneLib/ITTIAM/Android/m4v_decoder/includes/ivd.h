@@ -49,6 +49,7 @@
 /*****************************************************************************/
 
 /* IVD_FRAME_SKIP_MODE_T:Skip mode Enumeration                               */
+
 typedef enum {
     IVD_NO_SKIP                                 = 0xFFFFFFFF,
     IVD_SKIP_P                                  = 0x0,
@@ -116,28 +117,29 @@ typedef enum {
 /* bits will be generic for all video decoders and each bit has an associated*/
 /* meaning as mentioned below. The unused bit fields are reserved for future */
 /* extenstions and will be zero in the current implementation                */
+
 typedef enum {
-    /* Bit 9  - Applied concealment.                                         */
-    IVD_APPLIEDCONCEALMENT                      = 0x9,
-    /* Bit 10 - Insufficient input data.                                     */
-    IVD_INSUFFICIENTDATA                        = 0xa,
-    /* Bit 11 - Data problem/corruption.                                     */
-    IVD_CORRUPTEDDATA                           = 0xb,
-    /* Bit 12 - Header problem/corruption.                                   */
-    IVD_CORRUPTEDHEADER                         = 0xc,
-    /* Bit 13 - Unsupported feature/parameter in input.                      */
-    IVD_UNSUPPORTEDINPUT                        = 0xd,
-    /* Bit 14 - Unsupported input parameter orconfiguration.                 */
-    IVD_UNSUPPORTEDPARAM                        = 0xe,
-    /* Bit 15 - Fatal error (stop the codec).If there is an                  */
+    /* Bit 8  - Applied concealment.                                         */
+    IVD_APPLIEDCONCEALMENT                      = 0x8,
+    /* Bit 9 - Insufficient input data.                                     */
+    IVD_INSUFFICIENTDATA                        = 0x9,
+    /* Bit 10 - Data problem/corruption.                                     */
+    IVD_CORRUPTEDDATA                           = 0xa,
+    /* Bit 11 - Header problem/corruption.                                   */
+    IVD_CORRUPTEDHEADER                         = 0xb,
+    /* Bit 12 - Unsupported feature/parameter in input.                      */
+    IVD_UNSUPPORTEDINPUT                        = 0xc,
+    /* Bit 13 - Unsupported input parameter orconfiguration.                 */
+    IVD_UNSUPPORTEDPARAM                        = 0xd,
+    /* Bit 14 - Fatal error (stop the codec).If there is an                  */
     /* error and this bit is not set, the error is a recoverable one.        */
-    IVD_FATALERROR                              = 0xf,
-    /* Bit 16 - Invalid bitstream. Applies when Bitstream/YUV frame          */
+    IVD_FATALERROR                              = 0xe,
+    /* Bit 15 - Invalid bitstream. Applies when Bitstream/YUV frame          */
     /* buffer for encode/decode call is made with non-valid or zero u4_size  */
     /* data                                                                  */
-    IVD_INVALID_BITSTREAM                       = 0x10,
-    /* */
-    IVD_INCOMPLETE_BITSTREAM                    = 0x11,
+    IVD_INVALID_BITSTREAM                       = 0xf,
+    /* Bit 16          */
+    IVD_INCOMPLETE_BITSTREAM                    = 0x10,
     IVD_ERROR_BITS_T_DUMMY_ELEMENT              = 0xFFFFFFFF
 }IVD_ERROR_BITS_T;
 
@@ -147,20 +149,44 @@ typedef enum {
 
     IVD_NUM_MEM_REC_FAILED                      = 0x1,
     IVD_NUM_REC_NOT_SUFFICIENT                  = 0x2,
-    IVD_REQUESTED_WIDTH_NOT_SUPPPORTED          = 0x3,
-    IVD_REQUESTED_HEIGHT_NOT_SUPPPORTED         = 0x4,
-    IVD_INIT_DEC_NOT_SUFFICIENT                 = 0x5,
-    IVD_INIT_DEC_WIDTH_NOT_SUPPPORTED           = 0x6,
-    IVD_INIT_DEC_HEIGHT_NOT_SUPPPORTED          = 0x7,
-    IVD_INIT_DEC_MEM_NOT_ALIGNED                = 0x8,
-    IND_INIT_DEC_COL_FMT_NOT_SUPPORTED			= 0x9,
-    IVD_GET_VERSION_DATABUFFER_SZ_INSUFFICIENT  = 0xa,
-    IVD_BUFFER_SIZE_SET_TO_ZERO                 = 0xb,
-    IVD_UNEXPECTED_END_OF_STREAM                = 0xc,
-    IVD_SEQUENCE_HEADER_NOT_DECODED             = 0xd,
-    IVD_STREAM_WIDTH_HEIGHT_NOT_SUPPORTED       = 0xe,
-    IVD_MAX_FRAME_LIMIT_REACHED					= 0xf,
-
+    IVD_FILL_MEM_REC_FAILED                     = 0x3,
+    IVD_REQUESTED_WIDTH_NOT_SUPPPORTED          = 0x4,
+    IVD_REQUESTED_HEIGHT_NOT_SUPPPORTED         = 0x5,
+    IVD_INIT_DEC_FAILED                         = 0x6,
+    IVD_INIT_DEC_NOT_SUFFICIENT                 = 0x7,
+    IVD_INIT_DEC_WIDTH_NOT_SUPPPORTED           = 0x8,
+    IVD_INIT_DEC_HEIGHT_NOT_SUPPPORTED          = 0x9,
+    IVD_INIT_DEC_MEM_NOT_ALIGNED                = 0xa,
+    IVD_INIT_DEC_COL_FMT_NOT_SUPPORTED          = 0xb,
+    IVD_INIT_DEC_MEM_REC_NOT_SUFFICIENT         = 0xc,
+    IVD_GET_VERSION_DATABUFFER_SZ_INSUFFICIENT  = 0xd,
+    IVD_BUFFER_SIZE_SET_TO_ZERO                 = 0xe,
+    IVD_UNEXPECTED_END_OF_STREAM                = 0xf,
+    IVD_SEQUENCE_HEADER_NOT_DECODED             = 0x10,
+    IVD_STREAM_WIDTH_HEIGHT_NOT_SUPPORTED       = 0x11,
+    IVD_MAX_FRAME_LIMIT_REACHED                 = 0x12,
+    IVD_IP_API_STRUCT_SIZE_INCORRECT            = 0x13,
+    IVD_OP_API_STRUCT_SIZE_INCORRECT            = 0x14,
+    IVD_HANDLE_NULL                             = 0x15,
+    IVD_HANDLE_STRUCT_SIZE_INCORRECT            = 0x16,
+    IVD_INVALID_HANDLE_NULL                     = 0x17,
+    IVD_INVALID_API_CMD                         = 0x18,
+    IVD_UNSUPPORTED_API_CMD                     = 0x19,
+    IVD_MEM_REC_STRUCT_SIZE_INCORRECT           = 0x1a,
+    IVD_DISP_FRM_ZERO_OP_BUFS                   = 0x1b,
+    IVD_DISP_FRM_OP_BUF_NULL                    = 0x1c,
+    IVD_DISP_FRM_ZERO_OP_BUF_SIZE               = 0x1d,
+    IVD_DEC_FRM_BS_BUF_NULL                     = 0x1e,
+    IVD_SET_CONFG_INVALID_DEC_MODE              = 0x1f,
+    IVD_SET_CONFG_UNSUPPORTED_DISP_WIDTH        = 0x20,
+    IVD_RESET_FAILED                            = 0x21,
+    IVD_INIT_DEC_MEM_REC_OVERLAP_ERR            = 0x22,
+    IVD_INIT_DEC_MEM_REC_BASE_NULL              = 0x23,
+    IVD_INIT_DEC_MEM_REC_ALIGNMENT_ERR          = 0x24,
+    IVD_INIT_DEC_MEM_REC_INSUFFICIENT_SIZE      = 0x25,
+    IVD_INIT_DEC_MEM_REC_INCORRECT_TYPE         = 0x26,
+    IVD_DEC_NUMBYTES_INV                        = 0x27,
+    IVD_DEC_REF_BUF_NULL						= 0x28,
 
     IVD_DUMMY_ELEMENT_FOR_CODEC_EXTENSIONS      = 0x30,
 }IVD_ERROR_CODES_T;
@@ -195,10 +221,16 @@ typedef struct {
     /* u4_size of the structure                                         */
     UWORD32                                 u4_size;
     IVD_API_COMMAND_TYPE_T                  e_cmd;
+    /* no memrecords which are allocated on request of codec through
+    fill mem records */
     UWORD32                                 u4_num_mem_rec;
+    /* maximum height for which codec should be initialized */
     UWORD32                                 u4_frm_max_wd;
+    /* maximum width for which codec should be initialized  */
     UWORD32                                 u4_frm_max_ht;
+    /* format in which codec has to give out frame data for display */
     IV_COLOR_FORMAT_T                       e_output_format;
+    /* pointer to memrecord array, which contains allocated resources */
     iv_mem_rec_t                            *pv_mem_rec_location;
 }ivd_init_ip_t;
 
@@ -271,7 +303,7 @@ typedef struct
     UWORD32                                 u4_is_ref_flag;
     IV_COLOR_FORMAT_T                       e_output_format;
     iv_yuv_buf_t                            s_disp_frm_buf;
-    IV_FLD_TYPE_T                           u4_fld_type;
+    IV_FLD_TYPE_T                           e4_fld_type;
     UWORD32                                 u4_ts;
 	UWORD32									u4_disp_buf_id;
 }ivd_get_display_frame_op_t;

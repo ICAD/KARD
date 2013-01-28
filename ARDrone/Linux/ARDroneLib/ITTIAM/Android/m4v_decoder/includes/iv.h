@@ -89,6 +89,9 @@ typedef enum {
     IV_GRAY                                 = 0x8,
     IV_RGB_565                              = 0x9,
     IV_RGB_24                               = 0xa,
+    IV_YUV_420SP_UV							= 0xb,
+    IV_YUV_420SP_VU							= 0xc
+
 }IV_COLOR_FORMAT_T;
 
 /* IV_PICTURE_CODING_TYPE_T: VOP/Frame coding type Enumeration              */
@@ -244,8 +247,12 @@ typedef struct {
     /* u4_size of the structure                                         */
     UWORD32                                     u4_size;
     IV_API_COMMAND_TYPE_T                       e_cmd;
+    /* pointer to array of memrecords structures should be filled by codec
+    with details of memory resource requirements */
     iv_mem_rec_t                                *pv_mem_rec_location;
+    /* maximum width for which codec should request memory requirements */
     UWORD32                                     u4_max_frm_wd;
+    /* maximum height for which codec should request memory requirements */
     UWORD32                                     u4_max_frm_ht;
 }iv_fill_mem_rec_ip_t;
 
@@ -254,6 +261,7 @@ typedef struct{
     /* u4_size of the structure                                         */
     UWORD32                                     u4_size;
     UWORD32                                     u4_error_code;
+    /* no of memory record structures which are filled by codec */
     UWORD32                                     u4_num_mem_rec_filled;
 }iv_fill_mem_rec_op_t;
 
@@ -270,6 +278,8 @@ typedef struct {
     /* u4_size of the structure                                         */
     UWORD32                                     u4_size;
     IV_API_COMMAND_TYPE_T                       e_cmd;
+    /* array of structures where codec should fill with all resources(memory)
+     with it*/
     iv_mem_rec_t                                *pv_mem_rec_location;
 }iv_retrieve_mem_rec_ip_t;
 
@@ -278,6 +288,7 @@ typedef struct{
     /* u4_size of the structure                                         */
     UWORD32                                     u4_size;
     UWORD32                                     u4_error_code;
+    /* no of memory records filled by codec */
     UWORD32                                     u4_num_mem_rec_filled;
 }iv_retrieve_mem_rec_op_t;
 

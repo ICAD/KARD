@@ -1,7 +1,7 @@
 prefix=
 exec_prefix=
 libdir=${pcfiledir}
-includedir=/home/ray/Desktop/KARD_linuxgesture/ARDrone/ARDroneLib/FFMPEG/ffmpeg
+includedir=/home/tyler/Desktop/KARD/ARDrone/Linux/ARDroneLib/FFMPEG/ffmpeg
 
 Name: libavfilter
 Description: FFmpeg video filtering library

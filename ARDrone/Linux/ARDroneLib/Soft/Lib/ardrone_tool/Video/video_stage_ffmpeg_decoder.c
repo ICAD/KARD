@@ -443,6 +443,11 @@ C_RESULT ffmpeg_stage_decoding_transform(ffmpeg_stage_decoding_config_t *cfg, vp
             }
           else
             {
+        	  /* Skip frames are usually 7 bytes long
+        	   * and make FFMPEG return an error. It is however normal to get
+        	   * skip frames from the drone.
+        	   */
+        	  if (7!=PaVE.payload_size)
               printf ("Decoding failed for a %s\n", (PaVE.frame_type == FRAME_TYPE_P_FRAME) ? "P Frame" : "I Frame");
             }
         

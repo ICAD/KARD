@@ -1,0 +1,86 @@
+#####################################################
+#	Vision Makefile
+#####################################################
+SDK_PATH:=$(shell pwd)/../../ARDrone/Linux/ARDroneLib
+PC_TARGET=yes
+USE_LINUX=yes
+
+ifdef MYKONOS
+   include $(ARDRONE_CUSTOM_CONFIG)
+   include $(ARDRONE_BUILD_CONFIG)
+else
+   include $(SDK_PATH)/Soft/Build/custom.makefile
+   include $(SDK_PATH)/Soft/Build/config.makefile
+endif
+
+TARGET=vision
+TARGET_FILE=$(TARGET).c
+TARGET_FILE_HEADER=$(TARGET).h
+TEST_FILE=$(TARGET)_test
+UNAME := $(shell uname)
+LIBRARY_NAME=kard$(TARGET)
+
+ifeq ($(UNAME), Linux)
+	INCLUDE_DIR=/usr/include
+	LIB_DIR=/usr/local/lib
+	OPENNI_INCLUDE=$(INCLUDE_DIR)/ni/
+	OPENGL_LIBS=`pkg-config --libs glu glew`
+endif
+ifeq ($(UNAME), Darwin)
+	INCLUDE_DIR=/usr/local/include
+	OPENNI_INCLUDE=$(INCLUDE_DIR)/ni/
+	OPENGL_LIBS=`pkg-config --libs glu glew`
+endif
+
+OPENNI_LIBS=-lOpenNI
+OPENCV_LIBS=`pkg-config --libs opencv`
+OPENCV_CFLAGS=`pkg-config --cflags opencv`
+
+PTHREAD_LIBS=-lpthread_workqueue
+
+# cumulative links
+INCLUDES = $(OPENNI_INCLUDE) $(INCLUDE_DIR)
+LIBRARIES = \
+	$(OPENNI_LIBS) \
+	$(OPENGL_LIBS) \
+	$(OPENCV_LIBS) \
+	$(PHTREAD_LIBS)
+
+ifeq ($(UNAME), Linux)
+	LIBRARIES += -lglut
+endif
+
+INCLUDES:=$(addprefix -I,$(INCLUDES))
+INCLUDES+=$(OPENCV_CFLAGS)
+GENERIC_INCLUDES+= \
+	$(SRC_DIR) \
+	$(LIB_DIR) \
+	$(SDK_PATH)/Soft/Common \
+	$(SDK_PATH)/Soft/Lib \
+	$(OPENNI_INCLUDE) \
+	$(VISION_DIR)
+
+GENERIC_TARGET_BINARIES_PREFIX=
+GENERIC_TARGET_BINARIES_DIR=$(KARD_TARGET_DIR)
+GENERIC_BINARIES_SOURCE_ENTRYPOINTS+= pilot.c
+
+SDK_FLAGS+="USE_APP=yes"
+SDK_FLAGS+="APP_ID=pilot"
+GENERIC_INCLUDES:=$(addprefix -I,$(GENERIC_INCLUDES))
+GENERIC_INCLUDES+=$(OPENCV_CFLAGS)
+
+all: $(TARGET)
+
+$(TARGET): $(TARGET_FILE) $(TARGET_FILE_HEADER)
+	#gcc -w -fPIC -c $(TARGET_FILE) $(TARGET_FILE_HEADER) $(INCLUDES) $(GENERIC_INCLUDES)
+	#gcc -shared -Wl,-soname,lib$(LIBRARY_NAME).so -o lib$(LIBRARY_NAME).so *.o $(GENERIC_INCLUDES)
+	#rm *.gch *.o
+	@$(MAKE) -w -C $(SDK_PATH)/VP_SDK/Build $(TMP_SDK_FLAGS) $(SDK_FLAGS) $(MAKECMDGOALS) USE_LINUX=yes
+
+test: *.c *.h $(TARGET)
+	gcc -o $(TEST_FILE) $(TEST_FILE).c -L./ -I./ -l$(LIBRARY_NAME) $(LIBRARIES) $(INCLUDES)
+	LD_LIBRARY_PATH=. ./$(TEST_FILE)
+
+clean:
+	rm -rf *~ *.o *.gch $(TARGET) lib$(LIBRARY_NAME).so $(TEST_FILE)
+

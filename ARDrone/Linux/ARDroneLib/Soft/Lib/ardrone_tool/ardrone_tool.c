@@ -275,7 +275,7 @@ C_RESULT ardrone_tool_shutdown()
   ardrone_navdata_client_shutdown();
   ardrone_control_shutdown();
   ardrone_tool_input_shutdown();
-
+ 
   JOIN_THREAD(ardrone_control); 
   JOIN_THREAD(navdata_update);
 
@@ -348,7 +348,6 @@ int ardrone_tool_main(int argc, char **argv)
   {
     PRINT("You have to install new locales in your dev environment! (avoid the need of conv_coma_to_dot)\n");
     PRINT("As root, do a \"dpkg-reconfigure locales\" and add en_GB.UTF8 to your locale settings\n");
-    PRINT("If you have any problem, feel free to contact Pierre Eline (pierre.eline@parrot.com)\n");
   }
   else
   {

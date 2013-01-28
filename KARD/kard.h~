@@ -12,9 +12,9 @@
 // Local Headers
 #include "api.h"
 //#include "control.h"
-#include "vision.h"
-#include "navdata.h"
-#include "pilot.h"
+#include "vision/vision.h"
+#include "navdata/navdata.h"
+#include "pilot/pilot.h"
 
 PROTO_THREAD_ROUTINE(opengl, data);
 

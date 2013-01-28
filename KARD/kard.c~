@@ -49,7 +49,7 @@ int main(int argc, char * argv[]) {
     XnBool kUSE_ARDRONE = FALSE;
     XnBool kUSE_VISION = FALSE;
 
-	if(argc > 1) {
+	if(argc > 0) {
 		if(strcmp("kinect", argv[1]) == 0) {
 			kUSE_VISION = TRUE;
 		} else if(strcmp("ardrone", argv[1]) == 0) {

@@ -85,7 +85,7 @@ all: build_libs $(TARGET)
 
 $(TARGET):
 	@$(MAKE) -C $(SDK_PATH)/VP_SDK/Build $(TMP_SDK_FLAGS) $(SDK_FLAGS) $(MAKECMDGOALS) USE_LINUX=yes
-	rm -rf sym_$(TARGET)
+	rm -f sym_$(TARGET)
 	#mv $(ARDRONE_TARGET_DIR)/ardrone_testing_tool $(TARGET)
 	#mv $(TARGET) $(ARDRONE_TARGET_DIR)/
 

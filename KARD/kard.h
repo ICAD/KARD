@@ -11,6 +11,7 @@
 
 // Local Headers
 #include "api.h"
+#include "math.h"
 //#include "control.h"
 #include "vision/vision.h"
 #include "navdata/navdata.h"

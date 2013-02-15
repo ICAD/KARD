@@ -1,12 +1,12 @@
 prefix=
 exec_prefix=
 libdir=${pcfiledir}
-includedir=/home/icad-mbb/Desktop/KARD/ARDrone/Linux/ARDroneLib/FFMPEG/ffmpeg
+includedir=/Users/ray/Desktop/Project_KARD/ARDrone/Linux/ARDroneLib/FFMPEG/ffmpeg
 
 Name: libavcodec
 Description: FFmpeg codec library
 Version: 53.7.0
 Requires: libavutil = 51.9.1
 Conflicts:
-Libs: ${libdir}/libavcodec.a -lSDL -lm -pthread -lz 
+Libs: ${libdir}/libavcodec.a -Wl,-framework,Cocoa -L/usr/local/lib -lSDLmain -lSDL -lm -lbz2 -lz 
 Cflags: -I${includedir}

@@ -1,0 +1,127 @@
+h2. Current Progress
+* ARDroneLib compiles under OSX
+* All demos (except Navigation which relies on GTK) compile under OSX, however have not been tested on an ARDrone yet
+
+h2. Overview of ARDrone_SDK_2_0_OSX
+
+This repository contains changes to the ARDroneLib source-code and make process to allow compilation for the OSX platform.
+A bug relating to the iOS Simulator was also fixed
+
+h2. Bug relating to iOS Simulator
+
+Previously, three different macro definitions were used to specify that compilation was for an iOS Simulator target:
+
+* @TARGET_OS_SIMULATOR@
+* @TARGET_OS_IPHONE_SIMULATOR@
+* @TARGET_IPHONE_SIMULATOR@
+
+However only the latter-most was ever defined by the make process, resulting in large chunks of code not being compiled (I presume this was unintentional).
+
+These three macros were all renamed to @TARGET_IPHONE_SIMULATOR@.
+
+h2. Compilation for OSX
+
+h3. Prerequisites
+
+The ffmpeg libraries (version 0.8) supplied by Parrot as part of the SDK do not compile on OSX. For this reason the compile flag @FFMPEG_EXTERN@ has been added, allowing linking (on any platform, not just OSX) to externally installed ffmpeg libraries, rather than requiring the compilation of the Parrot supplied libraries.
+
+This flag is forced on whenever @USE_OSX=yes@ is specified (either as an environment variable or on the make command line).
+
+Other platforms must specify this manually, as it will default to @FFMPEG_EXTERN=no@ if not specified (@FFMPEG_EXTERN=yes@ either as an environment variable or on the make command line).
+
+@pkg-config@ is also a requirement, as the make process uses this to find the location of the external ffmpeg libraries.
+
+h4. Installing ffmpeg 0.8.x on OSX
+
+Firstly, lets install ffmpeg *0.8.x* and pkg-config. I did this using Homebrew (http://mxcl.github.com/homebrew/) and will assume you have it installed. Note that the latest version of ffmpeg is from the 0.11 release branch. Parrot uses the 0.8 branch's API, so we need to install an old version (0.8.7) using @brew versions ffmpeg@.
+
+<pre><code>% brew install pkg-config
+... pkg-config successfully installed etc
+
+% brew versions ffmpeg
+  0.11.1   git checkout a2d4d9d /usr/local/Library/Formula/ffmpeg.rb
+  0.11     git checkout d8005c3 /usr/local/Library/Formula/ffmpeg.rb
+  0.10.3   git checkout 150fc6e /usr/local/Library/Formula/ffmpeg.rb
+  0.10.2   git checkout b0ea047 /usr/local/Library/Formula/ffmpeg.rb
+  0.10     git checkout da2568d /usr/local/Library/Formula/ffmpeg.rb
+  0.9.1    git checkout 4027968 /usr/local/Library/Formula/ffmpeg.rb
+  0.9      git checkout ac70933 /usr/local/Library/Formula/ffmpeg.rb
+  0.8.7    git checkout ac1ce7e /usr/local/Library/Formula/ffmpeg.rb
+  0.8.6    git checkout cdcb773 /usr/local/Library/Formula/ffmpeg.rb
+  0.8.5    git checkout a1b65c4 /usr/local/Library/Formula/ffmpeg.rb
+  0.8.4    git checkout 380aa8f /usr/local/Library/Formula/ffmpeg.rb
+  0.8.2    git checkout 5fe6ab8 /usr/local/Library/Formula/ffmpeg.rb
+  0.8      git checkout 93f03aa /usr/local/Library/Formula/ffmpeg.rb
+  0.6.3    git checkout 1563196 /usr/local/Library/Formula/ffmpeg.rb
+  0.6.2    git checkout bdd1ac7 /usr/local/Library/Formula/ffmpeg.rb
+  0.6.1    git checkout 46c553a /usr/local/Library/Formula/ffmpeg.rb
+  0.6      git checkout abac30c /usr/local/Library/Formula/ffmpeg.rb
+  HEAD     git checkout cb0c551 /usr/local/Library/Formula/ffmpeg.rb
+
+% cd /usr/local/Library/Formula
+
+% git checkout ac1ce7e /usr/local/Library/Formula/ffmpeg.rb
+
+% brew install ffmpeg
+... ffmpeg successfully installed etc
+
+% ffmpeg -version
+  ffmpeg version 0.8.7, Copyright (c) 2000-2011 the FFmpeg developers
+    built on Jul  3 2012 18:19:47 with clang 3.1 (tags/Apple/clang-318.0.61)
+    configuration: --prefix=/usr/local/Cellar/ffmpeg/0.8.7 --enable-shared --enable-gpl --enable-version3 --enable-nonfree --enable-hardcoded-tables --  cc=/usr/bin/clang --enable-libx264 --enable-libfaac --enable-libmp3lame --enable-libtheora --enable-libvorbis --enable-libvpx --enable-libxvid --  disable-ffplay
+    libavutil    51.  9. 1 / 51.  9. 1
+    libavcodec   53.  8. 0 / 53.  8. 0
+    libavformat  53.  5. 0 / 53.  5. 0
+    libavdevice  53.  1. 1 / 53.  1. 1
+    libavfilter   2. 23. 0 /  2. 23. 0
+    libswscale    2.  0. 0 /  2.  0. 0
+    libpostproc  51.  2. 0 / 51.  2. 0
+  ffmpeg 0.8.7
+  libavutil    51.  9. 1 / 51.  9. 1
+  libavcodec   53.  8. 0 / 53.  8. 0
+  libavformat  53.  5. 0 / 53.  5. 0
+  libavdevice  53.  1. 1 / 53.  1. 1
+  libavfilter   2. 23. 0 /  2. 23. 0
+  libswscale    2.  0. 0 /  2.  0. 0
+  libpostproc  51.  2. 0 / 51.  2. 0
+</code></pre>
+
+Once you have ffmpeg and pkg-config installed, check that pkg-config can find the ffmpeg libraries (note the second line -L etc is the command output)
+
+<pre><code>% pkg-config --libs libavutil
+  -L/usr/local/Cellar/ffmpeg/0.8.7/lib -lavutil
+</code></pre>
+
+Great, now the compilation process (which uses pkg-config to find the ffmpeg libraries) can link against the existing ffmpeg installation, rather than having to compile the provided source.
+
+h3. Compiling ARDroneLib for OSX
+
+The ARDroneLib package can be compiled either with:
+<pre><code>% cd ARDroneLib/Soft/Build
+% make USE_OSX=yes clean
+% make USE_OSX=yes
+</code></pre>
+
+or with:
+
+<pre><code>% cd ARDroneLib/Soft/Build
+% export USE_OSX=yes
+% make clean
+% make
+</code></pre>
+
+h3. Compiling Examples for OSX
+
+The Examples can be compiled either with:
+<pre><code>% cd ARDroneLib/Examples/OSX
+% make USE_OSX=yes clean
+% make USE_OSX=yes
+</code></pre>
+
+or with:
+
+<pre><code>% cd ARDroneLib/Examples/OSX
+% export USE_OSX=yes
+% make clean
+% make
+</code></pre>

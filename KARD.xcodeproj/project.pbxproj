@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		2F1E8BC1162480B800BA29D3 /* kard.c in Sources */ = {isa = PBXBuildFile; fileRef = 2F1E8BC0162480B800BA29D3 /* kard.c */; };
-		2F1E8BC3162480B800BA29D3 /* KARD.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2F1E8BC2162480B800BA29D3 /* KARD.1 */; };
 		2F1E8BD116248D5D00BA29D3 /* libsdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F1E8BD016248D5D00BA29D3 /* libsdk.a */; };
 		2F1E8BD316248DAD00BA29D3 /* libpc_ardrone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F1E8BD216248DAD00BA29D3 /* libpc_ardrone.a */; };
 		2F1E8BD516248DBA00BA29D3 /* libvlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F1E8BD416248DBA00BA29D3 /* libvlib.a */; };
@@ -37,7 +36,6 @@
 			dstPath = usr/share/man/man1;
 			dstSubfolderSpec = 0;
 			files = (
-				2F1E8BC3162480B800BA29D3 /* KARD.1 in CopyFiles */,
 				2F22E483165FC1AB00754B30 /* SamplesConfig.xml in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 1;
@@ -47,7 +45,6 @@
 /* Begin PBXFileReference section */
 		2F1E8BBC162480B800BA29D3 /* KARD */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = KARD; sourceTree = BUILT_PRODUCTS_DIR; };
 		2F1E8BC0162480B800BA29D3 /* kard.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = kard.c; sourceTree = "<group>"; };
-		2F1E8BC2162480B800BA29D3 /* KARD.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = KARD.1; sourceTree = "<group>"; };
 		2F1E8BD016248D5D00BA29D3 /* libsdk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libsdk.a; path = Libraries/libsdk.a; sourceTree = "<group>"; };
 		2F1E8BD216248DAD00BA29D3 /* libpc_ardrone.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpc_ardrone.a; path = Libraries/libpc_ardrone.a; sourceTree = "<group>"; };
 		2F1E8BD416248DBA00BA29D3 /* libvlib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvlib.a; path = Libraries/libvlib.a; sourceTree = "<group>"; };
@@ -71,10 +68,7 @@
 		2F3E31111624B05A0040B19B /* libavcodec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavcodec.a; path = /usr/local/Cellar/ffmpeg/0.8.7/lib/libavcodec.a; sourceTree = "<absolute>"; };
 		2F3E31131624B0A50040B19B /* libswscale.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libswscale.a; path = /usr/local/Cellar/ffmpeg/0.8.7/lib/libswscale.a; sourceTree = "<absolute>"; };
 		2F3E311B1625CABD0040B19B /* libcurses.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcurses.dylib; path = usr/lib/libcurses.dylib; sourceTree = SDKROOT; };
-		2F3E311D162624D40040B19B /* control.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = control.h; sourceTree = "<group>"; };
-		2F3E3121162625C00040B19B /* control.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = control.c; sourceTree = "<group>"; };
 		2FB37626165ACFA1009D6263 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
-		2FB37628165ACFA5009D6263 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		2FB3762A165ACFB3009D6263 /* libOpenNI.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libOpenNI.dylib; path = "/usr/local/Cellar/openni/unstable-1.5.4.0/lib/libOpenNI.dylib"; sourceTree = "<absolute>"; };
 		2FC2FE18162C7E8E003EF17F /* kard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = kard.h; sourceTree = "<group>"; };
 		2FC2FE19162C8222003EF17F /* api.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = api.h; sourceTree = "<group>"; };
@@ -126,13 +120,11 @@
 			isa = PBXGroup;
 			children = (
 				2F22E479165D846900754B30 /* navdata */,
-				2F22E478165D845C00754B30 /* control */,
 				2F22E45F165D805500754B30 /* pilot */,
 				2F22E45B165D7FB100754B30 /* vision */,
 				2FC2FE19162C8222003EF17F /* api.h */,
 				2FC2FE18162C7E8E003EF17F /* kard.h */,
 				2F1E8BC0162480B800BA29D3 /* kard.c */,
-				2F1E8BC2162480B800BA29D3 /* KARD.1 */,
 			);
 			path = KARD;
 			sourceTree = "<group>";
@@ -207,15 +199,6 @@
 			name = ARDrone;
 			sourceTree = "<group>";
 		};
-		2F22E478165D845C00754B30 /* control */ = {
-			isa = PBXGroup;
-			children = (
-				2F3E311D162624D40040B19B /* control.h */,
-				2F3E3121162625C00040B19B /* control.c */,
-			);
-			name = control;
-			sourceTree = "<group>";
-		};
 		2F22E479165D846900754B30 /* navdata */ = {
 			isa = PBXGroup;
 			children = (
@@ -228,7 +211,6 @@
 		2F3E310C1624AFFE0040B19B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				2FB37628165ACFA5009D6263 /* GLUT.framework */,
 				2FB37626165ACFA1009D6263 /* OpenGL.framework */,
 			);
 			name = Frameworks;

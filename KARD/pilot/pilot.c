@@ -99,6 +99,10 @@ void kpInitHUD(int * window) {
     *window = glutCreateWindow("AR.Drone 2.0 | Status");
     glutDisplayFunc(kpRenderHUD);
     glTranslatef(-1, 1, 0);
+    
+    int pargc = 1;
+    char *pargv[] = { "KARD Project", NULL };
+    kpInitPilot(pargc, pargv);
 }
 
 void kpRenderVideo() {
@@ -125,8 +129,7 @@ void kpInitPilot(int argc, char *argv[]) {
     signal (SIGABRT, &controlCHandler);
     signal (SIGTERM, &controlCHandler);
     signal (SIGINT, &controlCHandler);
-    int prevargc = argc;
-    char **prevargv = argv;
+    
 
     int index = 0;
     for (index = 1; index < argc; index++) {
@@ -150,8 +153,7 @@ void kpInitPilot(int argc, char *argv[]) {
     }
 }
 
-C_RESULT ardrone_tool_init_custom (void)
-{
+C_RESULT ardrone_tool_init_custom (void) {
     printf("STARTING AR.Drone Thread\n");
     /**
      * Set application default configuration
@@ -313,7 +315,7 @@ C_RESULT ardrone_tool_init_custom (void)
      * Start the video thread (and the video recorder thread for AR.Drone 2)
      */
     START_THREAD(opengl, params);
-    START_THREAD(main_application_thread, params);
+    //START_THREAD(main_application_thread, params);
     START_THREAD(video_stage, params);
     video_stage_init();
 
@@ -324,7 +326,6 @@ C_RESULT ardrone_tool_init_custom (void)
 
     video_stage_resume_thread ();
     
-    //glutMainLoop();
 	//START_THREAD(main_application_thread, NULL);
 	//ardrone_tool_input_add( &input_controller );
     return C_OK;

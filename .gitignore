@@ -12,3 +12,4 @@
 
 # Temp files
 *~
+.DS_Store

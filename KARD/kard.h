@@ -18,7 +18,6 @@
 #include "pilot/pilot.h"
 
 PROTO_THREAD_ROUTINE(opengl, data);
-PROTO_THREAD_ROUTINE(main_application_thread, data);
 
 /**
  * Declare Threads / Navdata tables
@@ -29,7 +28,6 @@ BEGIN_THREAD_TABLE
     THREAD_TABLE_ENTRY( navdata_update, 20 )
     THREAD_TABLE_ENTRY( video_stage, 20 )
     THREAD_TABLE_ENTRY( video_recorder, 20)
-    THREAD_TABLE_ENTRY( main_application_thread, 20 )
 END_THREAD_TABLE
 
 BEGIN_NAVDATA_HANDLER_TABLE

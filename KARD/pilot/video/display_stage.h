@@ -8,9 +8,6 @@
 
 #include <ardrone_tool/Video/video_stage.h>
 #include <inttypes.h>
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
-#include <opencv2/imgproc/imgproc_c.h>
 
 typedef struct _display_stage_cfg_ {
     // PARAM
@@ -24,8 +21,6 @@ typedef struct _display_stage_cfg_ {
 
     //GtkWidget *widget;
 } display_stage_cfg_t;
-
-IplImage *img;
 
 C_RESULT display_stage_open (display_stage_cfg_t *cfg);
 C_RESULT display_stage_transform (display_stage_cfg_t *cfg, vp_api_io_data_t *in, vp_api_io_data_t *out);

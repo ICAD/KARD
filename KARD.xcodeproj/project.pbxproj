@@ -391,17 +391,8 @@
 		2F1E8BC7162480B800BA29D3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)/**",
-					"$(SRCROOT)/ARDrone/OSX/ARDroneLib/**",
-					"/usr/local/include/**",
-					/usr/local/include/ni,
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"/usr/local/lib/**",
-					"/usr/local/Cellar/**",
-				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -409,17 +400,8 @@
 		2F1E8BC8162480B800BA29D3 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)/**",
-					"$(SRCROOT)/ARDrone/OSX/ARDroneLib/**",
-					"/usr/local/include/**",
-					/usr/local/include/ni,
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"/usr/local/lib/**",
-					"/usr/local/Cellar/**",
-				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

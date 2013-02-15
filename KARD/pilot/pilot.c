@@ -28,8 +28,6 @@
 
 // Generic includes
 #include "pilot.h"
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
 
 pre_stage_cfg_t precfg;
 display_stage_cfg_t dispCfg;
@@ -39,26 +37,11 @@ codec_type_t drone2Codec = H264_360P_CODEC;
 ZAP_VIDEO_CHANNEL videoChannel = ZAP_CHANNEL_HORI;
 
 #define FILENAMESIZE (256)
-#define VIDEO_WIDTH  320
-#define VIDEO_HEIGHT  240
-
 char encodedFileName[FILENAMESIZE] = {0};
 
 int32_t exit_ihm_program = 1;
 
-static uint8_t    *pixbuf = NULL;
-static GLuint      texture;
 
-static long otick = 0;
-static int screen_width = 0;
-static int screen_height = 0;
-
-static GLuint texture; //the array for our texture
-IplImage *imagenText1;
-GLfloat angle = 0.0;
-
-
-extern uint16_t default_image[VIDEO_WIDTH*VIDEO_HEIGHT];
 
 enum KARD_WINDOW_ENUM {
     KARD_WINDOW_WIDTH   = 640,
@@ -93,23 +76,10 @@ void kdPrintText(float x, float y, float z, float r, float g, float b, float a, 
     
 }
 
-
-void plane (void) {
-	glBindTexture( GL_TEXTURE_2D, texture ); //bind the texture
-    //glRotatef( angle, 1.0f, 1.0f, 1.0f );
-    glBegin (GL_QUADS);
-    glTexCoord2d(0.0,0.0); glVertex2d(-1.0,-1.0); //with our vertices we have to assign a texcoord
-    glTexCoord2d(1.0,0.0); glVertex2d(+1.0,-1.0); //so that our texture has some points to draw to
-    glTexCoord2d(1.0,1.0); glVertex2d(+1.0,+1.0);
-    glTexCoord2d(0.0,1.0); glVertex2d(-1.0,+1.0);
-    glEnd();
-    
-}
-
 void kpShowStatus() {
     float x = 0.1;
     float y = -0.05;
-    static int counter = 0;
+    static counter = 0;
     
     char batteryStatusText[30];
     char heightStatusText[30];
@@ -124,15 +94,6 @@ void kpShowStatus() {
     kdPrintText(x, y-=0.15, 0, 1, 1, 1, 1, psiStatusText);
 }
 
-void reshape (int w, int h) {
-    glViewport (-100, 100, 500, 500);
-    glMatrixMode (GL_PROJECTION);
-    glLoadIdentity ();
-    gluPerspective (60, (GLfloat)w / (GLfloat)h, 1.0, 100.0);
-    glScalef(1, -1, 1);
-    glMatrixMode (GL_MODELVIEW);
-}
-
 
 void kpInitHUD(int * window) {
     *window = glutCreateWindow("AR.Drone 2.0 | Status");
@@ -144,68 +105,9 @@ void kpInitHUD(int * window) {
     kpInitPilot(pargc, pargv);
 }
 
-void kpInitVIDEO(int * window) {
-    *window = glutCreateWindow("AR.Drone 2.0 | Status");
-    glutInitDisplayMode (GLUT_RGB | GLUT_DOUBLE);
-    glutInitWindowSize (500, 500);
-    glutInitWindowPosition (100, 100);
-    glutDisplayFunc (kpRenderHUD);
-    glutReshapeFunc (reshape);
-    //glTranslatef(-1, 1, 0);
-
-}
-
-
-
-int loadTexture_Ipl(IplImage *image, GLuint *text) {
-    
-    if (image==NULL) return -1;
-    
-    glGenTextures(1, text);
-    
-	glBindTexture( GL_TEXTURE_2D, *text ); //bind the texture to it's array
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-    
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image->width, image->height,0, GL_BGR, GL_UNSIGNED_BYTE, image->imageData);
-    return 0;
+void kpRenderVideo() {
     
 }
-
-
-void kpRenderVIDEO(){
-    
-    glClearColor (0.0,0.0,0.0,1.0);
-    glClear (GL_COLOR_BUFFER_BIT);
-    glLoadIdentity();
-    glClearColor (0.0,0.0,0.0,1.0);
-    gluLookAt (0.0, 0.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-    glEnable( GL_TEXTURE_2D ); //enable 2D texturing
-    plane();
-    glutSwapBuffers();
-    
-    angle =angle+0.01;
-    //glutReshapeFunc (reshape);
-	loadTexture_Ipl( img, &texture );
-    
-}
-
-
-void get_screen_dimensions(int *w, int *h)
-{
-    if (screen_width) {
-        *w = screen_width;
-        *h = screen_height;
-    }
-    else {
-        // dummy dimensions
-        *w = 620;
-        *h = 360;
-    }
-}
-
 
 void kpRenderHUD() {
     // clear the GL buffer
@@ -218,8 +120,6 @@ void kpRenderHUD() {
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
     
     kpShowStatus();
-    glutSwapBuffers();
-
 }
 
 /**
@@ -303,7 +203,7 @@ C_RESULT ardrone_tool_init_custom (void) {
     in_picture->height = 360; // Drone 1 only : Must be greater that the drone 1 picture size (240)
 
     out_picture->framerate = 20; // Drone 1 only, must be equal to drone target FPS
-	out_picture->format = PIX_FMT_RGB24;
+	out_picture->format = PIX_FMT_RGB24;    
 	//out_picture->format = PIX_FMT_RGB565; // MANDATORY ! Only RGB24, RGB565 are supported
     out_picture->width = in_picture->width;
     out_picture->height = in_picture->height;
@@ -415,10 +315,8 @@ C_RESULT ardrone_tool_init_custom (void) {
      * Start the video thread (and the video recorder thread for AR.Drone 2)
      */
     START_THREAD(opengl, params);
-    //START_THREAD(opencv, params);
     //START_THREAD(main_application_thread, params);
     START_THREAD(video_stage, params);
-    START_THREAD(main_application_thread, params);
     video_stage_init();
 
     if (2 <= ARDRONE_VERSION ()) {
@@ -427,9 +325,9 @@ C_RESULT ardrone_tool_init_custom (void) {
     }
 
     video_stage_resume_thread ();
+    
 	//START_THREAD(main_application_thread, NULL);
 	//ardrone_tool_input_add( &input_controller );
-    
     return C_OK;
 }
 
@@ -438,8 +336,7 @@ C_RESULT ardrone_tool_shutdown_custom ()
     video_stage_resume_thread(); //Resume thread to kill it !
     JOIN_THREAD(video_stage);
     JOIN_THREAD(kinect);
-    JOIN_THREAD(opengl);
-    glDeleteTextures( 1, &texture );
+
     if (2 <= ARDRONE_VERSION ()) {
         video_recorder_resume_thread ();
         JOIN_THREAD (video_recorder);

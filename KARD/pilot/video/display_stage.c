@@ -18,9 +18,7 @@
 // Self header file
 #include "display_stage.h"
 
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
-#include <opencv2/imgproc/imgproc_c.h>
+
 
 // Funcs pointer definition
 const vp_api_stage_funcs_t display_stage_funcs = {
@@ -112,7 +110,6 @@ IplImage *ipl_image_from_data(uint8_t* data, int reduced_image, int width, int h
 
   currframe->imageData = data;
   cvCvtColor(currframe, dst, CV_BGR2RGB);
-
   cvReleaseImage(&currframe);
 
   return dst;
@@ -123,7 +120,7 @@ C_RESULT display_stage_transform (display_stage_cfg_t *cfg, vp_api_io_data_t *in
     uint32_t width = 0, height = 0;
     getPicSizeFromBufferSize (in->size, &width, &height);
 
-    IplImage *img = ipl_image_from_data((uint8_t*)in->buffers[0], 1, cfg->decoder_info->width, cfg->decoder_info->height);
+    img = ipl_image_from_data((uint8_t*)in->buffers[0], 1, cfg->decoder_info->width, cfg->decoder_info->height);
 	//cvShowImage("Camera",img);
 	//cvReleaseImage(&img);
 	//cvWaitKey(1);

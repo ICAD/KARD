@@ -1,7 +1,7 @@
 prefix=
 exec_prefix=
 libdir=${pcfiledir}
-includedir=/home/icad-mbb/Desktop/KARD/ARDrone/Linux/ARDroneLib/FFMPEG/ffmpeg
+includedir=/Users/ray/Desktop/Project_KARD/ARDrone/Linux/ARDroneLib/FFMPEG/ffmpeg
 
 Name: libavutil
 Description: FFmpeg utility library

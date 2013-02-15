@@ -32,11 +32,11 @@
 #define AT_BUFFER_SIZE      1024
 
 // OPENGL
-#include <GL/glew.h>
-#include <GL/freeglut.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include <GL/gl.h>
-#include <GL/glut.h>
-#include <GL/glext.h>
+//#include <glew.h>
+#include <freeglut.h>
+#include <gl.h>
+#include <glu.h>
+#include <gl.h>
+#include <glut.h>
+#include <glext.h>
 #endif

@@ -32,9 +32,23 @@
 #include "video/pre_stage.h"
 #include "video/display_stage.h"
 
+
+#include <freeglut.h>
+#include <gl.h>
+#include <glu.h>
+#include <gl.h>
+#include <glut.h>
+#include <glext.h>
+
+vp_api_picture_t *in_picture;
+vp_api_picture_t *out_picture;
+
 void controlCHandler (int signal);
 
 void kpInitPilot(int argc, char *argv[]);
+void reshape(int w, int h);
 void kpInitHUD(int * window);
+void kpInitVIDEO(int * window);
+void kpRenderVIDEO();
 void kpRenderHUD();
-void kpRenderVideo();
+

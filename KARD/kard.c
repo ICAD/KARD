@@ -30,46 +30,48 @@ void kRenderWindows() {
     
     if(kARDRONE_STATUS_WINDOW) {
         glutSetWindow(kARDRONE_STATUS_WINDOW);
-        kpRenderHUD();
+        kpRenderVIDEO();
+        //glutReshapeFunc (reshape);
+        
     }
     
-    if(kARDRONE_VIDEO_WINDOW) {
-        glutSetWindow(kARDRONE_VIDEO_WINDOW);
-        kpRenderVideo();
-    }
+    //if(kARDRONE_VIDEO_WINDOW) {
+  //      glutSetWindow(kARDRONE_VIDEO_WINDOW);
+  //      kpRenderVideo();
+  //  }
 }
 
 void kRenderOpenGL() {
     printf("Started OpenGL Thread\n");
     glutIdleFunc(kRenderWindows);
-    glutMainLoop();
+    //glutMainLoop();
 }
 
 int main(int argc, char * argv[]) {
-    XnBool kUSE_ARDRONE = FALSE;
+    XnBool kUSE_ARDRONE = TRUE;
     XnBool kUSE_VISION = FALSE;
 
-	if(argc > 1) {
-		if(strcmp("kinect", argv[1]) == 0) {
-			kUSE_VISION = TRUE;
-		} else if(strcmp("ardrone", argv[1]) == 0) {
-			kUSE_ARDRONE = TRUE;
-		} else if(strcmp("both", argv[1]) == 0) {
-			kUSE_VISION = TRUE;
-			kUSE_ARDRONE = TRUE;
-		} else {
-			printf("Please enter an option to use: kinect, ardrone or both\n");
-			return 0;
-		}
-	}
+	//if(argc > 1) {
+	//	if(strcmp("kinect", argv[1]) == 0) {
+	//		kUSE_VISION = TRUE;
+	//	} else if(strcmp("ardrone", argv[1]) == 0) {
+	//		kUSE_ARDRONE = TRUE;
+	//	} else if(strcmp("both", argv[1]) == 0) {
+	//		kUSE_VISION = TRUE;
+	//		kUSE_ARDRONE = TRUE;
+	//	} else {
+	//		printf("Please enter an option to use: kinect, ardrone or both\n");
+	//		return 0;
+	//	}
+	//}
     // initialize the OpenGL context
     kInitGLUT();
-    
+    //ardrone_tool_main(argc, argv);
     // check what functionality to run as
     if(kUSE_ARDRONE && kUSE_VISION) {
         printf("KARD: Using both vision/pilot\n");
         kvInitTracking(&kKINECT_WINDOW);
-        kpInitHUD(&kARDRONE_STATUS_WINDOW);
+        //kpInitHUD(&kARDRONE_STATUS_WINDOW);
         return C_OK;
     } else if(kUSE_VISION) {
         printf("KARD: Using only vision\n");
@@ -78,7 +80,11 @@ int main(int argc, char * argv[]) {
         return C_OK;
     } else if(kUSE_ARDRONE) {
         printf("KARD: Using only pilot\n");
-        kpInitHUD(&kARDRONE_STATUS_WINDOW);
+        kpInitVIDEO(&kARDRONE_STATUS_WINDOW);
+        ardrone_tool_main(argc, argv);
+        //printf("am i printing this \n");
+        //kRenderOpenGL();
+        
     }
         
 return C_FAIL;
@@ -86,6 +92,7 @@ return C_FAIL;
 
 DEFINE_THREAD_ROUTINE(opengl, data) {
     kRenderOpenGL();
+    printf("I am running this");
     return C_OK;
 }
 

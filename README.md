@@ -22,15 +22,9 @@ OpenCV will be used for video and other image processing work. Although, there a
 	$> brew install opencv
 
 ###Clean and rebuild the libraries
-	$> cd into ARDrone/
-	$> cd Examples/OSX
-	$> make USE_OSX=yes clean
-	$> make USE_OSX=yes
-	$> cd -
-
-###Copy the libraries into _*'Libraries'*_ folder
-	$> find . -name "lib*.a" -exec cp "{}" ../Libraries/ \;
-	$> find . -type f \( -iname "libvlib.a" -or -iname "libpc_ardrone.a" -or -iname "libsdk.a" -or -iname "libpc_ardrone_notool.a" \) -exec cp "{}" ../Libraries/ \;
+This script will clean the build files for ARDrone and copy the static libraries into the _Libraries_ folder.
+	$> cd into Tools/
+	$> sh build_libs.sh
 
 ###Add the Search Paths to your Xcode Build Settings
 Search for "Search Paths" and enter the following in each row

@@ -327,10 +327,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/ARDrone/OSX/ARDroneLib/**",
+					"$(SRCROOT)/ARDrone/ARDroneLib/**",
 					/usr/local/include/ni,
 					/usr/local/include,
-					"$(SRCROOT)/ARDrone/OSX/ARDroneLib/Soft/**",
+					"$(SRCROOT)/ARDrone/ARDroneLib/Soft/**",
 					/opt/X11/include,
 				);
 				LIBRARY_SEARCH_PATHS = (
@@ -368,10 +368,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/ARDrone/OSX/ARDroneLib/**",
+					"$(SRCROOT)/ARDrone/ARDroneLib/**",
 					/usr/local/include/ni,
 					/usr/local/include,
-					"$(SRCROOT)/ARDrone/OSX/ARDroneLib/Soft/**",
+					"$(SRCROOT)/ARDrone/ARDroneLib/Soft/**",
 					/opt/X11/include,
 				);
 				LIBRARY_SEARCH_PATHS = (

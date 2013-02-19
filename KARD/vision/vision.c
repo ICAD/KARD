@@ -78,7 +78,7 @@ enum KARD_WINDOW_ENUM {
 // DEFINES
 //============================================================
 #ifdef __APPLE__
-    #define SAMPLE_XML_PATH "/Users/tyler/Projects/KARD_CLEAN/KARD/data/SamplesConfig.xml"
+    #define SAMPLE_XML_PATH "SamplesConfig.xml"
 #elif __linux
     #define SAMPLE_XML_PATH "data/SamplesConfig.xml"
 #endif

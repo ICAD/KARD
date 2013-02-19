@@ -20,7 +20,7 @@
 		2F22E472165D818300754B30 /* libopencv_imgproc.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F22E471165D818300754B30 /* libopencv_imgproc.dylib */; };
 		2F22E477165D81DE00754B30 /* pilot.c in Sources */ = {isa = PBXBuildFile; fileRef = 2F22E460165D80A200754B30 /* pilot.c */; };
 		2F22E481165FB57700754B30 /* navdata.c in Sources */ = {isa = PBXBuildFile; fileRef = 2F22E47F165FB57700754B30 /* navdata.c */; };
-		2F22E483165FC1AB00754B30 /* SamplesConfig.xml in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2F22E482165FB5C100754B30 /* SamplesConfig.xml */; };
+		2F27654E16D3DA72006EF5A6 /* SamplesConfig.xml in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2F22E482165FB5C100754B30 /* SamplesConfig.xml */; };
 		2F3E31101624B0350040B19B /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F3E310F1624B0350040B19B /* libavutil.a */; };
 		2F3E31121624B05A0040B19B /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F3E31111624B05A0040B19B /* libavcodec.a */; };
 		2F3E31141624B0A50040B19B /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F3E31131624B0A50040B19B /* libswscale.a */; };
@@ -30,15 +30,15 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		2F1E8BBA162480B800BA29D3 /* CopyFiles */ = {
+		2F27654C16D3D913006EF5A6 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = usr/share/man/man1;
-			dstSubfolderSpec = 0;
+			dstPath = "";
+			dstSubfolderSpec = 7;
 			files = (
-				2F22E483165FC1AB00754B30 /* SamplesConfig.xml in CopyFiles */,
+				2F27654E16D3DA72006EF5A6 /* SamplesConfig.xml in CopyFiles */,
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
@@ -245,7 +245,7 @@
 			buildPhases = (
 				2F1E8BB8162480B800BA29D3 /* Sources */,
 				2F1E8BB9162480B800BA29D3 /* Frameworks */,
-				2F1E8BBA162480B800BA29D3 /* CopyFiles */,
+				2F27654C16D3D913006EF5A6 /* CopyFiles */,
 			);
 			buildRules = (
 			);

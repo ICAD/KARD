@@ -101,6 +101,5 @@ DEFINE_THREAD_ROUTINE(main_application_thread, data) {
     
     //kpInitHUD();
     printf("Starting glutMainLoop()");
-    //glutMainLoop();
     return C_OK;
 }

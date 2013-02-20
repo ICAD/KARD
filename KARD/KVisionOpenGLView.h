@@ -8,11 +8,6 @@
 
 #include "KARD-Prefix.pch"
 
-#include <stdio.h>
-#include <math.h>
-#include <ardrone_tool/UI/ardrone_input.h>
-#include <ardrone_tool/Control/ardrone_control.h>
-
 @interface KVisionOpenGLView : NSOpenGLView
 //------------------------------------------------------------
 // KARD VISION INITIALIZER

@@ -170,7 +170,6 @@
 		2F27658E16D40181006EF5A6 = {
 			isa = PBXGroup;
 			children = (
-				2F27663416D4248A006EF5A6 /* GLUT.framework */,
 				2F2765A316D40181006EF5A6 /* KARD */,
 				2F2765C316D40182006EF5A6 /* KARDTests */,
 				2F27660516D40529006EF5A6 /* Libraries */,
@@ -191,6 +190,7 @@
 		2F27659C16D40181006EF5A6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2F27663416D4248A006EF5A6 /* GLUT.framework */,
 				2F2765EF16D40439006EF5A6 /* OpenGL.framework */,
 				2F2765E216D402DB006EF5A6 /* WiiRemoteFramework.xcodeproj */,
 				2F27659D16D40181006EF5A6 /* Cocoa.framework */,

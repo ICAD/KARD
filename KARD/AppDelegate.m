@@ -7,51 +7,19 @@
 //
 
 #import "AppDelegate.h"
+#import "KPilot.h"
 
 @implementation AppDelegate
 
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
 @synthesize managedObjectModel = _managedObjectModel;
 @synthesize managedObjectContext = _managedObjectContext;
-
-
-// OpenGL Windows
-int kKINECT_WINDOW = 0;
-int kARDRONE_STATUS_WINDOW = 0;
-int kARDRONE_VIDEO_WINDOW = 0;
-
-XnBool kUSE_ARDRONE = TRUE;
-XnBool kUSE_VISION = FALSE;
-
-void kInitGLUT() {
-    int pargc = 1;
-    char *pargv[] = { "KARD Project", NULL };
-    glutInit(&pargc, pargv);
-    glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
-}
-
-void kRenderWindows() {
-    if(kARDRONE_STATUS_WINDOW) {
-        //printf("Rendering AR.Drone Status Window\n");
-        glutSetWindow(kARDRONE_STATUS_WINDOW);
-        KPilot * pilot = [KPilot new];
-        [pilot kpRenderHUD];
-    }
-}
-
-void kRenderOpenGL() {
-    printf("Started OpenGL Thread\n");
-    glutIdleFunc(kRenderWindows);
-    glutMainLoop();
-}
-
+@synthesize pilot;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-    int pargc = 1;
-    char *pargv[] = { "KARD Project", NULL };
-    //glutInit(&pargc, pargv);
-    //ardrone_tool_main(pargc, pargv);
+    pilot = [KPilot new];
+    [pilot initPilot];
 }
 
 // Returns the directory the application uses to store the Core Data store file. This code uses a directory named "ICAD.KARD" in the user's Application Support directory.
@@ -213,44 +181,6 @@ void kRenderOpenGL() {
     }
 
     return NSTerminateNow;
-}
-
-DEFINE_THREAD_ROUTINE(opengl, data) {
-    
-     // initialize the OpenGL context
-    kInitGLUT();
-    
-     // check what functionality to run as
-     if(kUSE_ARDRONE && kUSE_VISION) {
-         printf("KARD: Using both vision/pilot\n");
-         //kvInitTracking(&kKINECT_WINDOW);
-         //kpInitHUD(&kARDRONE_STATUS_WINDOW);
-         KPilot * pilot = [KPilot new];
-         [pilot kpInitHUD:&kARDRONE_STATUS_WINDOW];
-     } else if(kUSE_VISION) {
-        printf("KARD: Using only vision\n");
-         //kvInitTracking(&kKINECT_WINDOW);
-     } else if(kUSE_ARDRONE) {
-         printf("KARD: Using only pilot\n");
-         KPilot * pilot = [KPilot new];
-         [pilot kpInitHUD:&kARDRONE_STATUS_WINDOW];
-     }
-
-     kRenderOpenGL();
-    
-     return C_OK;
-}
-
-DEFINE_THREAD_ROUTINE(main_application_thread, data) {
-    //int pargc = 1;
-    //char *pargv[] = { "KARD Visions", NULL };
-    //glutInit(&pargc, pargv);
-    
-    //glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
-    
-    //kpInitHUD();
-    printf("Starting glutMainLoop()");
-    return C_OK;
 }
 
 @end

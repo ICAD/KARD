@@ -12,7 +12,7 @@
 //------------------------------------------------------------
 // KARD VISION INITIALIZER
 //------------------------------------------------------------
-// function: kvInitVision()
+// function: initTracking
 // description: initializes the OpenNI contexts
 - (BOOL) initTracking;
 

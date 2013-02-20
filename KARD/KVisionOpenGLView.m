@@ -7,6 +7,7 @@
 //
 
 #import "KVisionOpenGLView.h"
+#include "AppDelegate.h"
 #include <stdio.h>
 #include <math.h>
 #include <ardrone_tool/UI/ardrone_input.h>
@@ -37,7 +38,7 @@
 //============================================================
 // NI Contexts/Production Nodes
 //------------------------------------------------------------
-XnContext *         kvCONTEXT_PTR;
+XnContext       *   kvCONTEXT_PTR;
 XnNodeHandle        kvUSER_NODE_HANDLE;
 XnNodeHandle        kvDEPTH_NODE_HANDLE;
 XnDepthMetaData *   kvDEPTH_MD_PTR;
@@ -100,16 +101,13 @@ enum KARD_WINDOW_ENUM {
 //============================================================
 // DEFINES
 //============================================================
-#ifdef __APPLE__
 #define SAMPLE_XML_PATH "SamplesConfig.xml"
-#elif __linux
-#define SAMPLE_XML_PATH "data/SamplesConfig.xml"
-#endif
 
 #define CHECK_RC(rc, what)	\
 if (rc != XN_STATUS_OK) { \
-printf("%s failed: %s\n", what, xnGetStatusString(rc));	\
-return rc;	}
+    printf("%s failed: %s\n", what, xnGetStatusString(rc));	\
+    return rc; \
+}
 
 //------------------------------------------------------------
 // KEYPRESS SIMULATIONS
@@ -290,7 +288,7 @@ void kvKeyRelease(int key, int x, int y) {
     
     xnStartGeneratingAll(kvCONTEXT_PTR);
 
-    return nRetVal;
+    return (BOOL)nRetVal;
 }
 
 //------------------------------------------------------------
@@ -783,6 +781,7 @@ void XN_CALLBACK_TYPE kvPoseDetected(XnNodeHandle hUserNode, const XnChar* pose,
         }
     } else {
         if( leftHandPoint.Y > headPoint.Y && rightHandPoint.Y > headPoint.Y) {
+            AppDelegate *appDelegate = (AppDelegate *)[NSApp delegate];
             
             printf("FLY\n");
             kvIS_FLYING = TRUE;

@@ -9,7 +9,44 @@
 #import "KPilot.h"
 
 
+#include <ardrone_api.h>
+#include <signal.h>
+//#include "../vision/vision.h"
+#include "navdata.h"
+
+// ARDrone Tool includes
+#include <ardrone_tool/ardrone_tool.h>
+#include <ardrone_tool/ardrone_tool_configuration.h>
+#include <ardrone_tool/ardrone_version.h>
+#include <ardrone_tool/Video/video_stage_decoder.h>
+#include <ardrone_tool/Video/video_stage.h>
+#include <ardrone_tool/Video/video_recorder_pipeline.h>
+#include <ardrone_tool/Navdata/ardrone_navdata_client.h>
+#include <ardrone_tool/Control/ardrone_control.h>
+#include <ardrone_tool/UI/ardrone_input.h>
+#include <ardrone_tool/Control/ardrone_control.h>
+#include <VP_Os/vp_os_types.h>
+// System Libraries
+#include <errno.h>
+#include <fcntl.h>
+#include <string.h>
+#include <stddef.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#ifdef __linux
+#include <linux/input.h>
+#endif
+#include <sys/ioctl.h>
+// Video Stages
+#include "c/pilot/video/pre_stage.h"
+#include "c/pilot/video/display_stage.h"
+
 @implementation KPilot
+
+
+XnBool kUSE_ARDRONE = TRUE;
+XnBool kUSE_VISION = FALSE;
 
 pre_stage_cfg_t precfg;
 display_stage_cfg_t dispCfg;
@@ -20,6 +57,22 @@ ZAP_VIDEO_CHANNEL videoChannel = ZAP_CHANNEL_HORI;
 
 #define FILENAMESIZE (256)
 char encodedFileName[FILENAMESIZE] = {0};
+
+PROTO_THREAD_ROUTINE(opengl, data);
+
+/**
+ * Declare Threads / Navdata tables
+ */
+BEGIN_THREAD_TABLE
+    THREAD_TABLE_ENTRY( ardrone_control, 20 )
+    THREAD_TABLE_ENTRY( navdata_update, 20 )
+    THREAD_TABLE_ENTRY( video_stage, 20 )
+    THREAD_TABLE_ENTRY( video_recorder, 20)
+END_THREAD_TABLE
+
+BEGIN_NAVDATA_HANDLER_TABLE
+    NAVDATA_HANDLER_TABLE_ENTRY(navdata_client_init, navdata_client_process, navdata_client_release, NULL)
+END_NAVDATA_HANDLER_TABLE
 
 int32_t exit_ihm_program = 1;
 
@@ -74,19 +127,23 @@ void kpShowStatus() {
 }
 
 
-- (void) kpInitPilot {
-    
+- (void) initPilot {
+    NSThread * thread = [[NSThread alloc] initWithTarget:self selector:@selector(runArdroneToolMain) object:nil];
+    [thread start];
 }
 
-- (void) kpInitHUD:(int *)window {
-    *window = glutCreateWindow("AR.Drone 2.0 | Status");
-    //glutDisplayFunc(kpRenderHUD());
-    glTranslatef(-1, 1, 0);
+- (void) runArdroneToolMain {
+    int pargc = 1;
+    char *pargv[] = { "KARD Project", NULL };
     
-    [self kpInitPilot];
+    ardrone_tool_main(pargc, pargv);
 }
 
-- (void) kpRenderHUD {
+- (void) initHUD {
+    [self initPilot];
+}
+
+- (void) renderHUD {
     // clear the GL buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
@@ -217,11 +274,6 @@ C_RESULT ardrone_tool_init_custom (void) {
     vp_os_memset (&precfg, 0, sizeof (pre_stage_cfg_t));
     strncpy (precfg.outputName, encodedFileName, 255);
     
-#ifdef __linux
-    example_pre_stages->stages_list[stages_index].name = "Encoded Dumper"; // Debug info
-    example_post_stages->stages_list[stages_index].name = "Decoded display"; // Debug info
-#endif
-    
     example_pre_stages->stages_list[stages_index].type = VP_API_FILTER_DECODER; // Debug info
     example_pre_stages->stages_list[stages_index].cfg  = &precfg;
     example_pre_stages->stages_list[stages_index++].funcs  = pre_stage_funcs;
@@ -264,8 +316,6 @@ C_RESULT ardrone_tool_init_custom (void) {
     /**
      * Start the video thread (and the video recorder thread for AR.Drone 2)
      */
-    START_THREAD(opengl, params);
-    //START_THREAD(main_application_thread, params);
     START_THREAD(video_stage, params);
     video_stage_init();
     
@@ -285,7 +335,6 @@ C_RESULT ardrone_tool_shutdown_custom ()
 {
     video_stage_resume_thread(); //Resume thread to kill it !
     JOIN_THREAD(video_stage);
-    JOIN_THREAD(kinect);
     
     if (2 <= ARDRONE_VERSION ()) {
         video_recorder_resume_thread ();
@@ -299,6 +348,18 @@ C_RESULT ardrone_tool_shutdown_custom ()
 
 bool_t ardrone_tool_exit () {
     return exit_ihm_program == 0;
+}
+
+DEFINE_THREAD_ROUTINE(main_application_thread, data) {
+    //int pargc = 1;
+    //char *pargv[] = { "KARD Visions", NULL };
+    //glutInit(&pargc, pargv);
+    
+    //glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
+    
+    //kpInitHUD();
+    printf("Starting glutMainLoop()");
+    return C_OK;
 }
 
 @end

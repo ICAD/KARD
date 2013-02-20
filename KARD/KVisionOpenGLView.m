@@ -1,13 +1,32 @@
 //
-//  vision.c
-//============================================================
-// INCLUDES
-//============================================================
-#include "vision.h"
-#include <stdio.h>
-#include <math.h>
+//  KVisionView.m
+//  KARD
+//
+//  Created by Tyler on 2013-02-19.
+//  Copyright (c) 2013 ICAD. All rights reserved.
+//
+
+#import "KVisionOpenGLView.h"
 #include <ardrone_tool/UI/ardrone_input.h>
 #include <ardrone_tool/Control/ardrone_control.h>
+
+@implementation KVisionOpenGLView
+
+- (id)initWithFrame:(NSRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        // Initialization code here.
+    }
+    
+    return self;
+}
+
+- (void)awakeFromNib {
+    [[self window] setAcceptsMouseMovedEvents:YES];
+    int window;
+    kvInitTracking(&window);
+}
 
 //============================================================
 // GLOBALS
@@ -78,15 +97,15 @@ enum KARD_WINDOW_ENUM {
 // DEFINES
 //============================================================
 #ifdef __APPLE__
-    #define SAMPLE_XML_PATH "SamplesConfig.xml"
+#define SAMPLE_XML_PATH "SamplesConfig.xml"
 #elif __linux
-    #define SAMPLE_XML_PATH "data/SamplesConfig.xml"
+#define SAMPLE_XML_PATH "data/SamplesConfig.xml"
 #endif
 
 #define CHECK_RC(rc, what)	\
-    if (rc != XN_STATUS_OK) { \
-    printf("%s failed: %s\n", what, xnGetStatusString(rc));	\
-    return rc;	}
+if (rc != XN_STATUS_OK) { \
+printf("%s failed: %s\n", what, xnGetStatusString(rc));	\
+return rc;	}
 
 //------------------------------------------------------------
 // KEYPRESS SIMULATIONS
@@ -151,9 +170,9 @@ void kvKeyRelease(int key, int x, int y) {
 void kvInitScene(int * window) {
     printf("Initializing Kinect OpenGL Scene\n");
     
-    glutInitWindowSize(KARD_WINDOW_WIDTH, KARD_WINDOW_HEIGHT);
-    glutInitWindowPosition(KARD_WINDOW_X, KARD_WINDOW_Y);
-    *window = glutCreateWindow("Kinect Tracking");
+    //glutInitWindowSize(KARD_WINDOW_WIDTH, KARD_WINDOW_HEIGHT);
+    //glutInitWindowPosition(KARD_WINDOW_X, KARD_WINDOW_Y);
+    //*window = glutCreateWindow("Kinect Tracking");
     
     glClearColor(0.0f, 0.0f, 0.0f, 0.5f);
     glClearDepth(1.0f);
@@ -201,13 +220,13 @@ void kvRenderTrackingScene() {
         
         // HORIZONTAL CROSSHAIR
         glBegin(GL_LINES);
-            glVertex3f(-10.0f, kvLIMIT_CENTER_Y, -1.0f);
-            glVertex3f( 10.0f, kvLIMIT_CENTER_Y, -1.0f);
+        glVertex3f(-10.0f, kvLIMIT_CENTER_Y, -1.0f);
+        glVertex3f( 10.0f, kvLIMIT_CENTER_Y, -1.0f);
         glEnd();
         // VERTICAL CROSSHAIR
         glBegin(GL_LINES);
-            glVertex3f( kvLIMIT_CENTER_X, -10.0f, -1.0f);
-            glVertex3f( kvLIMIT_CENTER_X, 10.0f, -1.0f);
+        glVertex3f( kvLIMIT_CENTER_X, -10.0f, -1.0f);
+        glVertex3f( kvLIMIT_CENTER_X, 10.0f, -1.0f);
         glEnd();
     }
     
@@ -238,6 +257,8 @@ void kvOrientMe(float theta) {
 // function: kvInitTracking()
 // description: initializes the complete skeleon tracking part of KARD
 XnStatus kvInitTracking(int * window) {
+    
+    NSLog(@"Created Depth Meta Data\n");
     XnStatus nRetVal = XN_STATUS_OK;
     XnNodeHandle hScriptNode;
     XnEnumerationErrors * pErrors = NULL;
@@ -256,7 +277,6 @@ XnStatus kvInitTracking(int * window) {
     CHECK_RC(nRetVal, "Find depth generator");
     
     kvDEPTH_MD_PTR = xnAllocateDepthMetaData();
-    
     // try to get a user
     nRetVal = xnFindExistingRefNodeByType(kvCONTEXT_PTR, XN_NODE_TYPE_USER, &kvUSER_NODE_HANDLE);
     CHECK_RC(nRetVal, "Find user generator");
@@ -273,7 +293,7 @@ XnStatus kvInitTracking(int * window) {
     
     xnStartGeneratingAll(kvCONTEXT_PTR);
     
-    kvInitScene(window);
+    //kvInitScene(window);
     return nRetVal;
 }
 
@@ -664,7 +684,7 @@ void kvHandsBodyMovementLogic(XnNodeHandle hDepthNode,
     
     
     if((abs((int)(LeftShoulder.Y - LeftHand.Y)) < kvHOVER_LIMIT) &&
-              abs((int)(RightShoulder.Y - RightHand.Y)) < kvHOVER_LIMIT ) {
+       abs((int)(RightShoulder.Y - RightHand.Y)) < kvHOVER_LIMIT ) {
         printf("HOVER\n");
         
         // send all 0's
@@ -716,13 +736,13 @@ void kvHandsLocationLogic(XnNodeHandle hUserNode, XnNodeHandle hDepthNode, XnUse
     
     //static XnPoint3D refLeftHand, refRightHand;
     static XnPoint3D leftHandPoint,
-                    rightHandPoint,
-                    headPoint,
-                    torsoPoint,
-                    hipPoint,
-                    leftShoulderPoint,
-                    rightShoulderPoint;
-
+    rightHandPoint,
+    headPoint,
+    torsoPoint,
+    hipPoint,
+    leftShoulderPoint,
+    rightShoulderPoint;
+    
     
     kvSetJointPoint(hUserNode, user, XN_SKEL_LEFT_HAND, &leftHandPoint);
     kvSetJointPoint(hUserNode, user, XN_SKEL_RIGHT_HAND, &rightHandPoint);
@@ -758,3 +778,60 @@ void kvHandsLocationLogic(XnNodeHandle hUserNode, XnNodeHandle hDepthNode, XnUse
         }
     }
 }
+
+
+static void drawAnObject ()
+
+{
+    
+    glColor3f(1.0f, 0.85f, 0.35f);
+    
+    glBegin(GL_TRIANGLES);
+    
+    {
+        
+        glVertex3f(  0.0,  0.6, 0.0);
+        
+        glVertex3f( -0.2, -0.3, 0.0);
+        
+        glVertex3f(  0.2, -0.3 ,0.0);
+        
+    }
+    
+    glEnd();
+    
+    
+}
+
+- (void)idle:(NSTimer*)timer
+{
+    [self setNeedsDisplay:YES];
+}
+
+- (void) update
+{
+    kvRenderTrackingScene();
+    NSTimer *updateTimer = [NSTimer timerWithTimeInterval:1.0f/30.0f target:self selector:@selector(idle:) userInfo:nil repeats:YES];
+    [[NSRunLoop currentRunLoop] addTimer:updateTimer forMode:NSDefaultRunLoopMode];
+}
+
+
+- (void)drawRect:(NSRect)dirtyRect
+{
+    glClearColor(0, 0, 0, 0);
+    
+    glClear(GL_COLOR_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+    glTranslatef(-1, 1, 0);
+    
+    glutDisplayFunc(kvRenderTrackingScene);
+    glutSpecialFunc(kvKeyPress);
+    glutSpecialUpFunc(kvKeyRelease);
+    
+    [self update];
+    glFlush();
+}
+
+@end

@@ -1,9 +1,18 @@
-// Generic includes
-#include "api.h"
+//
+//  KPilot.h
+//  KARD
+//
+//  Created by Tyler on 2013-02-19.
+//  Copyright (c) 2013 ICAD. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#include "KARD-Prefix.pch"
+
 #include <ardrone_api.h>
 #include <signal.h>
-#include "../vision/vision.h"
-#include "navdata/navdata.h"
+//#include "../vision/vision.h"
+#include "navdata.h"
 
 // ARDrone Tool includes
 #include <ardrone_tool/ardrone_tool.h>
@@ -30,12 +39,13 @@
 #endif
 #include <sys/ioctl.h>
 // Video Stages
-#include "video/pre_stage.h"
-#include "video/display_stage.h"
+#include "pilot/video/pre_stage.h"
+#include "pilot/video/display_stage.h"
 
-void controlCHandler (int signal);
+@interface KPilot : NSObject
 
-void kpInitPilot(int argc, char *argv[]);
-void kpInitHUD(int * window);
-void kpRenderHUD();
-void kpRenderVideo();
+- (void) kpInitPilot;
+- (void) kpInitHUD:(int *) window;
+- (void) kpRenderHUD;
+- (void) kpRenderVideo;
+@end

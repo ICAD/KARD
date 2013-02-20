@@ -39,8 +39,8 @@
 #endif
 #include <sys/ioctl.h>
 // Video Stages
-#include "pilot/video/pre_stage.h"
-#include "pilot/video/display_stage.h"
+#include "c/pilot/video/pre_stage.h"
+#include "c/pilot/video/display_stage.h"
 
 @interface KPilot : NSObject
 

@@ -24,8 +24,8 @@
 
 - (void)awakeFromNib {
     [[self window] setAcceptsMouseMovedEvents:YES];
-    int window;
-    kvInitTracking(&window);
+    BOOL tracking = [self initTracking];
+    NSLog(@"Tracking: %@\n", (tracking)? @"YES" : @"NO");
 }
 
 //============================================================
@@ -112,6 +112,7 @@ return rc;	}
 //------------------------------------------------------------
 // function: kvKeyPress()
 // description: delegate for GLUT Keydown
+// TODO: Add this functionality to OpenGL instead of GLUT
 void kvKeyPress(int key, int x, int y) {
     switch (key) {
         case GLUT_KEY_LEFT :
@@ -165,37 +166,29 @@ void kvKeyRelease(int key, int x, int y) {
 //------------------------------------------------------------
 // OPENGL
 //------------------------------------------------------------
-// function: kvInitScene()
+// function: initScene()
 // description: initializes the GL Scene
-void kvInitScene(int * window) {
-    printf("Initializing Kinect OpenGL Scene\n");
+- (void) initScene
+{
+    glClearColor(0, 0, 0, 0);
     
-    //glutInitWindowSize(KARD_WINDOW_WIDTH, KARD_WINDOW_HEIGHT);
-    //glutInitWindowPosition(KARD_WINDOW_X, KARD_WINDOW_Y);
-    //*window = glutCreateWindow("Kinect Tracking");
-    
-    glClearColor(0.0f, 0.0f, 0.0f, 0.5f);
-    glClearDepth(1.0f);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
     glTranslatef(-1, 1, 0);
-    
-    glutDisplayFunc(kvRenderTrackingScene);
-    glutSpecialFunc(kvKeyPress);
-    glutSpecialUpFunc(kvKeyRelease);
 }
 
-// function: kvRenderTrackingScene
+// function: renderScene
 // description: renders the GL context
-void kvRenderTrackingScene() {
-    //printf("kvRenderTrackingScene\n");
+- (void) renderScene
+{
     glLoadIdentity();
     static float angle = 0.0f, deltaAngle = 0.0f;
-    float handOffsetY = 0.4f;
+    //float handOffsetY = 0.4f;
     
     angle += deltaAngle;
-    kvOrientMe(angle);
+    
+    [self orientMe:angle];
     
     // clear the GL buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -232,14 +225,15 @@ void kvRenderTrackingScene() {
     
     // UPDATE THE NODES
     xnWaitAndUpdateAll(kvCONTEXT_PTR);
-    kvDrawStickFigure(kvUSER_NODE_HANDLE, kvDEPTH_NODE_HANDLE, kvDEPTH_MD_PTR);
+    [self drawStickFigure:kvUSER_NODE_HANDLE depthNode:kvDEPTH_NODE_HANDLE depthMetaData:kvDEPTH_MD_PTR];
     
     glutSwapBuffers();
 }
 
-// function: kvOrientMe()
+// function: orientMe:float
 // description: corrects orientation of tracked user
-void kvOrientMe(float theta) {
+- (void) orientMe:(float) theta
+{
     static float x = 0.0f, y = 0.0f, z = 0.0f;
     static float lx = 0.0f, ly = 0.0f, lz = -1.0f; lx += sin(theta);
     //lz += -cos(ang);
@@ -254,10 +248,9 @@ void kvOrientMe(float theta) {
 //------------------------------------------------------------
 // KARD KINECT INITIALIZER
 //------------------------------------------------------------
-// function: kvInitTracking()
+// function: initTracking
 // description: initializes the complete skeleon tracking part of KARD
-XnStatus kvInitTracking(int * window) {
-    
+- (BOOL) initTracking {
     NSLog(@"Created Depth Meta Data\n");
     XnStatus nRetVal = XN_STATUS_OK;
     XnNodeHandle hScriptNode;
@@ -292,17 +285,18 @@ XnStatus kvInitTracking(int * window) {
     xnRegisterToPoseCallbacks(kvUSER_NODE_HANDLE, kvPoseDetected, NULL, NULL, &hPose);
     
     xnStartGeneratingAll(kvCONTEXT_PTR);
-    
-    //kvInitScene(window);
+
     return nRetVal;
 }
 
 //------------------------------------------------------------
 // OPENGL DRAWING
 //------------------------------------------------------------
-// function: kvDrawStickPoint()
+// function: drawStickPoint()
 // description: draws a stick 3D point given an XnPoint3D
-void kvDrawStickPoint(XnNodeHandle hDepthNode, XnPoint3D point) {
+- (void) drawStickPoint: (XnNodeHandle) hDepthNode
+                  point: (XnPoint3D) point
+{
     xnConvertRealWorldToProjective(hDepthNode, 1, &point, &point);
     
     float fX = ((point.X-320)/ 320);
@@ -315,7 +309,11 @@ void kvDrawStickPoint(XnNodeHandle hDepthNode, XnPoint3D point) {
 
 // function: kvDrawJoint
 // description: draws the skeleton joint
-void kvDrawJoint(XnNodeHandle hUserNode, XnNodeHandle hDepthNode, XnUserID user, XnSkeletonJoint joint) {
+- (void) drawJoint: (XnSkeletonJoint) joint
+          userNode: (XnNodeHandle) hUserNode
+         depthNode: (XnNodeHandle) hDepthNode
+            userID: (XnUserID) user
+{
     static int i = 0;
     
     XnSkeletonJointPosition p;
@@ -351,25 +349,33 @@ void kvDrawJoint(XnNodeHandle hUserNode, XnNodeHandle hDepthNode, XnUserID user,
     i++;
 }
 
-// function: kvDrawSingleUser
+// function: drawSingleUser
 // description: draws a user on the GL context
-void kvDrawSingleUser(XnNodeHandle hUserNode, XnNodeHandle hDepthNode, XnUserID user) {
+- (void) drawSingleUser: (XnNodeHandle) hUserNode
+              depthNode: (XnNodeHandle) hDepthNode
+                 userID: (XnUserID) user
+{
     int count=0;
     XnSkeletonJoint joint;
     
     for (count = 1; count < 25; count++) {
         
         glColor3f( (count / 24.0f), (count / 48.0f), 1.0f);
-        joint = kvGetJoint(count);
+        joint = [self getJoint: count];
         
         if(!xnIsJointAvailable(hUserNode, joint)) continue;
-        kvDrawJoint(hUserNode, hDepthNode, user, joint);
+        [self drawJoint:joint userNode:hUserNode depthNode:hDepthNode userID:user];
     }
 }
 
-// function: kvDrawStickLine
+// function: drawStickLine
 // description: draws a stick line on the GL context between 2 joints
-void kvDrawStickLine(XnNodeHandle hUserNode, XnNodeHandle hDepthNode, XnUserID user, XnSkeletonJoint joint1, XnSkeletonJoint joint2) {
+- (void) drawStickLine: (XnNodeHandle) hUserNode
+             depthNode: (XnNodeHandle) hDepthNode
+                userID: (XnUserID) user
+            firstJoint: (XnSkeletonJoint) joint1
+             lastJoint: (XnSkeletonJoint) joint2
+{
     XnSkeletonJointPosition pos1, pos2;
     xnGetSkeletonJointPosition(hUserNode, user, joint1, &pos1);
     xnGetSkeletonJointPosition(hUserNode, user, joint2, &pos2);
@@ -384,14 +390,17 @@ void kvDrawStickLine(XnNodeHandle hUserNode, XnNodeHandle hDepthNode, XnUserID u
             return;
         }
     }
-    
-    kvDrawStickPoint(hDepthNode, pos1.position);
-    kvDrawStickPoint(hDepthNode, pos2.position);
+
+    [self drawStickPoint:hDepthNode point:pos1.position];
+    [self drawStickPoint:hDepthNode point:pos2.position];
 }
 
-// function: kvDrawBones
+// function: drawBones
 // description: draws the skeleton of a user
-void kvDrawBones(XnNodeHandle hUserNode, XnNodeHandle hDepthNode, XnUserID user) {
+- (void) drawBones: (XnNodeHandle) hUserNode
+         depthNode: (XnNodeHandle) hDepthNode
+            userID: (XnUserID) user
+{
     // load the matrix onto the stack
     glPushMatrix();
     // set the thickness of each line
@@ -405,23 +414,25 @@ void kvDrawBones(XnNodeHandle hUserNode, XnNodeHandle hDepthNode, XnUserID user)
     // The XN_SKEL_LEFT_ELBOW is connected to the ... XN_SKEL_LEFT_SHOULDER...
     
     // draw everything above the hip
-    kvDrawStickLine(hUserNode, hDepthNode, user, XN_SKEL_LEFT_HAND, XN_SKEL_LEFT_ELBOW );
-    kvDrawStickLine(hUserNode, hDepthNode, user, XN_SKEL_LEFT_ELBOW, XN_SKEL_LEFT_SHOULDER);
-    kvDrawStickLine(hUserNode, hDepthNode, user, XN_SKEL_LEFT_SHOULDER, XN_SKEL_TORSO);
-    kvDrawStickLine(hUserNode, hDepthNode, user, XN_SKEL_LEFT_SHOULDER, XN_SKEL_RIGHT_SHOULDER);
-    kvDrawStickLine(hUserNode, hDepthNode, user, XN_SKEL_TORSO, XN_SKEL_RIGHT_SHOULDER);
-    kvDrawStickLine(hUserNode, hDepthNode, user, XN_SKEL_RIGHT_SHOULDER, XN_SKEL_RIGHT_ELBOW);
-    kvDrawStickLine(hUserNode, hDepthNode, user, XN_SKEL_RIGHT_ELBOW, XN_SKEL_RIGHT_HAND);
-    kvDrawStickLine(hUserNode, hDepthNode, user, XN_SKEL_NECK, XN_SKEL_HEAD);
+    [self drawStickLine:hUserNode depthNode:hDepthNode userID:user firstJoint:XN_SKEL_LEFT_HAND lastJoint:XN_SKEL_LEFT_ELBOW];
+    [self drawStickLine:hUserNode depthNode:hDepthNode userID:user firstJoint:XN_SKEL_LEFT_ELBOW lastJoint:XN_SKEL_LEFT_SHOULDER];
+    [self drawStickLine:hUserNode depthNode:hDepthNode userID:user firstJoint:XN_SKEL_LEFT_SHOULDER lastJoint:XN_SKEL_TORSO];
+    [self drawStickLine:hUserNode depthNode:hDepthNode userID:user firstJoint:XN_SKEL_LEFT_SHOULDER lastJoint:XN_SKEL_RIGHT_SHOULDER];
+    [self drawStickLine:hUserNode depthNode:hDepthNode userID:user firstJoint:XN_SKEL_TORSO lastJoint:XN_SKEL_RIGHT_SHOULDER];
+    [self drawStickLine:hUserNode depthNode:hDepthNode userID:user firstJoint:XN_SKEL_RIGHT_SHOULDER lastJoint:XN_SKEL_RIGHT_ELBOW];
+    [self drawStickLine:hUserNode depthNode:hDepthNode userID:user firstJoint:XN_SKEL_RIGHT_ELBOW lastJoint:XN_SKEL_RIGHT_HAND];
+    [self drawStickLine:hUserNode depthNode:hDepthNode userID:user firstJoint:XN_SKEL_NECK lastJoint:XN_SKEL_HEAD];
+    
     // draw the hip and torso
-    kvDrawStickLine(hUserNode, hDepthNode, user, XN_SKEL_TORSO, XN_SKEL_LEFT_HIP);
-    kvDrawStickLine(hUserNode, hDepthNode, user, XN_SKEL_TORSO, XN_SKEL_RIGHT_HIP);
-    kvDrawStickLine(hUserNode, hDepthNode, user, XN_SKEL_LEFT_HIP, XN_SKEL_RIGHT_HIP);
+    [self drawStickLine:hUserNode depthNode:hDepthNode userID:user firstJoint:XN_SKEL_TORSO lastJoint:XN_SKEL_LEFT_HIP];
+    [self drawStickLine:hUserNode depthNode:hDepthNode userID:user firstJoint:XN_SKEL_TORSO lastJoint:XN_SKEL_RIGHT_HIP];
+    [self drawStickLine:hUserNode depthNode:hDepthNode userID:user firstJoint:XN_SKEL_LEFT_HIP lastJoint:XN_SKEL_RIGHT_HIP];
+    
     // draw the legs
-    kvDrawStickLine(hUserNode, hDepthNode, user, XN_SKEL_LEFT_HIP, XN_SKEL_LEFT_KNEE);
-    kvDrawStickLine(hUserNode, hDepthNode, user, XN_SKEL_LEFT_KNEE, XN_SKEL_LEFT_FOOT);
-    kvDrawStickLine(hUserNode, hDepthNode, user, XN_SKEL_RIGHT_HIP, XN_SKEL_RIGHT_KNEE);
-    kvDrawStickLine(hUserNode, hDepthNode, user, XN_SKEL_RIGHT_KNEE, XN_SKEL_RIGHT_FOOT);
+    [self drawStickLine:hUserNode depthNode:hDepthNode userID:user firstJoint:XN_SKEL_LEFT_HIP lastJoint:XN_SKEL_LEFT_KNEE];
+    [self drawStickLine:hUserNode depthNode:hDepthNode userID:user firstJoint:XN_SKEL_LEFT_KNEE lastJoint:XN_SKEL_LEFT_FOOT];
+    [self drawStickLine:hUserNode depthNode:hDepthNode userID:user firstJoint:XN_SKEL_RIGHT_HIP lastJoint:XN_SKEL_RIGHT_KNEE];
+    [self drawStickLine:hUserNode depthNode:hDepthNode userID:user firstJoint:XN_SKEL_RIGHT_KNEE lastJoint:XN_SKEL_RIGHT_FOOT];
     
     // end the drawing process
     glEnd();
@@ -430,9 +441,12 @@ void kvDrawBones(XnNodeHandle hUserNode, XnNodeHandle hDepthNode, XnUserID user)
     glPopMatrix();
 }
 
-// function: kvDrawStickFigure
+// function: drawStickFigure
 // description: draws the stick figure of a user
-void kvDrawStickFigure(XnNodeHandle hUserNode, XnNodeHandle hDepthNode, XnDepthMetaData * pDepthMD) {
+- (void) drawStickFigure: (XnNodeHandle) hUserNode
+               depthNode: (XnNodeHandle) hDepthNode
+           depthMetaData: (XnDepthMetaData *) pDepthMD
+{
     // store the depthMap
     xnGetDepthMetaData(hDepthNode, pDepthMD);
     //XnPoint3D corner = xnCreatePoint3D( dm.XRes(), dm.YRes(), dm.ZRes());
@@ -454,10 +468,11 @@ void kvDrawStickFigure(XnNodeHandle hUserNode, XnNodeHandle hDepthNode, XnDepthM
     int i;
     for (i = 0; i < nUsers; ++i) {
         if (xnIsSkeletonTracking(hUserNode, users[i])) {
-            kvDrawSingleUser(hUserNode, hDepthNode, users[i]);
+            [self drawSingleUser:hUserNode depthNode:hDepthNode userID:users[i]];
+            [self drawSingleUser:hUserNode depthNode:hDepthNode userID:users[i]];
             
-            if(kvDRAW_BONES) kvDrawBones(hUserNode, hDepthNode, users[i]);
-            kvHandsLocationLogic(hUserNode, hDepthNode, users[i]);
+            if(kvDRAW_BONES) [self drawBones:hUserNode depthNode:hDepthNode userID:users[i]];
+            [self handsLocationLogic:hUserNode depthNode:hDepthNode userID:users[i]];
         }
     }
     
@@ -466,7 +481,12 @@ void kvDrawStickFigure(XnNodeHandle hUserNode, XnNodeHandle hDepthNode, XnDepthM
 
 // function: kvDrawBoundaries
 // description: draws the boundaries around the skeleton when a pose is detected
-void kvDrawBoundaries (XnNodeHandle hDepthNode, XnPoint3D refL, XnPoint3D refR, XnPoint3D Left, XnPoint3D Right) {
+- (void) drawBoundaries: (XnNodeHandle) hDepthNode
+                   refL: (XnPoint3D) refL
+                   refR: (XnPoint3D) refR
+                   left: (XnPoint3D) Left
+                  right: (XnPoint3D) Right
+{
     // draw boundary box
     float zLDiff, zRDiff;
     
@@ -546,10 +566,10 @@ void kvDrawBoundaries (XnNodeHandle hDepthNode, XnPoint3D refL, XnPoint3D refR, 
 //------------------------------------------------------------
 // LOOKUPS
 //------------------------------------------------------------
-// function: kvGetJoint
+// function: getJoint
 // description: looks up an XnSkeleton joint given an integer
-XnSkeletonJoint kvGetJoint(int a) {
-    switch (a){
+- (XnSkeletonJoint) getJoint: (int) joint {
+    switch (joint){
         case 1 : return XN_SKEL_HEAD;
         case 2 : return XN_SKEL_NECK;
         case 3 : return XN_SKEL_TORSO;
@@ -579,7 +599,7 @@ XnSkeletonJoint kvGetJoint(int a) {
 }
 
 //------------------------------------------------------------
-// DELEGATES/CALLBACKS
+// OpenNI DELEGATES/CALLBACKS
 //------------------------------------------------------------
 // function: kvNewUser
 // description: delegate for handling when a NewUser is detected and begins pose detection
@@ -609,22 +629,6 @@ void XN_CALLBACK_TYPE kvCalibrationEnd(XnNodeHandle hUserNode, XnUserID user, Xn
     if (bSuccess) {
         // set the points
         xnStartSkeletonTracking(hUserNode, user);
-        
-        // set our origin here
-        XnPoint3D torso, leftHand, rightHand;
-        
-        kvSetJointPoint(hUserNode, user, XN_SKEL_TORSO, &torso);
-        kvSetJointPoint(hUserNode, user, XN_SKEL_LEFT_HAND, &leftHand);
-        kvSetJointPoint(hUserNode, user, XN_SKEL_RIGHT_HAND, &rightHand);
-        
-        printf("TORSO: %f - %f - %f\n", torso.X, torso.Y, torso.Z);
-        //kvORIGIN.X = torso.X;
-        //kvORIGIN.Y = torso.Y;
-        //kvORIGIN.Z = torso.Z;
-        
-        //kvLHAND_ORIGIN.Z = leftHand.Z;
-        //kvRHAND_ORIGIN.Z = rightHand.Z;
-        
     } else {
         xnStartPoseDetection(hUserNode, "Psi", user);
     }
@@ -641,15 +645,16 @@ void XN_CALLBACK_TYPE kvPoseDetected(XnNodeHandle hUserNode, const XnChar* pose,
 //------------------------------------------------------------
 // RUNNING EVENTS
 //------------------------------------------------------------
-// function: kvHandsBodyMovementLogic
+// function: handsBodyMovementLogic
 // description: handles the piloting logic
-void kvHandsBodyMovementLogic(XnNodeHandle hDepthNode,
-                              XnPoint3D LeftHand,
-                              XnPoint3D RightHand,
-                              XnPoint3D Head,
-                              XnPoint3D Torso,
-                              XnPoint3D LeftShoulder,
-                              XnPoint3D RightShoulder) {
+- (void) handsBodyMovementLogic: (XnNodeHandle) hDepthNode
+                       leftHand: (XnPoint3D) LeftHand
+                      rightHand: (XnPoint3D) RightHand
+                           head: (XnPoint3D) Head
+                          torso: (XnPoint3D) Torso
+                   leftShoulder: (XnPoint3D) LeftShoulder
+                  rightShoulder: (XnPoint3D) RightShoulder
+{
     // our commands to be packaged
     int enable = 1;     // 0: hover             | 1: send commands
     float phi = 0;      // 0-1.0: bend forward  | -1.0-0: bend backwards
@@ -717,9 +722,13 @@ void kvHandsBodyMovementLogic(XnNodeHandle hDepthNode,
     ardrone_tool_set_progressive_cmd(enable, phi, theta, gaz, yaw, psi, psi_accuracy);
 }
 
-// function: kvSetJointPoint
+// function: setJointPoint
 // description: sets XnPoint3D given the XnSkeletonJoint
-void kvSetJointPoint(XnNodeHandle hUserNode, XnUserID user, XnSkeletonJoint joint, XnPoint3D * point) {
+- (void) setJointPoint: (XnNodeHandle) hUserNode
+                userID: (XnUserID) user
+                 joint: (XnSkeletonJoint) joint
+                 point: (XnPoint3D *) point
+{
     XnSkeletonJointPosition skeletonPosition;
     xnGetSkeletonJointPosition(hUserNode, user, joint, &skeletonPosition);
     
@@ -727,9 +736,12 @@ void kvSetJointPoint(XnNodeHandle hUserNode, XnUserID user, XnSkeletonJoint join
     *point = skeletonPosition.position;
 }
 
-// function: kvHandsLocationLogic
+// function: handsLocationLogic
 // description: handles the hand motions
-void kvHandsLocationLogic(XnNodeHandle hUserNode, XnNodeHandle hDepthNode, XnUserID user) {
+- (void) handsLocationLogic: (XnNodeHandle) hUserNode
+                  depthNode: (XnNodeHandle) hDepthNode
+                     userID: (XnUserID) user
+{
     //-----!!!!! One thing to think about is that if we move forward or back that we might want to reset the initHands values could change...
     //static int timer=0;
     //static float r = 1.0f, g = 0.0f, b = 0.0f;
@@ -743,14 +755,13 @@ void kvHandsLocationLogic(XnNodeHandle hUserNode, XnNodeHandle hDepthNode, XnUse
     leftShoulderPoint,
     rightShoulderPoint;
     
-    
-    kvSetJointPoint(hUserNode, user, XN_SKEL_LEFT_HAND, &leftHandPoint);
-    kvSetJointPoint(hUserNode, user, XN_SKEL_RIGHT_HAND, &rightHandPoint);
-    kvSetJointPoint(hUserNode, user, XN_SKEL_TORSO, &torsoPoint);
-    kvSetJointPoint(hUserNode, user, XN_SKEL_HEAD, &headPoint);
-    kvSetJointPoint(hUserNode, user, XN_SKEL_LEFT_HIP, &hipPoint);
-    kvSetJointPoint(hUserNode, user, XN_SKEL_LEFT_SHOULDER, &leftShoulderPoint);
-    kvSetJointPoint(hUserNode, user, XN_SKEL_RIGHT_SHOULDER, &rightShoulderPoint);
+    [self setJointPoint:hUserNode userID:user joint:XN_SKEL_LEFT_HAND point:&leftHandPoint];
+    [self setJointPoint:hUserNode userID:user joint:XN_SKEL_RIGHT_HAND point:&rightHandPoint];
+    [self setJointPoint:hUserNode userID:user joint:XN_SKEL_TORSO point:&torsoPoint];
+    [self setJointPoint:hUserNode userID:user joint:XN_SKEL_HEAD point:&headPoint];
+    [self setJointPoint:hUserNode userID:user joint:XN_SKEL_LEFT_HIP point:&hipPoint];
+    [self setJointPoint:hUserNode userID:user joint:XN_SKEL_LEFT_SHOULDER point:&leftShoulderPoint];
+    [self setJointPoint:hUserNode userID:user joint:XN_SKEL_RIGHT_SHOULDER point:&rightShoulderPoint];
     
     // check state and handoff accordingly
     if(kvIS_FLYING) {
@@ -758,7 +769,13 @@ void kvHandsLocationLogic(XnNodeHandle hUserNode, XnNodeHandle hDepthNode, XnUse
             kvIS_FLYING = FALSE;
             ardrone_tool_set_ui_pad_start(0);
         } else {
-            kvHandsBodyMovementLogic(hDepthNode, leftHandPoint, rightHandPoint, headPoint, torsoPoint, leftShoulderPoint, rightShoulderPoint);
+            [self handsBodyMovementLogic:hDepthNode
+                                leftHand:leftHandPoint
+                               rightHand:rightHandPoint
+                                    head:headPoint
+                                   torso:torsoPoint
+                            leftShoulder:leftShoulderPoint
+                           rightShoulder:rightShoulderPoint];
         }
     } else {
         if( leftHandPoint.Y > headPoint.Y && rightHandPoint.Y > headPoint.Y) {
@@ -779,30 +796,6 @@ void kvHandsLocationLogic(XnNodeHandle hUserNode, XnNodeHandle hDepthNode, XnUse
     }
 }
 
-
-static void drawAnObject ()
-
-{
-    
-    glColor3f(1.0f, 0.85f, 0.35f);
-    
-    glBegin(GL_TRIANGLES);
-    
-    {
-        
-        glVertex3f(  0.0,  0.6, 0.0);
-        
-        glVertex3f( -0.2, -0.3, 0.0);
-        
-        glVertex3f(  0.2, -0.3 ,0.0);
-        
-    }
-    
-    glEnd();
-    
-    
-}
-
 - (void)idle:(NSTimer*)timer
 {
     [self setNeedsDisplay:YES];
@@ -810,28 +803,17 @@ static void drawAnObject ()
 
 - (void) update
 {
-    kvRenderTrackingScene();
+    [self renderScene];
     NSTimer *updateTimer = [NSTimer timerWithTimeInterval:1.0f/30.0f target:self selector:@selector(idle:) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:updateTimer forMode:NSDefaultRunLoopMode];
+    glFlush();
 }
 
 
 - (void)drawRect:(NSRect)dirtyRect
 {
-    glClearColor(0, 0, 0, 0);
-    
-    glClear(GL_COLOR_BUFFER_BIT);
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LEQUAL);
-    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-    glTranslatef(-1, 1, 0);
-    
-    glutDisplayFunc(kvRenderTrackingScene);
-    glutSpecialFunc(kvKeyPress);
-    glutSpecialUpFunc(kvKeyRelease);
-    
+    [self initScene];
     [self update];
-    glFlush();
 }
 
 @end

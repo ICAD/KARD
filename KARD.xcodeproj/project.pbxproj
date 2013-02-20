@@ -31,10 +31,6 @@
 		2F27660016D40500006EF5A6 /* libpc_ardrone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F2765FF16D40500006EF5A6 /* libpc_ardrone.a */; };
 		2F27660216D40506006EF5A6 /* libsdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F27660116D40506006EF5A6 /* libsdk.a */; };
 		2F27660416D4050C006EF5A6 /* libvlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F27660316D4050C006EF5A6 /* libvlib.a */; };
-		2F27660D16D406CB006EF5A6 /* display_stage.c in Sources */ = {isa = PBXBuildFile; fileRef = 2F27660716D406CB006EF5A6 /* display_stage.c */; };
-		2F27660E16D406CB006EF5A6 /* post_stage.c in Sources */ = {isa = PBXBuildFile; fileRef = 2F27660916D406CB006EF5A6 /* post_stage.c */; };
-		2F27660F16D406CB006EF5A6 /* pre_stage.c in Sources */ = {isa = PBXBuildFile; fileRef = 2F27660B16D406CB006EF5A6 /* pre_stage.c */; };
-		2F27661516D40DAB006EF5A6 /* navdata.c in Sources */ = {isa = PBXBuildFile; fileRef = 2F27661316D40DAB006EF5A6 /* navdata.c */; };
 		2F27661916D411D7006EF5A6 /* KVisionOpenGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F27661816D411D7006EF5A6 /* KVisionOpenGLView.m */; };
 		2F27661C16D4126D006EF5A6 /* KPilotView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F27661B16D4126D006EF5A6 /* KPilotView.m */; };
 		2F27662316D419ED006EF5A6 /* Sample-Scene.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2F27661F16D419ED006EF5A6 /* Sample-Scene.xml */; };
@@ -44,6 +40,11 @@
 		2F27662716D419FB006EF5A6 /* SamplesConfig.xml in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2F27662216D419ED006EF5A6 /* SamplesConfig.xml */; };
 		2F27663516D4248A006EF5A6 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F27663416D4248A006EF5A6 /* GLUT.framework */; };
 		2F27664716D42B07006EF5A6 /* KVisionOpenGLViewResponder.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F27664616D42B07006EF5A6 /* KVisionOpenGLViewResponder.m */; };
+		2F27664816D5286B006EF5A6 /* KARD-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2F2765A516D40181006EF5A6 /* KARD-Info.plist */; };
+		2F27665616D528D4006EF5A6 /* navdata.c in Sources */ = {isa = PBXBuildFile; fileRef = 2F27665416D528D4006EF5A6 /* navdata.c */; };
+		2F27665E16D528DF006EF5A6 /* display_stage.c in Sources */ = {isa = PBXBuildFile; fileRef = 2F27665816D528DF006EF5A6 /* display_stage.c */; };
+		2F27665F16D528DF006EF5A6 /* post_stage.c in Sources */ = {isa = PBXBuildFile; fileRef = 2F27665A16D528DF006EF5A6 /* post_stage.c */; };
+		2F27666016D528DF006EF5A6 /* pre_stage.c in Sources */ = {isa = PBXBuildFile; fileRef = 2F27665C16D528DF006EF5A6 /* pre_stage.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -82,7 +83,7 @@
 		2F2765A016D40181006EF5A6 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		2F2765A116D40181006EF5A6 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		2F2765A216D40181006EF5A6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		2F2765A516D40181006EF5A6 /* KARD-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "KARD-Info.plist"; sourceTree = "<group>"; };
+		2F2765A516D40181006EF5A6 /* KARD-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "KARD-Info.plist"; sourceTree = "<group>"; };
 		2F2765A716D40181006EF5A6 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		2F2765A916D40181006EF5A6 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		2F2765AB16D40181006EF5A6 /* KARD-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "KARD-Prefix.pch"; sourceTree = "<group>"; };
@@ -111,14 +112,6 @@
 		2F2765FF16D40500006EF5A6 /* libpc_ardrone.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpc_ardrone.a; path = Libraries/libpc_ardrone.a; sourceTree = "<group>"; };
 		2F27660116D40506006EF5A6 /* libsdk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libsdk.a; path = Libraries/libsdk.a; sourceTree = "<group>"; };
 		2F27660316D4050C006EF5A6 /* libvlib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvlib.a; path = Libraries/libvlib.a; sourceTree = "<group>"; };
-		2F27660716D406CB006EF5A6 /* display_stage.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = display_stage.c; sourceTree = "<group>"; };
-		2F27660816D406CB006EF5A6 /* display_stage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = display_stage.h; sourceTree = "<group>"; };
-		2F27660916D406CB006EF5A6 /* post_stage.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = post_stage.c; sourceTree = "<group>"; };
-		2F27660A16D406CB006EF5A6 /* post_stage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = post_stage.h; sourceTree = "<group>"; };
-		2F27660B16D406CB006EF5A6 /* pre_stage.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pre_stage.c; sourceTree = "<group>"; };
-		2F27660C16D406CB006EF5A6 /* pre_stage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pre_stage.h; sourceTree = "<group>"; };
-		2F27661316D40DAB006EF5A6 /* navdata.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = navdata.c; sourceTree = "<group>"; };
-		2F27661416D40DAB006EF5A6 /* navdata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = navdata.h; sourceTree = "<group>"; };
 		2F27661716D411D7006EF5A6 /* KVisionOpenGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KVisionOpenGLView.h; sourceTree = "<group>"; };
 		2F27661816D411D7006EF5A6 /* KVisionOpenGLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KVisionOpenGLView.m; sourceTree = "<group>"; };
 		2F27661A16D4126D006EF5A6 /* KPilotView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KPilotView.h; sourceTree = "<group>"; };
@@ -130,6 +123,14 @@
 		2F27663416D4248A006EF5A6 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		2F27664516D42B07006EF5A6 /* KVisionOpenGLViewResponder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KVisionOpenGLViewResponder.h; sourceTree = "<group>"; };
 		2F27664616D42B07006EF5A6 /* KVisionOpenGLViewResponder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KVisionOpenGLViewResponder.m; sourceTree = "<group>"; };
+		2F27665416D528D4006EF5A6 /* navdata.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = navdata.c; sourceTree = "<group>"; };
+		2F27665516D528D4006EF5A6 /* navdata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = navdata.h; sourceTree = "<group>"; };
+		2F27665816D528DF006EF5A6 /* display_stage.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = display_stage.c; sourceTree = "<group>"; };
+		2F27665916D528DF006EF5A6 /* display_stage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = display_stage.h; sourceTree = "<group>"; };
+		2F27665A16D528DF006EF5A6 /* post_stage.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = post_stage.c; sourceTree = "<group>"; };
+		2F27665B16D528DF006EF5A6 /* post_stage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = post_stage.h; sourceTree = "<group>"; };
+		2F27665C16D528DF006EF5A6 /* pre_stage.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pre_stage.c; sourceTree = "<group>"; };
+		2F27665D16D528DF006EF5A6 /* pre_stage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pre_stage.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -280,20 +281,6 @@
 			name = Libraries;
 			sourceTree = "<group>";
 		};
-		2F27660616D406CB006EF5A6 /* video */ = {
-			isa = PBXGroup;
-			children = (
-				2F27660716D406CB006EF5A6 /* display_stage.c */,
-				2F27660816D406CB006EF5A6 /* display_stage.h */,
-				2F27660916D406CB006EF5A6 /* post_stage.c */,
-				2F27660A16D406CB006EF5A6 /* post_stage.h */,
-				2F27660B16D406CB006EF5A6 /* pre_stage.c */,
-				2F27660C16D406CB006EF5A6 /* pre_stage.h */,
-			);
-			name = video;
-			path = pilot/video;
-			sourceTree = "<group>";
-		};
 		2F27661116D40D8F006EF5A6 /* pilot */ = {
 			isa = PBXGroup;
 			children = (
@@ -301,20 +288,10 @@
 				2F27661B16D4126D006EF5A6 /* KPilotView.m */,
 				2F2765EB16D40341006EF5A6 /* KPilot.h */,
 				2F2765EC16D40341006EF5A6 /* KPilot.m */,
-				2F27661216D40DAB006EF5A6 /* navdata */,
-				2F27660616D406CB006EF5A6 /* video */,
+				2F27665316D528D4006EF5A6 /* navdata */,
+				2F27665716D528DF006EF5A6 /* video */,
 			);
 			name = pilot;
-			sourceTree = "<group>";
-		};
-		2F27661216D40DAB006EF5A6 /* navdata */ = {
-			isa = PBXGroup;
-			children = (
-				2F27661316D40DAB006EF5A6 /* navdata.c */,
-				2F27661416D40DAB006EF5A6 /* navdata.h */,
-			);
-			name = navdata;
-			path = pilot/navdata;
 			sourceTree = "<group>";
 		};
 		2F27661616D411B2006EF5A6 /* vision */ = {
@@ -337,6 +314,30 @@
 				2F27662216D419ED006EF5A6 /* SamplesConfig.xml */,
 			);
 			path = data;
+			sourceTree = "<group>";
+		};
+		2F27665316D528D4006EF5A6 /* navdata */ = {
+			isa = PBXGroup;
+			children = (
+				2F27665416D528D4006EF5A6 /* navdata.c */,
+				2F27665516D528D4006EF5A6 /* navdata.h */,
+			);
+			name = navdata;
+			path = c/pilot/navdata;
+			sourceTree = "<group>";
+		};
+		2F27665716D528DF006EF5A6 /* video */ = {
+			isa = PBXGroup;
+			children = (
+				2F27665816D528DF006EF5A6 /* display_stage.c */,
+				2F27665916D528DF006EF5A6 /* display_stage.h */,
+				2F27665A16D528DF006EF5A6 /* post_stage.c */,
+				2F27665B16D528DF006EF5A6 /* post_stage.h */,
+				2F27665C16D528DF006EF5A6 /* pre_stage.c */,
+				2F27665D16D528DF006EF5A6 /* pre_stage.h */,
+			);
+			name = video;
+			path = c/pilot/video;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -434,6 +435,7 @@
 				2F27662416D419ED006EF5A6 /* Sample-Tracking.xml in Resources */,
 				2F27662516D419ED006EF5A6 /* Sample-User.xml in Resources */,
 				2F27662616D419ED006EF5A6 /* SamplesConfig.xml in Resources */,
+				2F27664816D5286B006EF5A6 /* KARD-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -472,13 +474,13 @@
 				2F2765B116D40182006EF5A6 /* AppDelegate.m in Sources */,
 				2F2765B716D40182006EF5A6 /* KARD.xcdatamodeld in Sources */,
 				2F2765ED16D40341006EF5A6 /* KPilot.m in Sources */,
-				2F27660D16D406CB006EF5A6 /* display_stage.c in Sources */,
-				2F27660E16D406CB006EF5A6 /* post_stage.c in Sources */,
-				2F27660F16D406CB006EF5A6 /* pre_stage.c in Sources */,
-				2F27661516D40DAB006EF5A6 /* navdata.c in Sources */,
 				2F27661916D411D7006EF5A6 /* KVisionOpenGLView.m in Sources */,
 				2F27661C16D4126D006EF5A6 /* KPilotView.m in Sources */,
 				2F27664716D42B07006EF5A6 /* KVisionOpenGLViewResponder.m in Sources */,
+				2F27665616D528D4006EF5A6 /* navdata.c in Sources */,
+				2F27665E16D528DF006EF5A6 /* display_stage.c in Sources */,
+				2F27665F16D528DF006EF5A6 /* post_stage.c in Sources */,
+				2F27666016D528DF006EF5A6 /* pre_stage.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

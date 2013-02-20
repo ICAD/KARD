@@ -135,7 +135,7 @@ void kpShowStatus() {
 - (void) runArdroneToolMain {
     int pargc = 1;
     char *pargv[] = { "KARD Project", NULL };
-    
+
     ardrone_tool_main(pargc, pargv);
 }
 

@@ -8,11 +8,15 @@
 
 #import <Cocoa/Cocoa.h>
 #import "KPilot.h"
+#import <WiiRemote/WiiRemote.h>
+#import <WiiRemote/WiiRemoteDiscovery.h>
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 
 @property (assign) IBOutlet NSWindow *window;
 @property (readonly, strong, nonatomic) KPilot * pilot;
+//@property (readonly, strong, nonatomic) WiiRemote * wiimote;
+//@property (readonly, strong, nonatomic) WiiRemoteDiscovery * wiimoteDiscovery;
 
 @property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
@@ -21,3 +25,6 @@
 - (IBAction)saveAction:(id)sender;
 
 @end
+
+WiiRemote * wiimote;
+WiiRemoteDiscovery * wiimoteDiscovery;

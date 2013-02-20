@@ -7,19 +7,104 @@
 //
 
 #import "AppDelegate.h"
-#import "KPilot.h"
 
 @implementation AppDelegate
 
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
 @synthesize managedObjectModel = _managedObjectModel;
 @synthesize managedObjectContext = _managedObjectContext;
-@synthesize pilot;
+@synthesize pilot;//, wiimote, wiimoteDiscovery;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
     pilot = [KPilot new];
     [pilot initPilot];
+    
+    wiimote = [WiiRemote new];
+    wiimoteDiscovery = [WiiRemoteDiscovery discoveryWithDelegate:self];
+    
+    [wiimote setDelegate:self];
+    [wiimoteDiscovery start];
+    NSLog(@"Battery level: %f\n\n\n", [wiimote batteryLevel]);
+    //- (IOReturn)connectTo:(IOBluetoothDevice*)device;
+}
+
+// WiiRemote Delegates
+- (void) irPointMovedX:(float)px Y:(float)py wiiRemote:(WiiRemote*)wiiRemote
+{
+    
+    NSLog(@"irPointMovedX Changed\n");
+}
+
+- (void) rawIRData: (IRData[4])irData wiiRemote:(WiiRemote*)wiiRemote
+{
+    
+}
+
+- (void) accelerationChanged:(WiiAccelerationSensorType)type
+                        accX:(unsigned char)accX
+                        accY:(unsigned char)accY
+                        accZ:(unsigned char)accZ
+                   wiiRemote:(WiiRemote*)wiiRemote
+{
+    
+    //NSLog(@"Acceleration Changed\n");
+    //NSLog(@"\naccX: %f\taccY: %f\taccZ: %f\n", (float)accX, (float)accY, (float)accZ);
+    //NSLog(@"Titl: %f\n", [wiiRemote ])
+}
+
+- (void) joyStickChanged:(WiiJoyStickType)type
+                   tiltX:(unsigned char)tiltX
+                   tiltY:(unsigned char)tiltY
+               wiiRemote:(WiiRemote*)wiiRemote
+{
+    NSLog(@"Joystick Button Changed\n");
+}
+
+- (void) analogButtonChanged:(WiiButtonType)type amount:(unsigned)press wiiRemote:(WiiRemote*)wiiRemote
+{
+    NSLog(@"Analog Button Changed\n");
+}
+
+- (void) wiiRemoteDisconnected:(IOBluetoothDevice*)device
+{
+    NSLog(@"\n\nDisconnected\n\n");
+}
+
+- (void) buttonChanged:(WiiButtonType)type
+             isPressed:(BOOL)isPressed
+             wiiRemote:(WiiRemote*)wiiRemote {
+    NSLog(@"Button Changed\n");
+    
+    switch(type) {
+        case WiiRemoteAButton:
+            NSLog(@"Fly\n");
+            ardrone_tool_set_ui_pad_start(1);
+            break;
+        case WiiRemoteBButton:
+            NSLog(@"Land\n");
+            ardrone_tool_set_ui_pad_start(0);
+            break;
+        case WiiRemoteHomeButton:
+            NSLog(@"Emergency\n");
+            ardrone_tool_set_ui_pad_select(1);
+            break;
+        default: break;
+    }
+}
+
+// WiiRemoteDiscovery
+- (void) WiiRemoteDiscovered:(WiiRemote*)remote {
+    NSLog(@"Discovered wiimote\n");
+    wiimote = remote;
+    [wiimote setMotionSensorEnabled:YES];
+    [wiimote setDelegate:self];
+    [wiimote setLEDEnabled1:YES enabled2:NO enabled3:NO enabled4:NO];
+    //[wiimoteDiscovery stop];
+}
+
+- (void) WiiRemoteDiscoveryError:(int)code {
+    NSLog(@"Errors: %i\n\n\n\n", code);
 }
 
 // Returns the directory the application uses to store the Core Data store file. This code uses a directory named "ICAD.KARD" in the user's Application Support directory.

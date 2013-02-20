@@ -45,6 +45,7 @@
 		2F27665E16D528DF006EF5A6 /* display_stage.c in Sources */ = {isa = PBXBuildFile; fileRef = 2F27665816D528DF006EF5A6 /* display_stage.c */; };
 		2F27665F16D528DF006EF5A6 /* post_stage.c in Sources */ = {isa = PBXBuildFile; fileRef = 2F27665A16D528DF006EF5A6 /* post_stage.c */; };
 		2F27666016D528DF006EF5A6 /* pre_stage.c in Sources */ = {isa = PBXBuildFile; fileRef = 2F27665C16D528DF006EF5A6 /* pre_stage.c */; };
+		2F546C3116D5749500B2647F /* KWiimote.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F546C3016D5749500B2647F /* KWiimote.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -131,6 +132,8 @@
 		2F27665B16D528DF006EF5A6 /* post_stage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = post_stage.h; sourceTree = "<group>"; };
 		2F27665C16D528DF006EF5A6 /* pre_stage.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pre_stage.c; sourceTree = "<group>"; };
 		2F27665D16D528DF006EF5A6 /* pre_stage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pre_stage.h; sourceTree = "<group>"; };
+		2F546C2F16D5749500B2647F /* KWiimote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KWiimote.h; sourceTree = "<group>"; };
+		2F546C3016D5749500B2647F /* KWiimote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KWiimote.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -213,6 +216,7 @@
 		2F2765A316D40181006EF5A6 /* KARD */ = {
 			isa = PBXGroup;
 			children = (
+				2F546C2E16D5745800B2647F /* wiimote */,
 				2F27661E16D419ED006EF5A6 /* data */,
 				2F27661616D411B2006EF5A6 /* vision */,
 				2F27661116D40D8F006EF5A6 /* pilot */,
@@ -338,6 +342,15 @@
 			);
 			name = video;
 			path = c/pilot/video;
+			sourceTree = "<group>";
+		};
+		2F546C2E16D5745800B2647F /* wiimote */ = {
+			isa = PBXGroup;
+			children = (
+				2F546C2F16D5749500B2647F /* KWiimote.h */,
+				2F546C3016D5749500B2647F /* KWiimote.m */,
+			);
+			name = wiimote;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -481,6 +494,7 @@
 				2F27665E16D528DF006EF5A6 /* display_stage.c in Sources */,
 				2F27665F16D528DF006EF5A6 /* post_stage.c in Sources */,
 				2F27666016D528DF006EF5A6 /* pre_stage.c in Sources */,
+				2F546C3116D5749500B2647F /* KWiimote.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -153,7 +153,7 @@ void kvInitScene(int * window) {
     
     glutInitWindowSize(KARD_WINDOW_WIDTH, KARD_WINDOW_HEIGHT);
     glutInitWindowPosition(KARD_WINDOW_X, KARD_WINDOW_Y);
-    *window = glutCreateWindow("AR.Drone Status");
+    *window = glutCreateWindow("Kinect Tracking");
     
     glClearColor(0.0f, 0.0f, 0.0f, 0.5f);
     glClearDepth(1.0f);

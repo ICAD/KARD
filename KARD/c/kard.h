@@ -14,7 +14,6 @@
 #include "math.h"
 //#include "control.h"
 #include "vision/vision.h"
-#include "navdata/navdata.h"
 #include "pilot/pilot.h"
 
 PROTO_THREAD_ROUTINE(opengl, data);
@@ -31,7 +30,7 @@ BEGIN_THREAD_TABLE
 END_THREAD_TABLE
 
 BEGIN_NAVDATA_HANDLER_TABLE
-    NAVDATA_HANDLER_TABLE_ENTRY(demo_navdata_client_init, demo_navdata_client_process, demo_navdata_client_release, NULL)
+    NAVDATA_HANDLER_TABLE_ENTRY(navdata_client_init, navdata_client_process, navdata_client_release, NULL)
 END_NAVDATA_HANDLER_TABLE
 
 #endif

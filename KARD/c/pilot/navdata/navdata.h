@@ -9,17 +9,17 @@
 #ifndef KARD_navdata_h
 #define KARD_navdata_h
 
-#include "api.h"
+#include "KARD-Prefix.pch"
 #include <ardrone_tool/Navdata/ardrone_navdata_client.h>
 
 
 /* Initialization local variables before event loop  */
-C_RESULT demo_navdata_client_init( void* data );
+C_RESULT navdata_client_init( void* data );
 
 /* Receving navdata during the event loop */
-C_RESULT demo_navdata_client_process( const navdata_unpacked_t* const navdata );
+C_RESULT navdata_client_process( const navdata_unpacked_t* const navdata );
 
 /* Relinquish the local resources after the event loop exit */
-C_RESULT demo_navdata_client_release( void );
+C_RESULT navdata_client_release( void );
 
 #endif

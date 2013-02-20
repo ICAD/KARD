@@ -11,12 +11,12 @@
  NAVDATA
  ------------------------------------------------------*/
 /* Initialization local variables before event loop  */
-C_RESULT demo_navdata_client_init( void* data ) {
+C_RESULT navdata_client_init( void* data ) {
     return C_OK;
 }
 
 /* Receving navdata during the event loop */
-C_RESULT demo_navdata_client_process( const navdata_unpacked_t* const navdata ) {
+C_RESULT navdata_client_process( const navdata_unpacked_t* const navdata ) {
 	/*const navdata_demo_t*nd = &navdata->navdata_demo;
     
 	printf("=====================\nNavdata for flight demonstrations =====================\n\n");
@@ -31,6 +31,6 @@ C_RESULT demo_navdata_client_process( const navdata_unpacked_t* const navdata ) 
 }
 
 /* Relinquish the local resources after the event loop exit */
-C_RESULT demo_navdata_client_release( void ) {
+C_RESULT navdata_client_release( void ) {
     return C_OK;
 }

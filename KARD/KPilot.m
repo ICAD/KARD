@@ -126,6 +126,18 @@ void kpShowStatus() {
     kdPrintText(x, y-=0.15, 0, 1, 1, 1, 1, psiStatusText);
 }
 
+- (void) takeOff {
+    ardrone_tool_set_ui_pad_start(1);
+}
+
+- (void) land {
+    ardrone_tool_set_ui_pad_start(0);
+}
+
+- (void) moveTheta: (float) theta
+               phi: (float) phi {
+    ardrone_tool_set_progressive_cmd(1, phi, theta, 0, 0, 0, 0);
+}
 
 - (void) initPilot {
     NSThread * thread = [[NSThread alloc] initWithTarget:self selector:@selector(runArdroneToolMain) object:nil];

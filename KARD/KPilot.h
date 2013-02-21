@@ -15,4 +15,7 @@
 - (void) renderHUD;
 - (void) renderVideo;
 
+- (void) takeOff;
+- (void) land;
+- (void) moveTheta: (float) theta phi: (float) phi;
 @end

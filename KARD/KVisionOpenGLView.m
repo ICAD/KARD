@@ -29,8 +29,7 @@
 
 - (void)awakeFromNib {
     [[self window] setAcceptsMouseMovedEvents:YES];
-    BOOL tracking = [self initTracking];
-    NSLog(@"Tracking: %@\n", (tracking)? @"YES" : @"NO");
+    //BOOL tracking = [self initTracking];
 }
 
 //============================================================
@@ -253,7 +252,6 @@ void kvKeyRelease(int key, int x, int y) {
 // function: initTracking
 // description: initializes the complete skeleon tracking part of KARD
 - (BOOL) initTracking {
-    NSLog(@"Created Depth Meta Data\n");
     XnStatus nRetVal = XN_STATUS_OK;
     XnNodeHandle hScriptNode;
     XnEnumerationErrors * pErrors = NULL;
@@ -815,8 +813,8 @@ void XN_CALLBACK_TYPE kvPoseDetected(XnNodeHandle hUserNode, const XnChar* pose,
 
 - (void)drawRect:(NSRect)dirtyRect
 {
-    [self initScene];
-    [self update];
+    //[self initScene];
+    //[self update];
 }
 
 @end

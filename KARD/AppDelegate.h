@@ -7,9 +7,11 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import <Wiimote/Wiimote.h>
 #import "KPilot.h"
-#import <WiiRemote/WiiRemote.h>
-#import <WiiRemote/WiiRemoteDiscovery.h>
+
+//#import <WiiRemote/WiiRemote.h>
+//#import <WiiRemote/WiiRemoteDiscovery.h>
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 
@@ -26,5 +28,4 @@
 
 @end
 
-WiiRemote * wiimote;
-WiiRemoteDiscovery * wiimoteDiscovery;
+Wiimote * wiimote;

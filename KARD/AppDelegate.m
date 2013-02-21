@@ -20,92 +20,98 @@
     pilot = [KPilot new];
     [pilot initPilot];
     
-    wiimote = [WiiRemote new];
-    wiimoteDiscovery = [WiiRemoteDiscovery discoveryWithDelegate:self];
-    
+    wiimote = [Wiimote new];
     [wiimote setDelegate:self];
-    [wiimoteDiscovery start];
-    NSLog(@"Battery level: %f\n\n\n", [wiimote batteryLevel]);
-    //- (IOReturn)connectTo:(IOBluetoothDevice*)device;
-}
-
-// WiiRemote Delegates
-- (void) irPointMovedX:(float)px Y:(float)py wiiRemote:(WiiRemote*)wiiRemote
-{
     
-    NSLog(@"irPointMovedX Changed\n");
-}
-
-- (void) rawIRData: (IRData[4])irData wiiRemote:(WiiRemote*)wiiRemote
-{
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(wiimoteDiscoveryStarted:) name:WiimoteBeginDiscoveryNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(wiimoteDiscoveryEnded:) name:WiimoteEndDiscoveryNotification object:nil];
     
+    [[WiimoteWatchdog sharedWatchdog] setEnabled:YES];
+    [Wiimote beginDiscovery];
 }
 
-- (void) accelerationChanged:(WiiAccelerationSensorType)type
-                        accX:(unsigned char)accX
-                        accY:(unsigned char)accY
-                        accZ:(unsigned char)accZ
-                   wiiRemote:(WiiRemote*)wiiRemote
-{
+- (void) wiimoteDiscoveryStarted: (NSNotification *)notification {
+    NSLog(@"Wiimote Discovery Started\n");
+}
+
+- (void) wiimoteDiscoveryEnded: (NSNotification *)notification {
+    NSLog(@"Wiimote Discovery Ended\n");
+    NSLog(@"Number of connected devices: %i\n", (int)[[Wiimote connectedDevices] count]);
     
-    //NSLog(@"Acceleration Changed\n");
-    //NSLog(@"\naccX: %f\taccY: %f\taccZ: %f\n", (float)accX, (float)accY, (float)accZ);
-    //NSLog(@"Titl: %f\n", [wiiRemote ])
+    wiimote = [[Wiimote connectedDevices] objectAtIndex:0];
+    [wiimote setDelegate:self];
+    [wiimote setHighlightedLEDMask:1];
+    [[wiimote accelerometer] setEnabled:YES];
+    NSLog(@"Battery Level: %f\n", [wiimote batteryLevel]);
 }
 
-- (void) joyStickChanged:(WiiJoyStickType)type
-                   tiltX:(unsigned char)tiltX
-                   tiltY:(unsigned char)tiltY
-               wiiRemote:(WiiRemote*)wiiRemote
+#pragma Wiimote Delegates
+- (void)wiimote:(Wiimote*)wiimote
+  buttonPressed:(WiimoteButtonType)button
 {
-    NSLog(@"Joystick Button Changed\n");
-}
-
-- (void) analogButtonChanged:(WiiButtonType)type amount:(unsigned)press wiiRemote:(WiiRemote*)wiiRemote
-{
-    NSLog(@"Analog Button Changed\n");
-}
-
-- (void) wiiRemoteDisconnected:(IOBluetoothDevice*)device
-{
-    NSLog(@"\n\nDisconnected\n\n");
-}
-
-- (void) buttonChanged:(WiiButtonType)type
-             isPressed:(BOOL)isPressed
-             wiiRemote:(WiiRemote*)wiiRemote {
-    NSLog(@"Button Changed\n");
-    
-    switch(type) {
-        case WiiRemoteAButton:
-            NSLog(@"Fly\n");
-            ardrone_tool_set_ui_pad_start(1);
+    switch(button) {
+        case WiimoteButtonTypeA:
+            NSLog(@"Take Off\n");
+            [pilot takeOff];
             break;
-        case WiiRemoteBButton:
+        case WiimoteButtonTypeB:
             NSLog(@"Land\n");
-            ardrone_tool_set_ui_pad_start(0);
+            [pilot land];
             break;
-        case WiiRemoteHomeButton:
-            NSLog(@"Emergency\n");
+        case WiimoteButtonTypeHome:
             ardrone_tool_set_ui_pad_select(1);
             break;
         default: break;
     }
 }
 
-// WiiRemoteDiscovery
-- (void) WiiRemoteDiscovered:(WiiRemote*)remote {
-    NSLog(@"Discovered wiimote\n");
-    wiimote = remote;
-    [wiimote setMotionSensorEnabled:YES];
-    [wiimote setDelegate:self];
-    [wiimote setLEDEnabled1:YES enabled2:NO enabled3:NO enabled4:NO];
-    //[wiimoteDiscovery stop];
+/*- (void)wiimote:(Wiimote*)wiimote
+ buttonReleased:(WiimoteButtonType)button
+{
+    switch(button) {
+        case WiimoteButtonTypeHome:
+            ardrone_tool_set_ui_pad_select(1);
+            break;
+        default: break;
+    }
+}*/
+
+//- (void)wiimote:(Wiimote*)wiimote vibrationStateChanged:(BOOL)isVibrationEnabled;
+//- (void)wiimote:(Wiimote*)wiimote highlightedLEDMaskChanged:(NSUInteger)mask;
+//- (void)wiimote:(Wiimote*)wiimote batteryLevelUpdated:(double)batteryLevel isLow:(BOOL)isLow;
+//- (void)wiimote:(Wiimote*)wiimote irEnabledStateChanged:(BOOL)enabled;
+//- (void)wiimote:(Wiimote*)wiimote irPointPositionChanged:(WiimoteIRPoint*)point;
+//- (void)wiimote:(Wiimote*)wiimote accelerometerEnabledStateChanged:(BOOL)enabled;
+
+- (void)wiimote:(Wiimote*)wiimote
+    accelerometerChangedGravityX:(double)x
+              y:(double)y
+              z:(double)z {
+    NSLog(@"\nx: %f\ny: %f\nz: %f\n", x, y, z);
+    NSLog(@"-------------\n");
+    
 }
 
-- (void) WiiRemoteDiscoveryError:(int)code {
-    NSLog(@"Errors: %i\n\n\n\n", code);
+- (void)wiimote:(Wiimote*)wiimote
+    accelerometerChangedPitch:(double)pitch
+           roll:(double)roll
+{
+    float theta = -roll / 90.0f;
+    float phi = -pitch / 90.0f;
+    
+    if(theta > 1.0f) theta = 1.0f;
+    else if(theta < -1.0f) theta = -1.0f;
+    
+    if(phi > 1.0f) phi = 1.0f;
+    else if(phi < -1.0f) phi = -1.0f;
+    
+    
+    NSLog(@"Theta: %f\n", theta);
+    [pilot moveTheta: theta phi: phi];
 }
+//- (void)wiimote:(Wiimote*)wiimote extensionConnected:(WiimoteExtension*)extension;
+//- (void)wiimote:(Wiimote*)wiimote extensionDisconnected:(WiimoteExtension*)extension;
+//- (void)wiimoteDisconnected:(Wiimote*)wiimote;
 
 // Returns the directory the application uses to store the Core Data store file. This code uses a directory named "ICAD.KARD" in the user's Application Support directory.
 - (NSURL *)applicationFilesDirectory

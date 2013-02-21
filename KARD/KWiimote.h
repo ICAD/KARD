@@ -6,9 +6,9 @@
 //  Copyright (c) 2013 ICAD. All rights reserved.
 //
 
-#import <WiiRemote/WiiRemote.h>
+#import <Wiimote/Wiimote.h>
 
-@interface KWiimote : WiiRemote
+@interface KWiimote : Wiimote
 
 
 @end

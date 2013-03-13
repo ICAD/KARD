@@ -29,7 +29,7 @@
 
 - (void)awakeFromNib {
     [[self window] setAcceptsMouseMovedEvents:YES];
-    //BOOL tracking = [self initTracking];
+    BOOL tracking = [self initTracking];
 }
 
 //============================================================
@@ -779,8 +779,6 @@ void XN_CALLBACK_TYPE kvPoseDetected(XnNodeHandle hUserNode, const XnChar* pose,
         }
     } else {
         if( leftHandPoint.Y > headPoint.Y && rightHandPoint.Y > headPoint.Y) {
-            AppDelegate *appDelegate = (AppDelegate *)[NSApp delegate];
-            
             printf("FLY\n");
             kvIS_FLYING = TRUE;
             
@@ -807,14 +805,15 @@ void XN_CALLBACK_TYPE kvPoseDetected(XnNodeHandle hUserNode, const XnChar* pose,
     [self renderScene];
     NSTimer *updateTimer = [NSTimer timerWithTimeInterval:1.0f/30.0f target:self selector:@selector(idle:) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:updateTimer forMode:NSDefaultRunLoopMode];
+    
     glFlush();
 }
 
 
 - (void)drawRect:(NSRect)dirtyRect
 {
-    //[self initScene];
-    //[self update];
+    [self initScene];
+    [self update];
 }
 
 @end

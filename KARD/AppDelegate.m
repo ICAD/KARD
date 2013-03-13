@@ -13,12 +13,22 @@
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
 @synthesize managedObjectModel = _managedObjectModel;
 @synthesize managedObjectContext = _managedObjectContext;
-@synthesize pilot;//, wiimote, wiimoteDiscovery;
+@synthesize pilot, pilotView;//, wiimote, wiimoteDiscovery;
+
+- (void)updateBatteryStatus:(NSString *)batteryStatus {
+    NSLog(@"battery status: %@\n", batteryStatus);
+    [[pilotView batteryLevel] setStringValue:batteryStatus];
+}
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
     pilot = [KPilot new];
     [pilot initPilot];
+    
+    pilotView = [KPilotView new];
+    [pilotView initPilotView];
+    [pilotView setDelegate:self];
+    [[pilotView delegate] updateBatteryStatus:@"Test"];
     
     wiimote = [Wiimote new];
     [wiimote setDelegate:self];
@@ -109,6 +119,7 @@
     NSLog(@"Theta: %f\n", theta);
     [pilot moveTheta: theta phi: phi];
 }
+
 //- (void)wiimote:(Wiimote*)wiimote extensionConnected:(WiimoteExtension*)extension;
 //- (void)wiimote:(Wiimote*)wiimote extensionDisconnected:(WiimoteExtension*)extension;
 //- (void)wiimoteDisconnected:(Wiimote*)wiimote;
@@ -162,6 +173,7 @@
             return nil;
         }
     } else {
+        /*
         if (![properties[NSURLIsDirectoryKey] boolValue]) {
             // Customize and localize this error.
             NSString *failureDescription = [NSString stringWithFormat:@"Expected a folder to store application data, found a file (%@).", [applicationFilesDirectory path]];
@@ -172,7 +184,7 @@
             
             [[NSApplication sharedApplication] presentError:error];
             return nil;
-        }
+        }*/
     }
     
     NSURL *url = [applicationFilesDirectory URLByAppendingPathComponent:@"KARD.storedata"];

@@ -7,8 +7,10 @@
 //
 
 #include "KARD-Prefix.pch"
+#include "KPilotView.h"
 
 @interface KPilot : NSObject
+@property (strong, nonatomic) KPilotView * pilotView;
 
 - (void) initPilot;
 - (void) initHUD;
@@ -18,4 +20,6 @@
 - (void) takeOff;
 - (void) land;
 - (void) moveTheta: (float) theta phi: (float) phi;
+
+- (IBAction)changeText:(id)sender;
 @end

@@ -11,8 +11,9 @@
 
 #include <ardrone_api.h>
 #include <signal.h>
+#include "AppDelegate.h"
 //#include "../vision/vision.h"
-#include "navdata.h"
+//#include "navdata.h"
 
 // ARDrone Tool includes
 #include <ardrone_tool/ardrone_tool.h>
@@ -43,6 +44,7 @@
 #include "c/pilot/video/display_stage.h"
 
 @implementation KPilot
+@synthesize pilotView;
 
 
 XnBool kUSE_ARDRONE = TRUE;
@@ -58,20 +60,29 @@ ZAP_VIDEO_CHANNEL videoChannel = ZAP_CHANNEL_HORI;
 #define FILENAMESIZE (256)
 char encodedFileName[FILENAMESIZE] = {0};
 
+/* Initialization local variables before event loop  */
+C_RESULT navdata_client_init( void* data );
+
+/* Receving navdata during the event loop */
+C_RESULT navdata_client_process( const navdata_unpacked_t* const navdata );
+
+/* Relinquish the local resources after the event loop exit */
+C_RESULT navdata_client_release( void );
+
 PROTO_THREAD_ROUTINE(opengl, data);
 
 /**
  * Declare Threads / Navdata tables
  */
 BEGIN_THREAD_TABLE
-    THREAD_TABLE_ENTRY( ardrone_control, 20 )
-    THREAD_TABLE_ENTRY( navdata_update, 20 )
-    THREAD_TABLE_ENTRY( video_stage, 20 )
-    THREAD_TABLE_ENTRY( video_recorder, 20)
+THREAD_TABLE_ENTRY( ardrone_control, 20 )
+THREAD_TABLE_ENTRY( navdata_update, 20 )
+THREAD_TABLE_ENTRY( video_stage, 20 )
+THREAD_TABLE_ENTRY( video_recorder, 20)
 END_THREAD_TABLE
 
 BEGIN_NAVDATA_HANDLER_TABLE
-    NAVDATA_HANDLER_TABLE_ENTRY(navdata_client_init, navdata_client_process, navdata_client_release, NULL)
+NAVDATA_HANDLER_TABLE_ENTRY(navdata_client_init, navdata_client_process, navdata_client_release, NULL)
 END_NAVDATA_HANDLER_TABLE
 
 int32_t exit_ihm_program = 1;
@@ -106,6 +117,14 @@ void kdPrintText(float x, float y, float z, float r, float g, float b, float a, 
         glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, text[counter]);
     }
     
+}
+
+
+- (void) runArdroneToolMain {
+    int pargc = 1;
+    char *pargv[] = { "KARD Project", NULL };
+    
+    ardrone_tool_main(pargc, pargv);
 }
 
 void kpShowStatus() {
@@ -144,13 +163,6 @@ void kpShowStatus() {
     [thread start];
 }
 
-- (void) runArdroneToolMain {
-    int pargc = 1;
-    char *pargv[] = { "KARD Project", NULL };
-
-    ardrone_tool_main(pargc, pargv);
-}
-
 - (void) initHUD {
     [self initPilot];
 }
@@ -168,7 +180,7 @@ void kpShowStatus() {
     kpShowStatus();
 }
 
-- (void) kpRenderVideo {
+- (void) renderVideo {
     
 }
 
@@ -371,6 +383,41 @@ DEFINE_THREAD_ROUTINE(main_application_thread, data) {
     
     //kpInitHUD();
     printf("Starting glutMainLoop()");
+    return C_OK;
+}
+
+
+C_RESULT navdata_client_init( void* data ) {
+    return C_OK;
+}
+
+/* Receving navdata during the event loop */
+C_RESULT navdata_client_process( const navdata_unpacked_t* const navdata ) {
+	/*const navdata_demo_t*nd = &navdata->navdata_demo;
+     
+     printf("=====================\nNavdata for flight demonstrations =====================\n\n");
+     
+     printf("Control state : %i\n",nd->ctrl_state);
+     printf("Battery level : %i mV\n",nd->vbat_flying_percentage);
+     printf("Orientation   : [Theta] %4.3f  [Phi] %4.3f  [Psi] %4.3f\n",nd->theta,nd->phi,nd->psi);
+     printf("Altitude      : %i\n",nd->altitude);
+     printf("Speed         : [vX] %4.3f  [vY] %4.3f  [vZPsi] %4.3f\n",nd->theta,nd->phi,nd->psi);
+     */
+    
+    const navdata_demo_t * nd = &navdata->navdata_demo;
+    //printf("Battery level : %i mV\n",nd->vbat_flying_percentage);
+    
+    
+    
+    //AppDelegate *appDelegate = (AppDelegate *)[NSApp delegate];
+    
+    //[[[appDelegate pilotView] batteryLevel] setStringValue:[NSString stringWithFormat:@"%i", nd->vbat_flying_percentage]];
+    
+    return C_OK;
+}
+
+/* Relinquish the local resources after the event loop exit */
+C_RESULT navdata_client_release( void ) {
     return C_OK;
 }
 

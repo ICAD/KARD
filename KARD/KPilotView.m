@@ -7,11 +7,16 @@
 //
 
 #import "KPilotView.h"
+#import "AppDelegate.h"
+#include <ardrone_api.h>
+#include <signal.h>
+//#include "../vision/vision.h"
+//#include "navdata.h"
 
 @implementation KPilotView
 
+@synthesize batteryLevel, delegate;
 
-static float red = 0.0;
 
 - (id)initWithFrame:(NSRect)frame
 {
@@ -20,32 +25,12 @@ static float red = 0.0;
         // Initialization code here.
     }
     
+    
     return self;
 }
 
-static void drawAnObject ()
-
-{
-    red += 0.01;
-    if(red >= 1.0) {
-        red = 0;
-    }
-    
-    glColor3f(red, 0, 0);
-    
-    glBegin(GL_TRIANGLES);
-    
-    {
-        
-        glVertex3f(  0.0,  0.6, 0.0);
-        
-        glVertex3f( -0.2, -0.3, 0.0);
-        
-        glVertex3f(  0.2, -0.3 ,0.0);
-        
-    }
-    
-    glEnd();
+- (void) awakeFromNib {
+    NSLog(@"Awaken\n");
 }
 
 - (void)idle:(NSTimer*)timer
@@ -53,20 +38,29 @@ static void drawAnObject ()
     [self setNeedsDisplay:YES];
 }
 
-- (void) update {
-    NSTimer *updateTimer = [NSTimer timerWithTimeInterval:1.0f/30.0f target:self selector:@selector(idle:) userInfo:nil repeats:YES];
-    [[NSRunLoop currentRunLoop] addTimer:updateTimer forMode:NSDefaultRunLoopMode];}
 
 - (void)drawRect:(NSRect)dirtyRect
 {
-    // Drawing code here.
-    glClearColor(0, 0, 0, 0);
     
-    glClear(GL_COLOR_BUFFER_BIT);
+    //AppDelegate *appDelegate = (AppDelegate *)[NSApp delegate];
+    //[[appDelegate pilot] batteryLevel];
     
-    //drawAnObject();
-    [self update];
-    glFlush();
+    //NSString * batteryPercentage = [NSString stringWithFormat:@"%i", nd->vbat_flying_percentage];
+    //[batteryLevel setStringValue:batteryPercentage];
 }
 
+
+- (void)initPilotView
+{
+    NSLog(@"InitPilotView\n");
+}
+
+
+
+- (void)updateBatteryStatus:(NSString *)batteryStatus {
+    if([[self delegate] respondsToSelector:@selector(updateBatteryStatus:)]) {
+        [[self delegate] updateBatteryStatus:batteryStatus];
+        NSLog(@"Battery: %@\n", batteryStatus);
+    }
+}
 @end

@@ -9,16 +9,13 @@
 #import <Cocoa/Cocoa.h>
 #import <Wiimote/Wiimote.h>
 #import "KPilot.h"
+#import "KPilotView.h"
 
-//#import <WiiRemote/WiiRemote.h>
-//#import <WiiRemote/WiiRemoteDiscovery.h>
-
-@interface AppDelegate : NSObject <NSApplicationDelegate>
+@interface AppDelegate : NSObject <NSApplicationDelegate, KPilotViewDelegate>
 
 @property (assign) IBOutlet NSWindow *window;
 @property (readonly, strong, nonatomic) KPilot * pilot;
-//@property (readonly, strong, nonatomic) WiiRemote * wiimote;
-//@property (readonly, strong, nonatomic) WiiRemoteDiscovery * wiimoteDiscovery;
+@property (readonly, strong, nonatomic) KPilotView * pilotView;
 
 @property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;

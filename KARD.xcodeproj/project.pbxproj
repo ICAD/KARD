@@ -41,11 +41,13 @@
 		2F27663516D4248A006EF5A6 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F27663416D4248A006EF5A6 /* GLUT.framework */; };
 		2F27664716D42B07006EF5A6 /* KVisionOpenGLViewResponder.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F27664616D42B07006EF5A6 /* KVisionOpenGLViewResponder.m */; };
 		2F27664816D5286B006EF5A6 /* KARD-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2F2765A516D40181006EF5A6 /* KARD-Info.plist */; };
-		2F27665616D528D4006EF5A6 /* navdata.c in Sources */ = {isa = PBXBuildFile; fileRef = 2F27665416D528D4006EF5A6 /* navdata.c */; };
 		2F27665E16D528DF006EF5A6 /* display_stage.c in Sources */ = {isa = PBXBuildFile; fileRef = 2F27665816D528DF006EF5A6 /* display_stage.c */; };
 		2F27665F16D528DF006EF5A6 /* post_stage.c in Sources */ = {isa = PBXBuildFile; fileRef = 2F27665A16D528DF006EF5A6 /* post_stage.c */; };
 		2F27666016D528DF006EF5A6 /* pre_stage.c in Sources */ = {isa = PBXBuildFile; fileRef = 2F27665C16D528DF006EF5A6 /* pre_stage.c */; };
 		2F546C3116D5749500B2647F /* KWiimote.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F546C3016D5749500B2647F /* KWiimote.m */; };
+		2F61B08C16E8BBAB00F0CD1C /* KNavdata.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F61B08B16E8BBAB00F0CD1C /* KNavdata.m */; };
+		2F61B09516F0D31500F0CD1C /* KARDViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F61B09416F0D31500F0CD1C /* KARDViewController.m */; };
+		2F61B09916F0D3B200F0CD1C /* KARDView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F61B09816F0D3B200F0CD1C /* KARDView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -131,8 +133,6 @@
 		2F27663416D4248A006EF5A6 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		2F27664516D42B07006EF5A6 /* KVisionOpenGLViewResponder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KVisionOpenGLViewResponder.h; sourceTree = "<group>"; };
 		2F27664616D42B07006EF5A6 /* KVisionOpenGLViewResponder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KVisionOpenGLViewResponder.m; sourceTree = "<group>"; };
-		2F27665416D528D4006EF5A6 /* navdata.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = navdata.c; sourceTree = "<group>"; };
-		2F27665516D528D4006EF5A6 /* navdata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = navdata.h; sourceTree = "<group>"; };
 		2F27665816D528DF006EF5A6 /* display_stage.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = display_stage.c; sourceTree = "<group>"; };
 		2F27665916D528DF006EF5A6 /* display_stage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = display_stage.h; sourceTree = "<group>"; };
 		2F27665A16D528DF006EF5A6 /* post_stage.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = post_stage.c; sourceTree = "<group>"; };
@@ -141,6 +141,12 @@
 		2F27665D16D528DF006EF5A6 /* pre_stage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pre_stage.h; sourceTree = "<group>"; };
 		2F546C2F16D5749500B2647F /* KWiimote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KWiimote.h; sourceTree = "<group>"; };
 		2F546C3016D5749500B2647F /* KWiimote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KWiimote.m; sourceTree = "<group>"; };
+		2F61B08A16E8BBAB00F0CD1C /* KNavdata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KNavdata.h; sourceTree = "<group>"; };
+		2F61B08B16E8BBAB00F0CD1C /* KNavdata.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KNavdata.m; sourceTree = "<group>"; };
+		2F61B09316F0D31400F0CD1C /* KARDViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KARDViewController.h; sourceTree = "<group>"; };
+		2F61B09416F0D31500F0CD1C /* KARDViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KARDViewController.m; sourceTree = "<group>"; };
+		2F61B09716F0D3B200F0CD1C /* KARDView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KARDView.h; sourceTree = "<group>"; };
+		2F61B09816F0D3B200F0CD1C /* KARDView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KARDView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -236,11 +242,9 @@
 				2F27661E16D419ED006EF5A6 /* data */,
 				2F27661616D411B2006EF5A6 /* vision */,
 				2F27661116D40D8F006EF5A6 /* pilot */,
-				2F2765AF16D40182006EF5A6 /* AppDelegate.h */,
-				2F2765B016D40182006EF5A6 /* AppDelegate.m */,
-				2F2765B216D40182006EF5A6 /* MainMenu.xib */,
-				2F2765B516D40182006EF5A6 /* KARD.xcdatamodeld */,
+				2F61B09616F0D31B00F0CD1C /* Core */,
 				2F2765A416D40181006EF5A6 /* Supporting Files */,
+				2F61B08F16E8BBAF00F0CD1C /* Navdata */,
 			);
 			path = KARD;
 			sourceTree = "<group>";
@@ -300,7 +304,6 @@
 				2F27661B16D4126D006EF5A6 /* KPilotView.m */,
 				2F2765EB16D40341006EF5A6 /* KPilot.h */,
 				2F2765EC16D40341006EF5A6 /* KPilot.m */,
-				2F27665316D528D4006EF5A6 /* navdata */,
 				2F27665716D528DF006EF5A6 /* video */,
 			);
 			name = pilot;
@@ -328,16 +331,6 @@
 			path = data;
 			sourceTree = "<group>";
 		};
-		2F27665316D528D4006EF5A6 /* navdata */ = {
-			isa = PBXGroup;
-			children = (
-				2F27665416D528D4006EF5A6 /* navdata.c */,
-				2F27665516D528D4006EF5A6 /* navdata.h */,
-			);
-			name = navdata;
-			path = c/pilot/navdata;
-			sourceTree = "<group>";
-		};
 		2F27665716D528DF006EF5A6 /* video */ = {
 			isa = PBXGroup;
 			children = (
@@ -359,6 +352,30 @@
 				2F546C3016D5749500B2647F /* KWiimote.m */,
 			);
 			name = wiimote;
+			sourceTree = "<group>";
+		};
+		2F61B08F16E8BBAF00F0CD1C /* Navdata */ = {
+			isa = PBXGroup;
+			children = (
+				2F61B08A16E8BBAB00F0CD1C /* KNavdata.h */,
+				2F61B08B16E8BBAB00F0CD1C /* KNavdata.m */,
+			);
+			name = Navdata;
+			sourceTree = "<group>";
+		};
+		2F61B09616F0D31B00F0CD1C /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				2F2765AF16D40182006EF5A6 /* AppDelegate.h */,
+				2F2765B016D40182006EF5A6 /* AppDelegate.m */,
+				2F2765B216D40182006EF5A6 /* MainMenu.xib */,
+				2F2765B516D40182006EF5A6 /* KARD.xcdatamodeld */,
+				2F61B09316F0D31400F0CD1C /* KARDViewController.h */,
+				2F61B09416F0D31500F0CD1C /* KARDViewController.m */,
+				2F61B09716F0D3B200F0CD1C /* KARDView.h */,
+				2F61B09816F0D3B200F0CD1C /* KARDView.m */,
+			);
+			name = Core;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -505,11 +522,13 @@
 				2F27661916D411D7006EF5A6 /* KVisionOpenGLView.m in Sources */,
 				2F27661C16D4126D006EF5A6 /* KPilotView.m in Sources */,
 				2F27664716D42B07006EF5A6 /* KVisionOpenGLViewResponder.m in Sources */,
-				2F27665616D528D4006EF5A6 /* navdata.c in Sources */,
 				2F27665E16D528DF006EF5A6 /* display_stage.c in Sources */,
 				2F27665F16D528DF006EF5A6 /* post_stage.c in Sources */,
 				2F27666016D528DF006EF5A6 /* pre_stage.c in Sources */,
 				2F546C3116D5749500B2647F /* KWiimote.m in Sources */,
+				2F61B08C16E8BBAB00F0CD1C /* KNavdata.m in Sources */,
+				2F61B09516F0D31500F0CD1C /* KARDViewController.m in Sources */,
+				2F61B09916F0D3B200F0CD1C /* KARDView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -571,7 +590,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -605,10 +624,10 @@
 					/usr/local/Cellar/ffmpeg/0.8.7/lib,
 					"$(SRCROOT)/Libraries/",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
-				SDKROOT = macosx;
+				SDKROOT = macosx10.7;
 			};
 			name = Debug;
 		};
@@ -616,7 +635,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -644,9 +663,9 @@
 					/usr/local/Cellar/ffmpeg/0.8.7/lib,
 					"$(SRCROOT)/Libraries/",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_LDFLAGS = "";
-				SDKROOT = macosx;
+				SDKROOT = macosx10.7;
 			};
 			name = Release;
 		};

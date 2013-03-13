@@ -10,5 +10,4 @@
 
 @interface KWiimote : Wiimote
 
-
 @end

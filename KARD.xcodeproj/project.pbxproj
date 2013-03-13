@@ -48,6 +48,9 @@
 		2F61B08C16E8BBAB00F0CD1C /* KNavdata.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F61B08B16E8BBAB00F0CD1C /* KNavdata.m */; };
 		2F61B09516F0D31500F0CD1C /* KARDViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F61B09416F0D31500F0CD1C /* KARDViewController.m */; };
 		2F61B09916F0D3B200F0CD1C /* KARDView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F61B09816F0D3B200F0CD1C /* KARDView.m */; };
+		2F61B09F16F133F800F0CD1C /* wiimote_axis.gif in Resources */ = {isa = PBXBuildFile; fileRef = 2F61B09D16F133F800F0CD1C /* wiimote_axis.gif */; };
+		2F61B0A416F134A500F0CD1C /* wiimote_horizontal.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 2F61B0A216F134A500F0CD1C /* wiimote_horizontal.jpg */; };
+		2F61B0A516F134A500F0CD1C /* wiimote_vertical.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 2F61B0A316F134A500F0CD1C /* wiimote_vertical.jpg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -147,6 +150,9 @@
 		2F61B09416F0D31500F0CD1C /* KARDViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KARDViewController.m; sourceTree = "<group>"; };
 		2F61B09716F0D3B200F0CD1C /* KARDView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KARDView.h; sourceTree = "<group>"; };
 		2F61B09816F0D3B200F0CD1C /* KARDView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KARDView.m; sourceTree = "<group>"; };
+		2F61B09D16F133F800F0CD1C /* wiimote_axis.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = wiimote_axis.gif; sourceTree = "<group>"; };
+		2F61B0A216F134A500F0CD1C /* wiimote_horizontal.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = wiimote_horizontal.jpg; sourceTree = "<group>"; };
+		2F61B0A316F134A500F0CD1C /* wiimote_vertical.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = wiimote_vertical.jpg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -238,6 +244,7 @@
 		2F2765A316D40181006EF5A6 /* KARD */ = {
 			isa = PBXGroup;
 			children = (
+				2F61B09B16F133F800F0CD1C /* Images */,
 				2F546C2E16D5745800B2647F /* wiimote */,
 				2F27661E16D419ED006EF5A6 /* data */,
 				2F27661616D411B2006EF5A6 /* vision */,
@@ -378,6 +385,16 @@
 			name = Core;
 			sourceTree = "<group>";
 		};
+		2F61B09B16F133F800F0CD1C /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				2F61B0A216F134A500F0CD1C /* wiimote_horizontal.jpg */,
+				2F61B0A316F134A500F0CD1C /* wiimote_vertical.jpg */,
+				2F61B09D16F133F800F0CD1C /* wiimote_axis.gif */,
+			);
+			path = Images;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -481,6 +498,9 @@
 				2F27662516D419ED006EF5A6 /* Sample-User.xml in Resources */,
 				2F27662616D419ED006EF5A6 /* SamplesConfig.xml in Resources */,
 				2F27664816D5286B006EF5A6 /* KARD-Info.plist in Resources */,
+				2F61B09F16F133F800F0CD1C /* wiimote_axis.gif in Resources */,
+				2F61B0A416F134A500F0CD1C /* wiimote_horizontal.jpg in Resources */,
+				2F61B0A516F134A500F0CD1C /* wiimote_vertical.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

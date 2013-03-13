@@ -7,15 +7,10 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <Wiimote/Wiimote.h>
-#import "KPilot.h"
-#import "KPilotView.h"
 
-@interface AppDelegate : NSObject <NSApplicationDelegate, KPilotViewDelegate>
+@interface AppDelegate : NSObject <NSApplicationDelegate>
 
 @property (assign) IBOutlet NSWindow *window;
-@property (readonly, strong, nonatomic) KPilot * pilot;
-@property (readonly, strong, nonatomic) KPilotView * pilotView;
 
 @property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
@@ -24,5 +19,3 @@
 - (IBAction)saveAction:(id)sender;
 
 @end
-
-Wiimote * wiimote;

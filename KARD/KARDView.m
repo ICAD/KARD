@@ -16,7 +16,7 @@
 
 @synthesize pilot, pilotView, wiimote;
 
-@synthesize isKinectTracking, isWiiConnected;
+@synthesize isKinectTracking, isWiiConnected, isWiiVertical;
 @synthesize wiiPitchText, wiiRollText;
 @synthesize wiiX, wiiY, wiiZ;
 @synthesize wiimoteOrientationButton;
@@ -43,11 +43,12 @@
 
 
 - (void) awakeFromNib {
-    //pilot = [KPilot new];
-    //[pilot initPilot];
+    pilot = [KPilot new];
+    [pilot initPilot];
     
     isKinectTracking = FALSE;
     isWiiConnected = FALSE;
+    isWiiVertical = TRUE;
     
     pilotView = [KPilotView new];
     [pilotView initPilotView];
@@ -70,7 +71,11 @@
     NSLog(@"AwakeFromNib\n");
     
     [[self batteryLevelIndicator] setDoubleValue:0.0];
-    [[self rssLevelIndicator] setDoubleValue:0.0];
+    [wiiZ setStringValue:@""];
+    [wiiX setStringValue:@""];
+    [wiiY setStringValue:@""];
+    [wiiRollText setStringValue:@""];
+    [wiiPitchText setStringValue:@""];
 }
 
 - (IBAction)toggleWiimoteConnection:(id)sender {
@@ -88,12 +93,16 @@
 
 - (IBAction)toggleWiimoteOrientation:(id)sender
 {
-    [wiimoteOrientationButton rotateByAngle:45];
-    NSLog(@"Rotate\n");
+    if(isWiiVertical) {
+        [wiimoteOrientationButton setFrameCenterRotation:90];
+    } else {
+        [wiimoteOrientationButton setFrameCenterRotation:0];
+    }
+    
+    isWiiVertical = !isWiiVertical;
 }
 
 - (IBAction)toggleKinectTracking:(id)sender {
-    
 }
 
 
@@ -187,14 +196,28 @@ accelerometerChangedPitch:(double)pitch
     [wiiRollText setDoubleValue:roll];
     [wiiPitchText setDoubleValue:pitch];
     
-    float theta = -roll / 90.0f;
-    float phi = -pitch / 90.0f;
+    float theta;
+    float phi;
     
-    if(theta > 1.0f) theta = 1.0f;
-    else if(theta < -1.0f) theta = -1.0f;
-    
-    if(phi > 1.0f) phi = 1.0f;
-    else if(phi < -1.0f) phi = -1.0f;
+    if (isWiiVertical) {
+        theta = -roll / 90.0f;
+        phi = -pitch / 90.0f;
+        
+        if(theta > 1.0f) theta = 1.0f;
+        else if(theta < -1.0f) theta = -1.0f;
+        
+        if(phi > 1.0f) phi = 1.0f;
+        else if(phi < -1.0f) phi = -1.0f;
+    } else {
+        theta = -pitch / 90.0f;
+        phi = -roll / 90.0f;
+        
+        if(theta > 1.0f) theta = 1.0f;
+        else if(theta < -1.0f) theta = -1.0f;
+        
+        if(phi > 1.0f) phi = 1.0f;
+        else if(phi < -1.0f) phi = -1.0f;
+    }
     
     
     //NSLog(@"Theta: %f\n", theta);

@@ -18,7 +18,6 @@
 @property (nonatomic, retain) IBOutlet NSButton * wiimoteOrientationButton;
 
 @property (nonatomic, retain) IBOutlet NSLevelIndicator * batteryLevelIndicator;
-@property (nonatomic, retain) IBOutlet NSLevelIndicator * rssLevelIndicator;
 
 @property (readonly, strong, nonatomic) KPilot * pilot;
 @property (readonly, strong, nonatomic) KPilotView * pilotView;
@@ -32,6 +31,7 @@
 
 @property (nonatomic) BOOL isWiiConnected;
 @property (nonatomic) BOOL isKinectTracking;
+@property (nonatomic) BOOL isWiiVertical;
 
 - (IBAction)toggleWiimoteConnection:(id)sender;
 - (IBAction)toggleKinectTracking:(id)sender;

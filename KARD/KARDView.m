@@ -9,6 +9,7 @@
 #define kBatteryMaxValue        100
 #define kBatteryCriticalValue   15
 #define kBatteryWarningValue    30
+#define kAngleThreshold         90.0f
 
 #import "KARDView.h"
 
@@ -18,8 +19,8 @@
 @synthesize wiiPitchText, wiiRollText;
 @synthesize wiiX, wiiY, wiiZ;
 @synthesize wiimoteOrientationButton;
-@synthesize batteryLevelIndicator, wiimoteConnectionButton;
-@synthesize ardroneFlyingStatus;
+@synthesize wiimoteBatteryLevelIndicator, droneBatteryLevelIndicator, wiimoteConnectionButton;
+@synthesize ardroneFlyingStatus, ardroneBatteryStatus;
 
 // indicators for the status of the drone
 NSNumber * isDroneAscending;
@@ -69,9 +70,13 @@ BOOL isWiiButtonPressed             = FALSE;
     isDroneAscending = nil;
     isDroneTurningRight = nil;
     
-    [batteryLevelIndicator setMaxValue:kBatteryMaxValue];
-    [batteryLevelIndicator setCriticalValue:kBatteryCriticalValue];
-    [batteryLevelIndicator setWarningValue:kBatteryWarningValue];
+    [wiimoteBatteryLevelIndicator setMaxValue:kBatteryMaxValue];
+    [wiimoteBatteryLevelIndicator setCriticalValue:kBatteryCriticalValue];
+    [wiimoteBatteryLevelIndicator setWarningValue:kBatteryWarningValue];
+    
+    [droneBatteryLevelIndicator setMaxValue:kBatteryMaxValue];
+    [droneBatteryLevelIndicator setCriticalValue:kBatteryCriticalValue];
+    [droneBatteryLevelIndicator setWarningValue:kBatteryWarningValue];
     
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(wiimoteDiscoveryStarted:) name:WiimoteBeginDiscoveryNotification object:nil];
@@ -164,7 +169,7 @@ BOOL isWiiButtonPressed             = FALSE;
 {
     [wiimoteConnectionButton setTitle:@"Connect"];
     
-    [batteryLevelIndicator setDoubleValue:0.0];
+    [wiimoteBatteryLevelIndicator setDoubleValue:0.0];
     [wiiZ setStringValue:@""];
     [wiiX setStringValue:@""];
     [wiiY setStringValue:@""];
@@ -272,34 +277,30 @@ accelerometerChangedPitch:(double)pitch
     float theta;
     float phi;
     
-    if (!isWiimoteOrientationVertical) {
-        theta = -roll / 90.0f;
-        phi = -pitch / 90.0f;
+    if (isWiimoteOrientationVertical) {
+        theta = -roll / kAngleThreshold;
+        phi = -pitch / kAngleThreshold;
         
-        if(theta > 1.0f) theta = 1.0f;
-        else if(theta < -1.0f) theta = -1.0f;
-        
-        if(phi > 1.0f) phi = 1.0f;
-        else if(phi < -1.0f) phi = -1.0f;
     } else {
-        
-        theta = -pitch / 90.0f;
-        phi = roll / 90.0f;
-        
-        if(theta > 1.0f) theta = 1.0f;
-        else if(theta < -1.0f) theta = -1.0f;
-        
-        if(phi > 1.0f) phi = 1.0f;
-        else if(phi < -1.0f) phi = -1.0f;
+        theta = -pitch / kAngleThreshold;
+        phi = roll / kAngleThreshold;
     }
     
+    
+    if(theta > 1.0f) theta = 1.0f;
+    else if(theta < -1.0f) theta = -1.0f;
+    
+    if(phi > 1.0f) phi = 1.0f;
+    else if(phi < -1.0f) phi = -1.0f;
 
     [pilot moveTheta: theta phi: phi];
     
     // set the battery state
     // TODO: This needs to be moved into a responder where we can independently set the batteryLevel
     // PRIORITY: Very low due to possible performance hit (minor) for waiting on a separate message, and battery level just isn't that valuable for the wiimote
-    [[self batteryLevelIndicator] setDoubleValue:[[self wiimote] batteryLevel]];
+    [wiimoteBatteryLevelIndicator setDoubleValue:[[self wiimote] batteryLevel]];
+    [droneBatteryLevelIndicator setDoubleValue:[pilot batteryLevel]];
+    [ardroneBatteryStatus setStringValue:[NSString stringWithFormat:@"%.0f%%", [pilot batteryLevel]]];
 }
 
 @end

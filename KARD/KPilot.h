@@ -41,4 +41,6 @@ enum KARD_WINDOW_ENUM {
 
 - (IBAction)changeText:(id)sender;
 - (BOOL) isFlying;
+
+- (CGFloat) batteryLevel;
 @end

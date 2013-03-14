@@ -51,6 +51,8 @@ float _phi;
 float _gaz;
 float _yaw;
 
+float _batteryLevel;
+
 XnBool kUSE_ARDRONE = TRUE;
 XnBool kUSE_VISION = FALSE;
 
@@ -444,6 +446,10 @@ C_RESULT navdata_client_init( void* data ) {
     return C_OK;
 }
 
+- (CGFloat) batteryLevel {
+    return _batteryLevel;
+}
+
 /* Receving navdata during the event loop */
 C_RESULT navdata_client_process( const navdata_unpacked_t* const navdata ) {
 	/*const navdata_demo_t*nd = &navdata->navdata_demo;
@@ -458,6 +464,8 @@ C_RESULT navdata_client_process( const navdata_unpacked_t* const navdata ) {
      */
     
     const navdata_demo_t * nd = &navdata->navdata_demo;
+    _batteryLevel = nd->vbat_flying_percentage;
+    
     //printf("Battery level : %i mV\n",nd->vbat_flying_percentage);
     
     
@@ -465,6 +473,7 @@ C_RESULT navdata_client_process( const navdata_unpacked_t* const navdata ) {
     //AppDelegate *appDelegate = (AppDelegate *)[NSApp delegate];
     
     //[[[appDelegate pilotView] batteryLevel] setStringValue:[NSString stringWithFormat:@"%i", nd->vbat_flying_percentage]];
+    
     
     return C_OK;
 }

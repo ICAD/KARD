@@ -17,8 +17,10 @@
 @property (nonatomic, retain) IBOutlet NSButton * kinectTrackingButton;
 @property (nonatomic, retain) IBOutlet NSButton * wiimoteOrientationButton;
 @property (nonatomic, retain) IBOutlet NSTextField * ardroneFlyingStatus;
+@property (nonatomic, retain) IBOutlet NSTextField * ardroneBatteryStatus;
 
-@property (nonatomic, retain) IBOutlet NSLevelIndicator * batteryLevelIndicator;
+@property (nonatomic, retain) IBOutlet NSLevelIndicator * wiimoteBatteryLevelIndicator;
+@property (nonatomic, retain) IBOutlet NSLevelIndicator * droneBatteryLevelIndicator;
 
 @property (readonly, strong, nonatomic) KPilot * pilot;
 @property (readonly, strong, nonatomic) KPilotView * pilotView;

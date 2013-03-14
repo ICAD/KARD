@@ -9,6 +9,13 @@
 #include "KARD-Prefix.pch"
 #include "KPilotView.h"
 
+enum KARD_WINDOW_ENUM {
+    KARD_WINDOW_WIDTH   = 640,
+    KARD_WINDOW_HEIGHT  = 480,
+    KARD_WINDOW_X       = 300,
+    KARD_WINDOW_Y       = 100
+};
+
 @interface KPilot : NSObject
 @property (strong, nonatomic) KPilotView * pilotView;
 
@@ -21,12 +28,17 @@
 - (void) land;
 - (void) descend;
 - (void) ascend;
+- (void) hover;
 - (void) emergency;
 - (void) rotateRight;
 - (void) rotateLeft;
 - (void) moveTheta: (float) theta
                phi: (float) phi
-               gaz: (float) gaz;
+               gaz: (float) gaz
+               yaw: (float) yaw;
+
+- (void) moveTheta: (float) theta phi: (float) phi;
 
 - (IBAction)changeText:(id)sender;
+- (BOOL) isFlying;
 @end

@@ -153,9 +153,23 @@ void kpShowStatus() {
     ardrone_tool_set_ui_pad_start(0);
 }
 
+
+- (void) descend {
+    ardrone_tool_set_ui_pad_ab(1);
+}
+
+- (void) ascend {
+    ardrone_tool_set_ui_pad_ah(1);
+}
+- (void) rotateRight { }
+- (void) rotateLeft {}
+
 - (void) moveTheta: (float) theta
-               phi: (float) phi {
-    ardrone_tool_set_progressive_cmd(1, phi, theta, 0, 0, 0, 0);
+               phi: (float) phi
+               gaz: (float) gaz
+{
+    ardrone_tool_set_progressive_cmd(1, phi, theta, gaz, 0, 0, 0);
+    //ardrone_tool_set_progressive_cmd(<#int32_t flag#>, <#float32_t phi#>, <#float32_t theta#>, <#float32_t gaz#>, <#float32_t yaw#>, <#float32_t psi#>, <#float32_t psi_accuracy#>);
 }
 
 - (void) initPilot {

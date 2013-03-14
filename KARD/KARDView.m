@@ -21,6 +21,10 @@
 @synthesize wiiX, wiiY, wiiZ;
 @synthesize wiimoteOrientationButton;
 
+BOOL isAscending = FALSE;
+BOOL isDescending = FALSE;
+BOOL isButtonPressed = FALSE;
+
 - (void)updateBatteryStatus:(NSString *)batteryStatus {
     NSLog(@"battery status: %@\n", batteryStatus);
     [[pilotView batteryLevel] setStringValue:batteryStatus];
@@ -49,11 +53,6 @@
     isKinectTracking = FALSE;
     isWiiConnected = FALSE;
     isWiiVertical = TRUE;
-    
-    pilotView = [KPilotView new];
-    [pilotView initPilotView];
-    //[pilotView setDelegate:self];
-    [[pilotView delegate] updateBatteryStatus:@"Test"];
     
     wiimote = [Wiimote new];
     [wiimote setDelegate:self];
@@ -141,6 +140,8 @@
 - (void)wiimote:(Wiimote*)wiimote
   buttonPressed:(WiimoteButtonType)button
 {
+    isButtonPressed = TRUE;
+    
     switch(button) {
         case WiimoteButtonTypeA:
             NSLog(@"Take Off\n");
@@ -153,20 +154,23 @@
         case WiimoteButtonTypeHome:
             ardrone_tool_set_ui_pad_select(1);
             break;
+        case WiimoteButtonTypeDown:
+            //if(isWiiVertical) [pilot descend];
+            //else [pilot rotateRight];
+            isAscending = FALSE;
+            break;
+        case WiimoteButtonTypeUp:
+            isAscending = TRUE;
+            break;
         default: break;
     }
 }
 
-/*- (void)wiimote:(Wiimote*)wiimote
+- (void)wiimote:(Wiimote*)wiimote
  buttonReleased:(WiimoteButtonType)button
- {
- switch(button) {
- case WiimoteButtonTypeHome:
- ardrone_tool_set_ui_pad_select(1);
- break;
- default: break;
- }
- }*/
+{
+    isButtonPressed = FALSE;
+}
 
 //- (void)wiimote:(Wiimote*)wiimote vibrationStateChanged:(BOOL)isVibrationEnabled;
 //- (void)wiimote:(Wiimote*)wiimote highlightedLEDMaskChanged:(NSUInteger)mask;
@@ -198,8 +202,9 @@ accelerometerChangedPitch:(double)pitch
     
     float theta;
     float phi;
+    float gaz = 0;
     
-    if (isWiiVertical) {
+    if (!isWiiVertical) {
         theta = -roll / 90.0f;
         phi = -pitch / 90.0f;
         
@@ -209,8 +214,9 @@ accelerometerChangedPitch:(double)pitch
         if(phi > 1.0f) phi = 1.0f;
         else if(phi < -1.0f) phi = -1.0f;
     } else {
+        
         theta = -pitch / 90.0f;
-        phi = -roll / 90.0f;
+        phi = roll / 90.0f;
         
         if(theta > 1.0f) theta = 1.0f;
         else if(theta < -1.0f) theta = -1.0f;
@@ -219,9 +225,18 @@ accelerometerChangedPitch:(double)pitch
         else if(phi < -1.0f) phi = -1.0f;
     }
     
+    if(isButtonPressed) {
+        if(isAscending) { gaz = 0.5;
+            NSLog(@"UP\n");}
+        else {
+            NSLog(@"DOWN\n");
+            gaz = -0.5; } 
+    } else {
+        gaz = 0.0;
+    }
     
     //NSLog(@"Theta: %f\n", theta);
-    [pilot moveTheta: theta phi: phi];
+    [pilot moveTheta: theta phi: phi gaz: gaz];
     
     // set the battery state
     [[self batteryLevelIndicator] setDoubleValue:[wiimote batteryLevel]];

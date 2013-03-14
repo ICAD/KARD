@@ -19,7 +19,13 @@
 
 - (void) takeOff;
 - (void) land;
-- (void) moveTheta: (float) theta phi: (float) phi;
+- (void) descend;
+- (void) ascend;
+- (void) rotateRight;
+- (void) rotateLeft;
+- (void) moveTheta: (float) theta
+               phi: (float) phi
+               gaz: (float) gaz;
 
 - (IBAction)changeText:(id)sender;
 @end

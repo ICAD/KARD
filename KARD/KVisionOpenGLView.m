@@ -7,6 +7,7 @@
 //
 
 #import "KVisionOpenGLView.h"
+#include "AppDelegate.h"
 #include <stdio.h>
 #include <math.h>
 #include <ardrone_tool/UI/ardrone_input.h>
@@ -27,9 +28,8 @@
 }
 
 - (void)awakeFromNib {
-    [[self window] setAcceptsMouseMovedEvents:YES];
-    BOOL tracking = [self initTracking];
-    NSLog(@"Tracking: %@\n", (tracking)? @"YES" : @"NO");
+    //[[self window] setAcceptsMouseMovedEvents:YES];
+    //BOOL tracking = [self initTracking];
 }
 
 //============================================================
@@ -37,7 +37,7 @@
 //============================================================
 // NI Contexts/Production Nodes
 //------------------------------------------------------------
-XnContext *         kvCONTEXT_PTR;
+XnContext       *   kvCONTEXT_PTR;
 XnNodeHandle        kvUSER_NODE_HANDLE;
 XnNodeHandle        kvDEPTH_NODE_HANDLE;
 XnDepthMetaData *   kvDEPTH_MD_PTR;
@@ -100,16 +100,13 @@ enum KARD_WINDOW_ENUM {
 //============================================================
 // DEFINES
 //============================================================
-#ifdef __APPLE__
 #define SAMPLE_XML_PATH "SamplesConfig.xml"
-#elif __linux
-#define SAMPLE_XML_PATH "data/SamplesConfig.xml"
-#endif
 
 #define CHECK_RC(rc, what)	\
 if (rc != XN_STATUS_OK) { \
-printf("%s failed: %s\n", what, xnGetStatusString(rc));	\
-return rc;	}
+    printf("%s failed: %s\n", what, xnGetStatusString(rc));	\
+    return rc; \
+}
 
 //------------------------------------------------------------
 // KEYPRESS SIMULATIONS
@@ -255,7 +252,6 @@ void kvKeyRelease(int key, int x, int y) {
 // function: initTracking
 // description: initializes the complete skeleon tracking part of KARD
 - (BOOL) initTracking {
-    NSLog(@"Created Depth Meta Data\n");
     XnStatus nRetVal = XN_STATUS_OK;
     XnNodeHandle hScriptNode;
     XnEnumerationErrors * pErrors = NULL;
@@ -290,7 +286,7 @@ void kvKeyRelease(int key, int x, int y) {
     
     xnStartGeneratingAll(kvCONTEXT_PTR);
 
-    return nRetVal;
+    return (BOOL)nRetVal;
 }
 
 //------------------------------------------------------------
@@ -783,7 +779,6 @@ void XN_CALLBACK_TYPE kvPoseDetected(XnNodeHandle hUserNode, const XnChar* pose,
         }
     } else {
         if( leftHandPoint.Y > headPoint.Y && rightHandPoint.Y > headPoint.Y) {
-            
             printf("FLY\n");
             kvIS_FLYING = TRUE;
             
@@ -802,22 +797,25 @@ void XN_CALLBACK_TYPE kvPoseDetected(XnNodeHandle hUserNode, const XnChar* pose,
 
 - (void)idle:(NSTimer*)timer
 {
-    [self setNeedsDisplay:YES];
+    //[self setNeedsDisplay:YES];
 }
 
 - (void) update
 {
-    [self renderScene];
+    /*
+     [self renderScene];
     NSTimer *updateTimer = [NSTimer timerWithTimeInterval:1.0f/30.0f target:self selector:@selector(idle:) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:updateTimer forMode:NSDefaultRunLoopMode];
+    
     glFlush();
+     */
 }
 
 
 - (void)drawRect:(NSRect)dirtyRect
 {
-    [self initScene];
-    [self update];
+    //[self initScene];
+    //[self update];
 }
 
 @end

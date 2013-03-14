@@ -9,7 +9,52 @@
 #import "KPilot.h"
 
 
+#include <ardrone_api.h>
+#include <signal.h>
+#include "AppDelegate.h"
+//#include "../vision/vision.h"
+//#include "navdata.h"
+
+// ARDrone Tool includes
+#include <ardrone_tool/ardrone_tool.h>
+#include <ardrone_tool/ardrone_tool_configuration.h>
+#include <ardrone_tool/ardrone_version.h>
+#include <ardrone_tool/Video/video_stage_decoder.h>
+#include <ardrone_tool/Video/video_stage.h>
+#include <ardrone_tool/Video/video_recorder_pipeline.h>
+#include <ardrone_tool/Navdata/ardrone_navdata_client.h>
+#include <ardrone_tool/Control/ardrone_control.h>
+#include <ardrone_tool/UI/ardrone_input.h>
+#include <ardrone_tool/Control/ardrone_control.h>
+#include <VP_Os/vp_os_types.h>
+// System Libraries
+#include <errno.h>
+#include <fcntl.h>
+#include <string.h>
+#include <stddef.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#ifdef __linux
+#include <linux/input.h>
+#endif
+#include <sys/ioctl.h>
+// Video Stages
+#include "c/pilot/video/pre_stage.h"
+#include "c/pilot/video/display_stage.h"
+
 @implementation KPilot
+@synthesize pilotView;
+
+float _theta;
+float _phi;
+float _gaz;
+float _yaw;
+
+float _batteryLevel;
+
+XnBool kUSE_ARDRONE = TRUE;
+XnBool kUSE_VISION = FALSE;
 
 pre_stage_cfg_t precfg;
 display_stage_cfg_t dispCfg;
@@ -21,14 +66,32 @@ ZAP_VIDEO_CHANNEL videoChannel = ZAP_CHANNEL_HORI;
 #define FILENAMESIZE (256)
 char encodedFileName[FILENAMESIZE] = {0};
 
-int32_t exit_ihm_program = 1;
+/* Initialization local variables before event loop  */
+C_RESULT navdata_client_init( void* data );
 
-enum KARD_WINDOW_ENUM {
-    KARD_WINDOW_WIDTH   = 640,
-    KARD_WINDOW_HEIGHT  = 480,
-    KARD_WINDOW_X       = 300,
-    KARD_WINDOW_Y       = 100
-};
+/* Receving navdata during the event loop */
+C_RESULT navdata_client_process( const navdata_unpacked_t* const navdata );
+
+/* Relinquish the local resources after the event loop exit */
+C_RESULT navdata_client_release( void );
+
+PROTO_THREAD_ROUTINE(opengl, data);
+
+/**
+ * Declare Threads / Navdata tables
+ */
+BEGIN_THREAD_TABLE
+THREAD_TABLE_ENTRY( ardrone_control, 20 )
+THREAD_TABLE_ENTRY( navdata_update, 20 )
+THREAD_TABLE_ENTRY( video_stage, 20 )
+THREAD_TABLE_ENTRY( video_recorder, 20)
+END_THREAD_TABLE
+
+BEGIN_NAVDATA_HANDLER_TABLE
+NAVDATA_HANDLER_TABLE_ENTRY(navdata_client_init, navdata_client_process, navdata_client_release, NULL)
+END_NAVDATA_HANDLER_TABLE
+
+int32_t exit_ihm_program = 1;
 
 void controlCHandler (int signal)
 {
@@ -46,13 +109,21 @@ void kdPrintText(float x, float y, float z, float r, float g, float b, float a, 
     glRasterPos3d(x,y,z);
     
     //glLoadIdentity();
-    int limit = strlen(text);
+    int limit = (int)strlen(text);
     int counter = -1;
     
     while(counter++ <  limit - 1) {
         glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, text[counter]);
     }
     
+}
+
+
+- (void) runArdroneToolMain {
+    int pargc = 1;
+    char *pargv[] = { "KARD Project", NULL };
+    
+    ardrone_tool_main(pargc, pargv);
 }
 
 void kpShowStatus() {
@@ -73,20 +144,85 @@ void kpShowStatus() {
     kdPrintText(x, y-=0.15, 0, 1, 1, 1, 1, psiStatusText);
 }
 
-
-- (void) kpInitPilot {
-    
+- (void) takeOff {
+    ardrone_tool_set_ui_pad_start(1);
 }
 
-- (void) kpInitHUD:(int *)window {
-    *window = glutCreateWindow("AR.Drone 2.0 | Status");
-    //glutDisplayFunc(kpRenderHUD());
-    glTranslatef(-1, 1, 0);
-    
-    [self kpInitPilot];
+- (void) land {
+    ardrone_tool_set_ui_pad_start(0);
 }
 
-- (void) kpRenderHUD {
+
+- (void) descend {
+    _gaz = -0.5f;
+    ardrone_tool_set_progressive_cmd(1, _phi, _theta, _gaz, _yaw, 0, 0);
+}
+
+- (void) ascend {
+    _gaz = 0.5f;
+    ardrone_tool_set_progressive_cmd(1, _phi, _theta, _gaz, _yaw, 0, 0);
+}
+
+- (void) hover {
+    _gaz = 0.0f;
+    _yaw = 0.0f;
+    
+    ardrone_tool_set_progressive_cmd(1, _phi, _theta, _gaz, _yaw, 0, 0);
+}
+
+- (void) emergency {
+    ardrone_tool_set_ui_pad_select(1);
+}
+
+- (void) rotateRight {
+    _yaw = 0.5f;
+    ardrone_tool_set_progressive_cmd(1, _phi, _theta, _gaz, _yaw, 0, 0);
+}
+
+- (void) rotateLeft {
+    _yaw = -0.5f;
+    ardrone_tool_set_progressive_cmd(1, _phi, _theta, _gaz, _yaw, 0, 0);
+}
+
+- (void) moveTheta: (float) theta
+               phi: (float) phi
+               gaz: (float) gaz
+               yaw: (float) yaw
+{
+
+    _phi = phi;
+    _theta = theta;
+    _gaz = gaz;
+    _yaw = yaw;
+    
+    
+    //ardrone_tool_set_progressive_cmd(1, phi, theta, gaz, yaw, 0, 0);
+    //ardrone_tool_set_progressive_cmd(<#int32_t flag#>, <#float32_t phi#>, <#float32_t theta#>, <#float32_t gaz#>, <#float32_t yaw#>, <#float32_t psi#>, <#float32_t psi_accuracy#>);
+}
+
+
+- (void) moveTheta: (float) theta phi: (float) phi {
+    _theta = theta;
+    _phi = phi;
+    
+    ardrone_tool_set_progressive_cmd(1, _phi, _theta, _gaz, _yaw, 0, 0);
+}
+
+// TODO: implement this
+- (BOOL) isFlying {
+    return FALSE;
+}
+
+- (void) initPilot {
+    NSThread * thread = [[NSThread alloc] initWithTarget:self selector:@selector(runArdroneToolMain) object:nil];
+    [thread start];
+}
+
+- (void) initHUD {
+    [self initPilot];
+}
+
+- (void) renderHUD {
     // clear the GL buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
@@ -99,7 +235,7 @@ void kpShowStatus() {
     kpShowStatus();
 }
 
-- (void) kpRenderVideo {
+- (void) renderVideo {
     
 }
 
@@ -217,11 +353,6 @@ C_RESULT ardrone_tool_init_custom (void) {
     vp_os_memset (&precfg, 0, sizeof (pre_stage_cfg_t));
     strncpy (precfg.outputName, encodedFileName, 255);
     
-#ifdef __linux
-    example_pre_stages->stages_list[stages_index].name = "Encoded Dumper"; // Debug info
-    example_post_stages->stages_list[stages_index].name = "Decoded display"; // Debug info
-#endif
-    
     example_pre_stages->stages_list[stages_index].type = VP_API_FILTER_DECODER; // Debug info
     example_pre_stages->stages_list[stages_index].cfg  = &precfg;
     example_pre_stages->stages_list[stages_index++].funcs  = pre_stage_funcs;
@@ -264,8 +395,6 @@ C_RESULT ardrone_tool_init_custom (void) {
     /**
      * Start the video thread (and the video recorder thread for AR.Drone 2)
      */
-    START_THREAD(opengl, params);
-    //START_THREAD(main_application_thread, params);
     START_THREAD(video_stage, params);
     video_stage_init();
     
@@ -285,7 +414,6 @@ C_RESULT ardrone_tool_shutdown_custom ()
 {
     video_stage_resume_thread(); //Resume thread to kill it !
     JOIN_THREAD(video_stage);
-    JOIN_THREAD(kinect);
     
     if (2 <= ARDRONE_VERSION ()) {
         video_recorder_resume_thread ();
@@ -299,6 +427,60 @@ C_RESULT ardrone_tool_shutdown_custom ()
 
 bool_t ardrone_tool_exit () {
     return exit_ihm_program == 0;
+}
+
+DEFINE_THREAD_ROUTINE(main_application_thread, data) {
+    //int pargc = 1;
+    //char *pargv[] = { "KARD Visions", NULL };
+    //glutInit(&pargc, pargv);
+    
+    //glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
+    
+    //kpInitHUD();
+    printf("Starting glutMainLoop()");
+    return C_OK;
+}
+
+
+C_RESULT navdata_client_init( void* data ) {
+    return C_OK;
+}
+
+- (CGFloat) batteryLevel {
+    return _batteryLevel;
+}
+
+/* Receving navdata during the event loop */
+C_RESULT navdata_client_process( const navdata_unpacked_t* const navdata ) {
+	/*const navdata_demo_t*nd = &navdata->navdata_demo;
+     
+     printf("=====================\nNavdata for flight demonstrations =====================\n\n");
+     
+     printf("Control state : %i\n",nd->ctrl_state);
+     printf("Battery level : %i mV\n",nd->vbat_flying_percentage);
+     printf("Orientation   : [Theta] %4.3f  [Phi] %4.3f  [Psi] %4.3f\n",nd->theta,nd->phi,nd->psi);
+     printf("Altitude      : %i\n",nd->altitude);
+     printf("Speed         : [vX] %4.3f  [vY] %4.3f  [vZPsi] %4.3f\n",nd->theta,nd->phi,nd->psi);
+     */
+    
+    const navdata_demo_t * nd = &navdata->navdata_demo;
+    _batteryLevel = nd->vbat_flying_percentage;
+    
+    //printf("Battery level : %i mV\n",nd->vbat_flying_percentage);
+    
+    
+    
+    //AppDelegate *appDelegate = (AppDelegate *)[NSApp delegate];
+    
+    //[[[appDelegate pilotView] batteryLevel] setStringValue:[NSString stringWithFormat:@"%i", nd->vbat_flying_percentage]];
+    
+    
+    return C_OK;
+}
+
+/* Relinquish the local resources after the event loop exit */
+C_RESULT navdata_client_release( void ) {
+    return C_OK;
 }
 
 @end

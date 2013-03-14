@@ -19,6 +19,11 @@
     
 }
 
+// make the application quit when window is closed
+- (BOOL) applicationShouldTerminateAfterLastWindowClosed: (NSApplication *) theApplication {
+    return YES;
+}
+
 // Returns the directory the application uses to store the Core Data store file. This code uses a directory named "ICAD.KARD" in the user's Application Support directory.
 - (NSURL *)applicationFilesDirectory
 {

@@ -53,9 +53,23 @@ BOOL isWiiButtonPressed             = FALSE;
 
 - (void)drawRect:(NSRect)dirtyRect
 {
-    
+    [self update];
 }
 
+- (void)idle:(NSTimer*)timer
+{
+    [self setNeedsDisplay:YES];
+}
+
+- (void) update
+{
+    [droneBatteryLevelIndicator setDoubleValue:[pilot batteryLevel]];
+    [ardroneBatteryStatus setStringValue:[NSString stringWithFormat:@"%.0f%%", [pilot batteryLevel]]];
+    
+    
+    NSTimer *updateTimer = [NSTimer timerWithTimeInterval:1.0f/30.0f target:self selector:@selector(idle:) userInfo:nil repeats:YES];
+    [[NSRunLoop currentRunLoop] addTimer:updateTimer forMode:NSDefaultRunLoopMode];
+}
 
 - (void) awakeFromNib {
     pilot = [KPilot new];
@@ -69,6 +83,7 @@ BOOL isWiiButtonPressed             = FALSE;
     
     isDroneAscending = nil;
     isDroneTurningRight = nil;
+    [self update];
     
     [wiimoteBatteryLevelIndicator setMaxValue:kBatteryMaxValue];
     [wiimoteBatteryLevelIndicator setCriticalValue:kBatteryCriticalValue];
@@ -299,8 +314,6 @@ accelerometerChangedPitch:(double)pitch
     // TODO: This needs to be moved into a responder where we can independently set the batteryLevel
     // PRIORITY: Very low due to possible performance hit (minor) for waiting on a separate message, and battery level just isn't that valuable for the wiimote
     [wiimoteBatteryLevelIndicator setDoubleValue:[[self wiimote] batteryLevel]];
-    [droneBatteryLevelIndicator setDoubleValue:[pilot batteryLevel]];
-    [ardroneBatteryStatus setStringValue:[NSString stringWithFormat:@"%.0f%%", [pilot batteryLevel]]];
 }
 
 @end

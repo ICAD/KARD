@@ -1706,7 +1706,6 @@
 							<string key="NSFrame">{{451, 13}, {704, 600}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView"/>
 							<string key="NSReuseIdentifierKey">_NS:24</string>
 							<object class="NSOpenGLPixelFormat" key="NSPixelFormat">
 								<object class="NSMutableData" key="NSPixelAttributes">
@@ -1740,6 +1739,26 @@
 								<string key="NSKeyEquivalent"/>
 								<int key="NSPeriodicDelay">200</int>
 								<int key="NSPeriodicInterval">25</int>
+							</object>
+							<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
+						</object>
+						<object class="NSTextField" id="759190624">
+							<reference key="NSNextResponder" ref="439893737"/>
+							<int key="NSvFlags">268</int>
+							<string key="NSFrame">{{12, 385}, {427, 17}}</string>
+							<reference key="NSSuperview" ref="439893737"/>
+							<reference key="NSWindow"/>
+							<string key="NSReuseIdentifierKey">_NS:1535</string>
+							<bool key="NSEnabled">YES</bool>
+							<object class="NSTextFieldCell" key="NSCell" id="169260574">
+								<int key="NSCellFlags">68157504</int>
+								<int key="NSCellFlags2">272630784</int>
+								<string key="NSContents">Status</string>
+								<reference key="NSSupport" ref="257893946"/>
+								<string key="NSCellIdentifier">_NS:1535</string>
+								<reference key="NSControlView" ref="759190624"/>
+								<reference key="NSBackgroundColor" ref="610820872"/>
+								<reference key="NSTextColor" ref="926043996"/>
 							</object>
 							<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 						</object>
@@ -2487,6 +2506,14 @@
 						<reference key="destination" ref="320196290"/>
 					</object>
 					<int key="connectionID">943</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">ardroneFlyingStatus</string>
+						<reference key="source" ref="439893737"/>
+						<reference key="destination" ref="759190624"/>
+					</object>
+					<int key="connectionID">946</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
@@ -3553,6 +3580,7 @@
 							<reference ref="818936709"/>
 							<reference ref="805938941"/>
 							<reference ref="320196290"/>
+							<reference ref="759190624"/>
 						</array>
 						<reference key="parent" ref="972006081"/>
 					</object>
@@ -3797,6 +3825,19 @@
 						<reference key="object" ref="304523972"/>
 						<reference key="parent" ref="320196290"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">944</int>
+						<reference key="object" ref="759190624"/>
+						<array class="NSMutableArray" key="children">
+							<reference ref="169260574"/>
+						</array>
+						<reference key="parent" ref="439893737"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">945</int>
+						<reference key="object" ref="169260574"/>
+						<reference key="parent" ref="759190624"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -3994,12 +4035,14 @@
 				<string key="929.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="937.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="938.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="944.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="945.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 			</dictionary>
 			<dictionary class="NSMutableDictionary" key="unlocalizedProperties"/>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">943</int>
+			<int key="maxID">946</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -4056,6 +4099,7 @@
 						</object>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="ardroneFlyingStatus">NSTextField</string>
 						<string key="batteryLevelIndicator">NSLevelIndicator</string>
 						<string key="kinectTrackingButton">NSButton</string>
 						<string key="wiiPitchText">NSTextField</string>
@@ -4067,6 +4111,10 @@
 						<string key="wiimoteOrientationButton">NSButton</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="ardroneFlyingStatus">
+							<string key="name">ardroneFlyingStatus</string>
+							<string key="candidateClassName">NSTextField</string>
+						</object>
 						<object class="IBToOneOutletInfo" key="batteryLevelIndicator">
 							<string key="name">batteryLevelIndicator</string>
 							<string key="candidateClassName">NSLevelIndicator</string>

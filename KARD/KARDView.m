@@ -5,7 +5,7 @@
 //  Created by Tyler on 2013-03-13.
 //  Copyright (c) 2013 ICAD. All rights reserved.
 //
-
+#pragma mark - Defines -
 #define kBatteryMaxValue        100
 #define kBatteryCriticalValue   15
 #define kBatteryWarningValue    30
@@ -15,15 +15,18 @@
 @implementation KARDView
 
 @synthesize pilot, pilotView, wiimote;
-
-@synthesize isKinectTracking, isWiiConnected, isWiiVertical;
 @synthesize wiiPitchText, wiiRollText;
 @synthesize wiiX, wiiY, wiiZ;
 @synthesize wiimoteOrientationButton;
+@synthesize batteryLevelIndicator, wiimoteConnectionButton;
+@synthesize ardroneFlyingStatus;
 
-BOOL isAscending = FALSE;
-BOOL isDescending = FALSE;
-BOOL isButtonPressed = FALSE;
+BOOL isDroneAscending               = FALSE;
+BOOL isWiiButtonPressed             = FALSE;
+BOOL isDroneTurningRight            = FALSE;
+BOOL isWiimoteConnected             = FALSE;
+BOOL isWiimoteOrientationVertical   = FALSE;
+BOOL isKinectTracking               = FALSE;
 
 - (void)updateBatteryStatus:(NSString *)batteryStatus {
     NSLog(@"battery status: %@\n", batteryStatus);
@@ -50,39 +53,28 @@ BOOL isButtonPressed = FALSE;
     pilot = [KPilot new];
     [pilot initPilot];
     
-    isKinectTracking = FALSE;
-    isWiiConnected = FALSE;
-    isWiiVertical = TRUE;
-    
     wiimote = [Wiimote new];
     [wiimote setDelegate:self];
+    
+    
+    [batteryLevelIndicator setMaxValue:kBatteryMaxValue];
+    [batteryLevelIndicator setCriticalValue:kBatteryCriticalValue];
+    [batteryLevelIndicator setWarningValue:kBatteryWarningValue];
+    
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(wiimoteDiscoveryStarted:) name:WiimoteBeginDiscoveryNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(wiimoteDiscoveryEnded:) name:WiimoteEndDiscoveryNotification object:nil];
     
     [[WiimoteWatchdog sharedWatchdog] setEnabled:YES];
-    
-    [[self batteryLevelIndicator] setMaxValue:kBatteryMaxValue];
-    [[self batteryLevelIndicator] setCriticalValue:kBatteryCriticalValue];
-    [[self batteryLevelIndicator] setWarningValue:kBatteryWarningValue];
-    
-    [[self wiimoteConnectionButton] setTitle:@"Connect"];
-    NSLog(@"AwakeFromNib\n");
-    
-    [[self batteryLevelIndicator] setDoubleValue:0.0];
-    [wiiZ setStringValue:@""];
-    [wiiX setStringValue:@""];
-    [wiiY setStringValue:@""];
-    [wiiRollText setStringValue:@""];
-    [wiiPitchText setStringValue:@""];
+    [self resetWiimoteStatus];
 }
 
 - (IBAction)toggleWiimoteConnection:(id)sender {
-    if(isWiiConnected) {
+    if(isWiimoteConnected) {
         NSLog(@"Disconnecting\n");
+        [self resetWiimoteStatus];
         [wiimote disconnect];
-        [[self wiimoteConnectionButton] setTitle: @"Connect"];
-        isWiiConnected = FALSE;
+        isWiimoteConnected = FALSE;
     } else {
         [Wiimote beginDiscovery];
         [[self wiimoteConnectionButton] setTitle: @"Connecting..."];
@@ -92,16 +84,20 @@ BOOL isButtonPressed = FALSE;
 
 - (IBAction)toggleWiimoteOrientation:(id)sender
 {
-    if(isWiiVertical) {
+    if(isWiimoteOrientationVertical) {
         [wiimoteOrientationButton setFrameCenterRotation:90];
+        [wiimote setHighlightedLEDMask:2];
     } else {
         [wiimoteOrientationButton setFrameCenterRotation:0];
+        [wiimote setHighlightedLEDMask:1];
     }
     
-    isWiiVertical = !isWiiVertical;
+    isWiimoteOrientationVertical = !isWiimoteOrientationVertical;
 }
 
-- (IBAction)toggleKinectTracking:(id)sender {
+- (IBAction)toggleKinectTracking:(id)sender
+{
+    isKinectTracking = !isKinectTracking;
 }
 
 
@@ -122,71 +118,109 @@ BOOL isButtonPressed = FALSE;
     if(connectedDevices > 0) {
         wiimote = [[Wiimote connectedDevices] objectAtIndex:0];
         [wiimote setDelegate:self];
-        [wiimote setHighlightedLEDMask:1];
+        
+        isWiimoteOrientationVertical ? [wiimote setHighlightedLEDMask:1] : [wiimote setHighlightedLEDMask:2];
+        
         [[wiimote accelerometer] setEnabled:YES];
         
         [[self wiimoteConnectionButton] setTitle:@"Disconnect"];
         
-        isWiiConnected = TRUE;
+        isWiimoteConnected = TRUE;
         
         [wiimote playConnectEffect];
+        
     } else {
         NSLog(@"Cannot connect find a Wiimote\n");
-        isWiiConnected = FALSE;
+        isWiimoteConnected = FALSE;
     }
 }
 
-#pragma Wiimote Delegates
+#pragma mark - Wiimote Delegates -
+- (void)resetWiimoteStatus
+{
+    [wiimoteConnectionButton setTitle:@"Connect"];
+    
+    [batteryLevelIndicator setDoubleValue:0.0];
+    [wiiZ setStringValue:@""];
+    [wiiX setStringValue:@""];
+    [wiiY setStringValue:@""];
+    [wiiRollText setStringValue:@""];
+    [wiiPitchText setStringValue:@""];
+}
+
 - (void)wiimote:(Wiimote*)wiimote
   buttonPressed:(WiimoteButtonType)button
 {
-    isButtonPressed = TRUE;
-    
     switch(button) {
+        case WiimoteButtonTypeMinus:
+            [self resetWiimoteStatus];
+            [[self wiimote] disconnect];
+            isWiimoteConnected = FALSE;
+            break;
+        case WiimoteButtonTypeOne:
+            isWiimoteOrientationVertical = TRUE;
+            [wiimoteOrientationButton setFrameCenterRotation:0];
+            [[self wiimote] setHighlightedLEDMask:1];
+            break;
+        case WiimoteButtonTypeTwo:
+            isWiimoteOrientationVertical = FALSE;
+            [wiimoteOrientationButton setFrameCenterRotation:90];
+            [[self wiimote] setHighlightedLEDMask:2];
+            break;
         case WiimoteButtonTypeA:
-            NSLog(@"Take Off\n");
             [pilot takeOff];
+            [ardroneFlyingStatus setStringValue: @"Taking Off"];
             break;
         case WiimoteButtonTypeB:
-            NSLog(@"Land\n");
             [pilot land];
+            [ardroneFlyingStatus setStringValue: @"Landing Down"];
             break;
         case WiimoteButtonTypeHome:
-            ardrone_tool_set_ui_pad_select(1);
+            [ardroneFlyingStatus setStringValue: @"Emergency"];
+            [pilot emergency];
             break;
         case WiimoteButtonTypeDown:
-            //if(isWiiVertical) [pilot descend];
-            //else [pilot rotateRight];
-            isAscending = FALSE;
+            isWiiButtonPressed = TRUE;
+            if(isWiimoteOrientationVertical) isDroneAscending = FALSE;
+            else isDroneTurningRight = TRUE;
             break;
         case WiimoteButtonTypeUp:
-            isAscending = TRUE;
+            isWiiButtonPressed = TRUE;
+            if(isWiimoteOrientationVertical) isDroneAscending = TRUE;
+            else isDroneTurningRight = FALSE;
+            break;
+        case WiimoteButtonTypeRight:
+            isWiiButtonPressed = TRUE;
+            if(isWiimoteOrientationVertical) isDroneAscending = TRUE;
+            else isDroneTurningRight = TRUE;
+            break;
+        case WiimoteButtonTypeLeft:
+            isWiiButtonPressed = TRUE;
+            if(isWiimoteOrientationVertical) isDroneAscending = FALSE;
+            else isDroneTurningRight = FALSE;
             break;
         default: break;
     }
+    
+    // Note: the 'isWiiButtonPressed = TRUE' states are momentary so we allow it to only enable during each transmission
+    isWiiButtonPressed = FALSE;
 }
-
+/*
 - (void)wiimote:(Wiimote*)wiimote
  buttonReleased:(WiimoteButtonType)button
 {
-    isButtonPressed = FALSE;
+    isWiiButtonPressed = FALSE;
 }
+ */
 
-//- (void)wiimote:(Wiimote*)wiimote vibrationStateChanged:(BOOL)isVibrationEnabled;
-//- (void)wiimote:(Wiimote*)wiimote highlightedLEDMaskChanged:(NSUInteger)mask;
 - (void)wiimote:(Wiimote*)wiimote batteryLevelUpdated:(double)batteryLevel isLow:(BOOL)isLow {
     NSLog(@"Battery: %f\n", batteryLevel);
 }
-//- (void)wiimote:(Wiimote*)wiimote irEnabledStateChanged:(BOOL)enabled;
-//- (void)wiimote:(Wiimote*)wiimote irPointPositionChanged:(WiimoteIRPoint*)point;
-//- (void)wiimote:(Wiimote*)wiimote accelerometerEnabledStateChanged:(BOOL)enabled;
 
 - (void)wiimote:(Wiimote*)wiimote
 accelerometerChangedGravityX:(double)x
               y:(double)y
               z:(double)z {
-    //NSLog(@"\nx: %f\ny: %f\nz: %f\n", x, y, z);
-    //NSLog(@"-------------\n");
     
     [wiiX setDoubleValue:x];
     [wiiY setDoubleValue:y];
@@ -202,9 +236,9 @@ accelerometerChangedPitch:(double)pitch
     
     float theta;
     float phi;
-    float gaz = 0;
+    float gaz = 0.0f;
     
-    if (!isWiiVertical) {
+    if (!isWiimoteOrientationVertical) {
         theta = -roll / 90.0f;
         phi = -pitch / 90.0f;
         
@@ -225,21 +259,22 @@ accelerometerChangedPitch:(double)pitch
         else if(phi < -1.0f) phi = -1.0f;
     }
     
-    if(isButtonPressed) {
-        if(isAscending) { gaz = 0.5;
+    if(isWiiButtonPressed) {
+        if(isDroneAscending) { gaz = 0.5;
             NSLog(@"UP\n");}
         else {
             NSLog(@"DOWN\n");
             gaz = -0.5; } 
     } else {
-        gaz = 0.0;
+        NSLog(@"Not pressed\n");
     }
     
-    //NSLog(@"Theta: %f\n", theta);
     [pilot moveTheta: theta phi: phi gaz: gaz];
     
     // set the battery state
-    [[self batteryLevelIndicator] setDoubleValue:[wiimote batteryLevel]];
+    // TODO: This needs to be moved into a responder where we can independently set the batteryLevel
+    // PRIORITY: Very low due to possible performance hit (minor) for waiting on a separate message, and battery level just isn't that valuable for the wiimote
+    [[self batteryLevelIndicator] setDoubleValue:[[self wiimote] batteryLevel]];
 }
 
 @end

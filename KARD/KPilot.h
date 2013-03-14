@@ -21,6 +21,7 @@
 - (void) land;
 - (void) descend;
 - (void) ascend;
+- (void) emergency;
 - (void) rotateRight;
 - (void) rotateLeft;
 - (void) moveTheta: (float) theta

@@ -161,6 +161,11 @@ void kpShowStatus() {
 - (void) ascend {
     ardrone_tool_set_ui_pad_ah(1);
 }
+
+- (void) emergency {
+    ardrone_tool_set_ui_pad_select(1);
+}
+
 - (void) rotateRight { }
 - (void) rotateLeft {}
 

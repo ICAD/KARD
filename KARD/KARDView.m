@@ -21,6 +21,7 @@
 @synthesize wiimoteOrientationButton;
 @synthesize wiimoteBatteryLevelIndicator, droneBatteryLevelIndicator, wiimoteConnectionButton;
 @synthesize ardroneFlyingStatus, ardroneBatteryStatus;
+@synthesize ardronePhi, ardroneTheta, ardronePsi, ardroneAltitude;
 
 // indicators for the status of the drone
 NSNumber * isDroneAscending;
@@ -35,11 +36,6 @@ BOOL isWiimoteOrientationVertical   = TRUE;
 BOOL isWiimoteConnected             = FALSE;
 BOOL isKinectTracking               = FALSE;
 BOOL isWiiButtonPressed             = FALSE;
-
-- (void)updateBatteryStatus:(NSString *)batteryStatus {
-    NSLog(@"battery status: %@\n", batteryStatus);
-    [[pilotView batteryLevel] setStringValue:batteryStatus];
-}
 
 - (id)initWithFrame:(NSRect)frame
 {
@@ -63,9 +59,17 @@ BOOL isWiiButtonPressed             = FALSE;
 
 - (void) update
 {
+    // set batteryStatus
     [droneBatteryLevelIndicator setDoubleValue:[pilot batteryLevel]];
-    [ardroneBatteryStatus setStringValue:[NSString stringWithFormat:@"%.0f%%", [pilot batteryLevel]]];
+    [ardroneBatteryStatus setStringValue:[NSString stringWithFormat:@"%0.f%%", [pilot batteryLevel]]];
     
+    // set coords
+    [ardronePhi setFloatValue:[pilot phi]];
+    [ardronePsi setFloatValue:[pilot psi]];
+    [ardroneTheta setFloatValue:[pilot theta]];
+    [ardroneAltitude setFloatValue:[pilot altitude]];
+    
+    NSLog(@"phi: %f\npsi: %f\ntheta: %f\naltitude: %f\n", [pilot phi], [pilot psi], [pilot theta], [pilot altitude]);
     
     NSTimer *updateTimer = [NSTimer timerWithTimeInterval:1.0f/30.0f target:self selector:@selector(idle:) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:updateTimer forMode:NSDefaultRunLoopMode];

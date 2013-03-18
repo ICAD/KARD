@@ -39,8 +39,10 @@ enum KARD_WINDOW_ENUM {
 
 - (void) moveTheta: (float) theta phi: (float) phi;
 
-- (IBAction)changeText:(id)sender;
 - (BOOL) isFlying;
-
 - (CGFloat) batteryLevel;
+- (CGFloat) phi;
+- (CGFloat) psi;
+- (CGFloat) theta;
+- (CGFloat) altitude;
 @end

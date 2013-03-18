@@ -8,7 +8,6 @@
 
 #import "KPilot.h"
 
-
 #include <ardrone_api.h>
 #include <signal.h>
 #include "AppDelegate.h"
@@ -51,7 +50,13 @@ float _phi;
 float _gaz;
 float _yaw;
 
-float _batteryLevel;
+float _navdata_batteryLevel;
+float _navdata_theta;
+float _navdata_altitude;
+float _navdata_psi;
+float _navdata_phi;
+int _navdata_isFlying;
+
 
 XnBool kUSE_ARDRONE = TRUE;
 XnBool kUSE_VISION = FALSE;
@@ -208,9 +213,25 @@ void kpShowStatus() {
     ardrone_tool_set_progressive_cmd(1, _phi, _theta, _gaz, _yaw, 0, 0);
 }
 
-// TODO: implement this
 - (BOOL) isFlying {
-    return FALSE;
+    return (_navdata_isFlying == 1);
+}
+
+
+- (CGFloat) phi {
+    return _navdata_phi;
+}
+
+- (CGFloat) psi {
+    return _navdata_psi;
+}
+
+- (CGFloat) theta {
+    return _navdata_theta;
+}
+
+- (CGFloat) altitude {
+    return _navdata_altitude;
 }
 
 - (void) initPilot {
@@ -219,6 +240,12 @@ void kpShowStatus() {
 }
 
 - (void) initHUD {
+    _navdata_altitude = 0;
+    _navdata_batteryLevel = 0;
+    _navdata_psi = 0;
+    _navdata_theta = 0;
+    _navdata_isFlying = 0;
+    
     [self initPilot];
 }
 
@@ -447,7 +474,7 @@ C_RESULT navdata_client_init( void* data ) {
 }
 
 - (CGFloat) batteryLevel {
-    return _batteryLevel;
+    return _navdata_batteryLevel;
 }
 
 /* Receving navdata during the event loop */
@@ -464,7 +491,15 @@ C_RESULT navdata_client_process( const navdata_unpacked_t* const navdata ) {
      */
     
     const navdata_demo_t * nd = &navdata->navdata_demo;
-    _batteryLevel = nd->vbat_flying_percentage;
+    
+    _navdata_batteryLevel = nd->vbat_flying_percentage;
+    _navdata_psi = nd->psi;
+    _navdata_phi = nd->phi;
+    _navdata_altitude = nd->altitude;
+    _navdata_isFlying = nd->ctrl_state;
+    _navdata_theta = nd->theta;
+    
+    //[navdata setTheta: ]
     
     //printf("Battery level : %i mV\n",nd->vbat_flying_percentage);
     

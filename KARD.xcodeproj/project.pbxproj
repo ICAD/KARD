@@ -45,7 +45,6 @@
 		2F27665F16D528DF006EF5A6 /* post_stage.c in Sources */ = {isa = PBXBuildFile; fileRef = 2F27665A16D528DF006EF5A6 /* post_stage.c */; };
 		2F27666016D528DF006EF5A6 /* pre_stage.c in Sources */ = {isa = PBXBuildFile; fileRef = 2F27665C16D528DF006EF5A6 /* pre_stage.c */; };
 		2F546C3116D5749500B2647F /* KWiimote.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F546C3016D5749500B2647F /* KWiimote.m */; };
-		2F61B08C16E8BBAB00F0CD1C /* KNavdata.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F61B08B16E8BBAB00F0CD1C /* KNavdata.m */; };
 		2F61B09516F0D31500F0CD1C /* KARDViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F61B09416F0D31500F0CD1C /* KARDViewController.m */; };
 		2F61B09916F0D3B200F0CD1C /* KARDView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F61B09816F0D3B200F0CD1C /* KARDView.m */; };
 		2F61B09F16F133F800F0CD1C /* wiimote_axis.gif in Resources */ = {isa = PBXBuildFile; fileRef = 2F61B09D16F133F800F0CD1C /* wiimote_axis.gif */; };
@@ -144,8 +143,6 @@
 		2F27665D16D528DF006EF5A6 /* pre_stage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pre_stage.h; sourceTree = "<group>"; };
 		2F546C2F16D5749500B2647F /* KWiimote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KWiimote.h; sourceTree = "<group>"; };
 		2F546C3016D5749500B2647F /* KWiimote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KWiimote.m; sourceTree = "<group>"; };
-		2F61B08A16E8BBAB00F0CD1C /* KNavdata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KNavdata.h; sourceTree = "<group>"; };
-		2F61B08B16E8BBAB00F0CD1C /* KNavdata.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KNavdata.m; sourceTree = "<group>"; };
 		2F61B09316F0D31400F0CD1C /* KARDViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KARDViewController.h; sourceTree = "<group>"; };
 		2F61B09416F0D31500F0CD1C /* KARDViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KARDViewController.m; sourceTree = "<group>"; };
 		2F61B09716F0D3B200F0CD1C /* KARDView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KARDView.h; sourceTree = "<group>"; };
@@ -251,7 +248,6 @@
 				2F27661116D40D8F006EF5A6 /* pilot */,
 				2F61B09616F0D31B00F0CD1C /* Core */,
 				2F2765A416D40181006EF5A6 /* Supporting Files */,
-				2F61B08F16E8BBAF00F0CD1C /* Navdata */,
 			);
 			path = KARD;
 			sourceTree = "<group>";
@@ -359,15 +355,6 @@
 				2F546C3016D5749500B2647F /* KWiimote.m */,
 			);
 			name = wiimote;
-			sourceTree = "<group>";
-		};
-		2F61B08F16E8BBAF00F0CD1C /* Navdata */ = {
-			isa = PBXGroup;
-			children = (
-				2F61B08A16E8BBAB00F0CD1C /* KNavdata.h */,
-				2F61B08B16E8BBAB00F0CD1C /* KNavdata.m */,
-			);
-			name = Navdata;
 			sourceTree = "<group>";
 		};
 		2F61B09616F0D31B00F0CD1C /* Core */ = {
@@ -546,7 +533,6 @@
 				2F27665F16D528DF006EF5A6 /* post_stage.c in Sources */,
 				2F27666016D528DF006EF5A6 /* pre_stage.c in Sources */,
 				2F546C3116D5749500B2647F /* KWiimote.m in Sources */,
-				2F61B08C16E8BBAB00F0CD1C /* KNavdata.m in Sources */,
 				2F61B09516F0D31500F0CD1C /* KARDViewController.m in Sources */,
 				2F61B09916F0D3B200F0CD1C /* KARDView.m in Sources */,
 			);

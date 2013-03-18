@@ -26,11 +26,18 @@
 @property (readonly, strong, nonatomic) KPilotView * pilotView;
 @property (readonly, retain, nonatomic) Wiimote * wiimote;
 
+// Wiimote
 @property (nonatomic, retain) IBOutlet NSTextField * wiiRollText;
 @property (nonatomic, retain) IBOutlet NSTextField * wiiPitchText;
 @property (nonatomic, retain) IBOutlet NSTextField * wiiX;
 @property (nonatomic, retain) IBOutlet NSTextField * wiiY;
 @property (nonatomic, retain) IBOutlet NSTextField * wiiZ;
+
+// Drone
+@property (nonatomic, retain) IBOutlet NSTextField * ardroneTheta;
+@property (nonatomic, retain) IBOutlet NSTextField * ardronePhi;
+@property (nonatomic, retain) IBOutlet NSTextField * ardronePsi;
+@property (nonatomic, retain) IBOutlet NSTextField * ardroneAltitude;
 
 - (IBAction)toggleWiimoteConnection:(id)sender;
 - (IBAction)toggleKinectTracking:(id)sender;

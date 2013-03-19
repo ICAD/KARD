@@ -7,16 +7,9 @@
 //
 
 #import <Cocoa/Cocoa.h>
-@protocol KPilotViewDelegate <NSObject>
-@optional
-- (void)updateBatteryStatus:(NSString *)batteryStatus;
-// ... other methods here
-@end
-
 @interface KPilotView : NSOpenGLView
 
 @property (nonatomic, retain) IBOutlet NSTextField * batteryLevel;
-@property (nonatomic, weak) id <KPilotViewDelegate> delegate;
 
 - (void)initPilotView;
 

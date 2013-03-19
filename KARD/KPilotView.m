@@ -15,7 +15,7 @@
 
 @implementation KPilotView
 
-@synthesize batteryLevel, delegate;
+@synthesize batteryLevel;
 
 
 - (id)initWithFrame:(NSRect)frame
@@ -55,12 +55,4 @@
     NSLog(@"InitPilotView\n");
 }
 
-
-
-- (void)updateBatteryStatus:(NSString *)batteryStatus {
-    if([[self delegate] respondsToSelector:@selector(updateBatteryStatus:)]) {
-        [[self delegate] updateBatteryStatus:batteryStatus];
-        NSLog(@"Battery: %@\n", batteryStatus);
-    }
-}
 @end

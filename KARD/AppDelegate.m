@@ -10,9 +10,10 @@
 
 @implementation AppDelegate
 
-@synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
-@synthesize managedObjectModel = _managedObjectModel;
-@synthesize managedObjectContext = _managedObjectContext;
+@synthesize window;
+@synthesize persistentStoreCoordinator;
+@synthesize managedObjectModel;
+@synthesize managedObjectContext;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
@@ -35,20 +36,20 @@
 // Creates if necessary and returns the managed object model for the application.
 - (NSManagedObjectModel *)managedObjectModel
 {
-    if (_managedObjectModel) {
-        return _managedObjectModel;
+    if (managedObjectModel) {
+        return managedObjectModel;
     }
 	
     NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"KARD" withExtension:@"momd"];
-    _managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
-    return _managedObjectModel;
+    managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
+    return managedObjectModel;
 }
 
 // Returns the persistent store coordinator for the application. This implementation creates and return a coordinator, having added the store for the application to it. (The directory for the store is created, if necessary.)
 - (NSPersistentStoreCoordinator *)persistentStoreCoordinator
 {
-    if (_persistentStoreCoordinator) {
-        return _persistentStoreCoordinator;
+    if (persistentStoreCoordinator) {
+        return persistentStoreCoordinator;
     }
     
     NSManagedObjectModel *mom = [self managedObjectModel];
@@ -93,16 +94,16 @@
         [[NSApplication sharedApplication] presentError:error];
         return nil;
     }
-    _persistentStoreCoordinator = coordinator;
+    persistentStoreCoordinator = coordinator;
     
-    return _persistentStoreCoordinator;
+    return persistentStoreCoordinator;
 }
 
 // Returns the managed object context for the application (which is already bound to the persistent store coordinator for the application.) 
 - (NSManagedObjectContext *)managedObjectContext
 {
-    if (_managedObjectContext) {
-        return _managedObjectContext;
+    if (managedObjectContext) {
+        return managedObjectContext;
     }
     
     NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
@@ -114,10 +115,10 @@
         [[NSApplication sharedApplication] presentError:error];
         return nil;
     }
-    _managedObjectContext = [[NSManagedObjectContext alloc] init];
-    [_managedObjectContext setPersistentStoreCoordinator:coordinator];
+    managedObjectContext = [[NSManagedObjectContext alloc] init];
+    [managedObjectContext setPersistentStoreCoordinator:coordinator];
 
-    return _managedObjectContext;
+    return managedObjectContext;
 }
 
 // Returns the NSUndoManager for the application. In this case, the manager returned is that of the managed object context for the application.
@@ -144,7 +145,7 @@
 {
     // Save changes in the application's managed object context before the application terminates.
     
-    if (!_managedObjectContext) {
+    if (!managedObjectContext) {
         return NSTerminateNow;
     }
     

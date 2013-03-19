@@ -20,10 +20,9 @@ enum KARD_WINDOW_ENUM {
 @property (strong, nonatomic) KPilotView * pilotView;
 
 - (void) initPilot;
-- (void) initHUD;
-- (void) renderHUD;
 - (void) renderVideo;
 
+// Actions
 - (void) takeOff;
 - (void) land;
 - (void) descend;
@@ -32,13 +31,9 @@ enum KARD_WINDOW_ENUM {
 - (void) emergency;
 - (void) rotateRight;
 - (void) rotateLeft;
-- (void) moveTheta: (float) theta
-               phi: (float) phi
-               gaz: (float) gaz
-               yaw: (float) yaw;
-
 - (void) moveTheta: (float) theta phi: (float) phi;
 
+// Status
 - (BOOL) isFlying;
 - (CGFloat) batteryLevel;
 - (CGFloat) phi;

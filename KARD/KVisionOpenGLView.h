@@ -22,4 +22,11 @@
 // function: initScene
 // description: initializes the GL Scene
 - (void) initScene;
+
+@property (nonatomic, readwrite) BOOL isTracking;
+
+- (void) startTracking;
+- (void) stopTracking;
+- (void) toggleTracking;
+
 @end

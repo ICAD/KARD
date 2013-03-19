@@ -45,108 +45,26 @@
 @implementation KPilot
 @synthesize pilotView;
 
-float _theta;
-float _phi;
-float _gaz;
-float _yaw;
+// drone's coords
+float   _theta;
+float   _phi;
+float   _gaz;
+float   _yaw;
 
-float _navdata_batteryLevel;
-float _navdata_theta;
-float _navdata_altitude;
-float _navdata_psi;
-float _navdata_phi;
-int _navdata_isFlying;
+// navdata info
+float   _navdata_batteryLevel;
+float   _navdata_theta;
+float   _navdata_altitude;
+float   _navdata_psi;
+float   _navdata_phi;
+int     _navdata_isFlying;
 
-
-XnBool kUSE_ARDRONE = TRUE;
-XnBool kUSE_VISION = FALSE;
-
-pre_stage_cfg_t precfg;
-display_stage_cfg_t dispCfg;
-
-codec_type_t drone1Codec = P264_CODEC;
-codec_type_t drone2Codec = H264_360P_CODEC;
-ZAP_VIDEO_CHANNEL videoChannel = ZAP_CHANNEL_HORI;
-
-#define FILENAMESIZE (256)
-char encodedFileName[FILENAMESIZE] = {0};
-
-/* Initialization local variables before event loop  */
-C_RESULT navdata_client_init( void* data );
-
-/* Receving navdata during the event loop */
-C_RESULT navdata_client_process( const navdata_unpacked_t* const navdata );
-
-/* Relinquish the local resources after the event loop exit */
-C_RESULT navdata_client_release( void );
-
-PROTO_THREAD_ROUTINE(opengl, data);
-
-/**
- * Declare Threads / Navdata tables
- */
-BEGIN_THREAD_TABLE
-THREAD_TABLE_ENTRY( ardrone_control, 20 )
-THREAD_TABLE_ENTRY( navdata_update, 20 )
-THREAD_TABLE_ENTRY( video_stage, 20 )
-THREAD_TABLE_ENTRY( video_recorder, 20)
-END_THREAD_TABLE
-
-BEGIN_NAVDATA_HANDLER_TABLE
-NAVDATA_HANDLER_TABLE_ENTRY(navdata_client_init, navdata_client_process, navdata_client_release, NULL)
-END_NAVDATA_HANDLER_TABLE
-
-int32_t exit_ihm_program = 1;
-
-void controlCHandler (int signal)
-{
-    // Flush all streams before terminating
-    fflush (NULL);
-    usleep (200000); // Wait 200 msec to be sure that flush occured
-    printf ("\nAll files were flushed\n");
-    exit (0);
-}
-
-
-
-void kdPrintText(float x, float y, float z, float r, float g, float b, float a, char * text) {
-    glColor4f(r,g,b,a);
-    glRasterPos3d(x,y,z);
-    
-    //glLoadIdentity();
-    int limit = (int)strlen(text);
-    int counter = -1;
-    
-    while(counter++ <  limit - 1) {
-        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, text[counter]);
-    }
-    
-}
-
-
+#pragma mark - Class methods -
 - (void) runArdroneToolMain {
     int pargc = 1;
     char *pargv[] = { "KARD Project", NULL };
     
     ardrone_tool_main(pargc, pargv);
-}
-
-void kpShowStatus() {
-    float x = 0.1;
-    float y = -0.05;
-    static int counter = 0;
-    
-    char batteryStatusText[30];
-    char heightStatusText[30];
-    char psiStatusText[30];
-    
-    sprintf(batteryStatusText, "Battery: %d%%", counter++);
-    sprintf(heightStatusText, "Height: %dm", counter++);
-    sprintf(psiStatusText, "Psi: %d", counter++);
-    
-    kdPrintText(x, y-=0.15, 0, 1, 1, 1, 1, batteryStatusText);
-    kdPrintText(x, y-=0.15, 0, 1, 1, 1, 1, heightStatusText);
-    kdPrintText(x, y-=0.15, 0, 1, 1, 1, 1, psiStatusText);
 }
 
 - (void) takeOff {
@@ -194,15 +112,10 @@ void kpShowStatus() {
                gaz: (float) gaz
                yaw: (float) yaw
 {
-
     _phi = phi;
     _theta = theta;
     _gaz = gaz;
     _yaw = yaw;
-    
-    
-    //ardrone_tool_set_progressive_cmd(1, phi, theta, gaz, yaw, 0, 0);
-    //ardrone_tool_set_progressive_cmd(<#int32_t flag#>, <#float32_t phi#>, <#float32_t theta#>, <#float32_t gaz#>, <#float32_t yaw#>, <#float32_t psi#>, <#float32_t psi_accuracy#>);
 }
 
 
@@ -235,36 +148,73 @@ void kpShowStatus() {
 }
 
 - (void) initPilot {
-    NSThread * thread = [[NSThread alloc] initWithTarget:self selector:@selector(runArdroneToolMain) object:nil];
-    [thread start];
-}
-
-- (void) initHUD {
     _navdata_altitude = 0;
     _navdata_batteryLevel = 0;
     _navdata_psi = 0;
     _navdata_theta = 0;
     _navdata_isFlying = 0;
-    
-    [self initPilot];
-}
-
-- (void) renderHUD {
-    // clear the GL buffer
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glLoadIdentity();
-    glClearColor(1, 1, 0.0f, 0.5f);
-    glClearDepth(1.0f);
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LEQUAL);
-    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-    
-    kpShowStatus();
+    NSThread * thread = [[NSThread alloc] initWithTarget:self selector:@selector(runArdroneToolMain) object:nil];
+    [thread start];
 }
 
 - (void) renderVideo {
     
 }
+
+
+- (CGFloat) batteryLevel {
+    return _navdata_batteryLevel;
+}
+
+
+#pragma mark - Video Staging Prep -
+// Video staging
+pre_stage_cfg_t precfg;
+display_stage_cfg_t dispCfg;
+
+codec_type_t drone1Codec = P264_CODEC;
+codec_type_t drone2Codec = H264_360P_CODEC;
+ZAP_VIDEO_CHANNEL videoChannel = ZAP_CHANNEL_HORI;
+
+#define FILENAMESIZE (256)
+char encodedFileName[FILENAMESIZE] = {0};
+
+#pragma mark - Navdata Prototypes -
+/* Initialization local variables before event loop  */
+C_RESULT navdata_client_init( void* data );
+
+/* Receving navdata during the event loop */
+C_RESULT navdata_client_process( const navdata_unpacked_t* const navdata );
+
+/* Relinquish the local resources after the event loop exit */
+C_RESULT navdata_client_release( void );
+
+PROTO_THREAD_ROUTINE(opengl, data);
+
+#pragma mark - Thread table declarations -
+BEGIN_THREAD_TABLE
+    THREAD_TABLE_ENTRY( ardrone_control, 20 )
+    THREAD_TABLE_ENTRY( navdata_update, 20 )
+    THREAD_TABLE_ENTRY( video_stage, 20 )
+    THREAD_TABLE_ENTRY( video_recorder, 20)
+END_THREAD_TABLE
+
+BEGIN_NAVDATA_HANDLER_TABLE
+    NAVDATA_HANDLER_TABLE_ENTRY(navdata_client_init, navdata_client_process, navdata_client_release, NULL)
+END_NAVDATA_HANDLER_TABLE
+
+int32_t exit_ihm_program = 1;
+
+void controlCHandler (int signal)
+{
+    // Flush all streams before terminating
+    fflush (NULL);
+    usleep (200000); // Wait 200 msec to be sure that flush occured
+    printf ("\nAll files were flushed\n");
+    exit (0);
+}
+
+#pragma mark - AR.Drone Initializations -
 
 C_RESULT ardrone_tool_init_custom (void) {
     printf("STARTING AR.Drone Thread\n");
@@ -473,23 +423,8 @@ C_RESULT navdata_client_init( void* data ) {
     return C_OK;
 }
 
-- (CGFloat) batteryLevel {
-    return _navdata_batteryLevel;
-}
-
 /* Receving navdata during the event loop */
 C_RESULT navdata_client_process( const navdata_unpacked_t* const navdata ) {
-	/*const navdata_demo_t*nd = &navdata->navdata_demo;
-     
-     printf("=====================\nNavdata for flight demonstrations =====================\n\n");
-     
-     printf("Control state : %i\n",nd->ctrl_state);
-     printf("Battery level : %i mV\n",nd->vbat_flying_percentage);
-     printf("Orientation   : [Theta] %4.3f  [Phi] %4.3f  [Psi] %4.3f\n",nd->theta,nd->phi,nd->psi);
-     printf("Altitude      : %i\n",nd->altitude);
-     printf("Speed         : [vX] %4.3f  [vY] %4.3f  [vZPsi] %4.3f\n",nd->theta,nd->phi,nd->psi);
-     */
-    
     const navdata_demo_t * nd = &navdata->navdata_demo;
     
     _navdata_batteryLevel = nd->vbat_flying_percentage;
@@ -498,17 +433,6 @@ C_RESULT navdata_client_process( const navdata_unpacked_t* const navdata ) {
     _navdata_altitude = nd->altitude;
     _navdata_isFlying = nd->ctrl_state;
     _navdata_theta = nd->theta;
-    
-    //[navdata setTheta: ]
-    
-    //printf("Battery level : %i mV\n",nd->vbat_flying_percentage);
-    
-    
-    
-    //AppDelegate *appDelegate = (AppDelegate *)[NSApp delegate];
-    
-    //[[[appDelegate pilotView] batteryLevel] setStringValue:[NSString stringWithFormat:@"%i", nd->vbat_flying_percentage]];
-    
     
     return C_OK;
 }

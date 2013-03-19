@@ -16,6 +16,8 @@
 #include <ardrone_tool/Control/ardrone_control.h>
 
 @implementation KVisionOpenGLView
+@synthesize isTracking;
+BOOL _initTracking;
 
 - (id)initWithFrame:(NSRect)frame
 {
@@ -28,10 +30,47 @@
 }
 
 - (void)awakeFromNib {
-    //[[self window] setAcceptsMouseMovedEvents:YES];
-    //BOOL tracking = [self initTracking];
+    [[self window] setAcceptsMouseMovedEvents:YES];
+    isTracking = FALSE;
+    _initTracking = FALSE;
 }
 
+- (void)startTracking {
+    NSLog(@"Start Tracking\n");
+    
+    if(!_initTracking) {
+        _initTracking = TRUE;
+        [self initTracking];
+        [self initScene];
+        [self update];
+        NSLog(@"inittracking\n\n");
+    }
+    
+    isTracking = TRUE;
+}
+
+- (void)stopTracking {
+    isTracking = FALSE;
+}
+
+- (void)toggleTracking {
+    if(isTracking) [self stopTracking];
+    else [self startTracking];
+}
+
+/*
+-(void)mouseDown:(NSEvent *)event {
+    if(!_initTracking) {
+        _initTracking = TRUE;
+        [self initTracking];
+        [self initScene];
+        [self update];
+        NSLog(@"inittracking\n\n");
+    }
+    
+    isTracking = !isTracking;
+}
+*/
 //============================================================
 // GLOBALS
 //============================================================
@@ -197,7 +236,7 @@ void kvKeyRelease(int key, int x, int y) {
     // set the domain lines for user actions
     glColor3f(0.9f, 0.0f, 0.0f);
     glLineWidth(2.0f);
-    
+
     if(kvDRAW_BOUNDARIES) {
         //---------------------
         // DRAW SCENE BOUNDARIES
@@ -224,9 +263,11 @@ void kvKeyRelease(int key, int x, int y) {
         glEnd();
     }
     
-    // UPDATE THE NODES
-    xnWaitAndUpdateAll(kvCONTEXT_PTR);
-    [self drawStickFigure:kvUSER_NODE_HANDLE depthNode:kvDEPTH_NODE_HANDLE depthMetaData:kvDEPTH_MD_PTR];
+    if(isTracking) {
+        // UPDATE THE NODES
+        xnWaitAndUpdateAll(kvCONTEXT_PTR);
+        [self drawStickFigure:kvUSER_NODE_HANDLE depthNode:kvDEPTH_NODE_HANDLE depthMetaData:kvDEPTH_MD_PTR];
+    }
     
     glutSwapBuffers();
 }
@@ -253,6 +294,7 @@ void kvKeyRelease(int key, int x, int y) {
 // description: initializes the complete skeleon tracking part of KARD
 - (BOOL) initTracking {
     XnStatus nRetVal = XN_STATUS_OK;
+
     XnNodeHandle hScriptNode;
     XnEnumerationErrors * pErrors = NULL;
     
@@ -283,10 +325,9 @@ void kvKeyRelease(int key, int x, int y) {
     
     xnRegisterCalibrationCallbacks(kvUSER_NODE_HANDLE, kvCalibrationStart, kvCalibrationEnd, NULL, &hCalib);
     xnRegisterToPoseCallbacks(kvUSER_NODE_HANDLE, kvPoseDetected, NULL, NULL, &hPose);
-    
     xnStartGeneratingAll(kvCONTEXT_PTR);
 
-    return (BOOL)nRetVal;
+    return nRetVal;
 }
 
 //------------------------------------------------------------
@@ -797,25 +838,27 @@ void XN_CALLBACK_TYPE kvPoseDetected(XnNodeHandle hUserNode, const XnChar* pose,
 
 - (void)idle:(NSTimer*)timer
 {
-    //[self setNeedsDisplay:YES];
+    [self setNeedsDisplay:YES];
 }
 
 - (void) update
 {
-    /*
-     [self renderScene];
+    [self renderScene];
+    
     NSTimer *updateTimer = [NSTimer timerWithTimeInterval:1.0f/30.0f target:self selector:@selector(idle:) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:updateTimer forMode:NSDefaultRunLoopMode];
     
     glFlush();
-     */
 }
 
 
 - (void)drawRect:(NSRect)dirtyRect
 {
-    //[self initScene];
-    //[self update];
+    if(isTracking) {
+        [self initScene];
+    }
+    
+    [self update];
 }
 
 @end

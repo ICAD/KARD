@@ -10,8 +10,9 @@
 #import <Wiimote/Wiimote.h>
 #import "KPilot.h"
 #import "KPilotView.h"
+#import "KVisionOpenGLView.h"
 
-@interface KARDView : NSView
+@interface KARDView : NSView <NSTabViewDelegate>
 
 @property (nonatomic, retain) IBOutlet NSButton * wiimoteConnectionButton;
 @property (nonatomic, retain) IBOutlet NSButton * kinectTrackingButton;
@@ -22,9 +23,11 @@
 @property (nonatomic, retain) IBOutlet NSLevelIndicator * wiimoteBatteryLevelIndicator;
 @property (nonatomic, retain) IBOutlet NSLevelIndicator * droneBatteryLevelIndicator;
 
-@property (readonly, strong, nonatomic) KPilot * pilot;
-@property (readonly, strong, nonatomic) KPilotView * pilotView;
-@property (readonly, retain, nonatomic) Wiimote * wiimote;
+@property (nonatomic, retain) KPilot * pilot;
+@property (nonatomic, retain) KPilotView * pilotView;
+@property (nonatomic, retain) Wiimote * wiimote;
+@property (nonatomic, retain) IBOutlet KVisionOpenGLView * kinectView;
+@property (nonatomic, retain) IBOutlet NSTabView * tabView;
 
 // Wiimote
 @property (nonatomic, retain) IBOutlet NSTextField * wiiRollText;

@@ -12,6 +12,7 @@
 #define kAngleThreshold         90.0f
 
 #import "KARDView.h"
+#import "AppDelegate.h"
 
 @implementation KARDView
 
@@ -22,6 +23,7 @@
 @synthesize wiimoteBatteryLevelIndicator, droneBatteryLevelIndicator, wiimoteConnectionButton;
 @synthesize ardroneFlyingStatus, ardroneBatteryStatus;
 @synthesize ardronePhi, ardroneTheta, ardronePsi, ardroneAltitude;
+@synthesize kinectView, tabView, kinectTrackingButton;
 
 // indicators for the status of the drone
 NSNumber * isDroneAscending;
@@ -69,7 +71,7 @@ BOOL isWiiButtonPressed             = FALSE;
     [ardroneTheta setFloatValue:[pilot theta]];
     [ardroneAltitude setFloatValue:[pilot altitude]];
     
-    NSLog(@"phi: %f\npsi: %f\ntheta: %f\naltitude: %f\n", [pilot phi], [pilot psi], [pilot theta], [pilot altitude]);
+    //NSLog(@"phi: %f\npsi: %f\ntheta: %f\naltitude: %f\n", [pilot phi], [pilot psi], [pilot theta], [pilot altitude]);
     
     NSTimer *updateTimer = [NSTimer timerWithTimeInterval:1.0f/30.0f target:self selector:@selector(idle:) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:updateTimer forMode:NSDefaultRunLoopMode];
@@ -109,6 +111,8 @@ BOOL isWiiButtonPressed             = FALSE;
     
     // do a first look up on startup
     [Wiimote beginDiscovery];
+    
+    [tabView setDelegate:self];
 }
 
 - (void)closeApplication
@@ -145,11 +149,31 @@ BOOL isWiiButtonPressed             = FALSE;
 
 - (IBAction)toggleKinectTracking:(id)sender
 {
-    isKinectTracking = !isKinectTracking;
+    if([kinectView isTracking]) {
+        // turn off Tracking
+        [kinectView stopTracking];
+        [kinectTrackingButton setTitle:@"Start Tracking"];
+    } else {
+        [kinectView startTracking];
+        [kinectTrackingButton setTitle:@"Stop Tracking"];
+    }
 }
 
+#pragma mark - TabView Delegates -
+- (void)tabView:(NSTabView *)tabView didSelectTabViewItem:(NSTabViewItem *)tabViewItem {
+    if ([tabViewItem isEqualTo:[tabView tabViewItemAtIndex:0]]) {
+        // Wiimote
+        [kinectView stopTracking];
+        [Wiimote beginDiscovery];
+    } else {
+        // Kinect
+        //[kinectView startTracking];
+        [kinectTrackingButton setTitle:@"Start Tracking"];
+        [wiimote disconnect];
+    }
+}
 
-
+#pragma mark - Wiimote Delegates -
 - (void) wiimoteDiscoveryStarted: (NSNotification *)notification {
     NSLog(@"Wiimote Discovery Started\n");
     [[self wiimoteConnectionButton] setEnabled:FALSE];

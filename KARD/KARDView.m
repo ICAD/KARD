@@ -59,7 +59,7 @@ BOOL isWiiButtonPressed             = FALSE;
     [self setNeedsDisplay:YES];
 }
 
-- (void) update
+- (void) update 
 {
     // set batteryStatus
     [droneBatteryLevelIndicator setDoubleValue:[pilot batteryLevel]];
@@ -207,7 +207,6 @@ BOOL isWiiButtonPressed             = FALSE;
     }
 }
 
-#pragma mark - Wiimote Delegates -
 - (void)resetWiimoteStatus
 {
     [wiimoteConnectionButton setTitle:@"Connect"];

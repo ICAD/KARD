@@ -1,15 +1,33 @@
 #KARD: Kinect-A.R. Drone
-The KARD Project is to allow the A.R. Drone to be controlled via the Kinect gestures.
+The KARD Project (Drone C&C - Command & Control) is designed to allow the user to pilot the AR.Drone 2.0 using either the XBOX Kinect or the Wiimote on a Mac.
 
-#Getting the Environment Setup for Kinect & A.R. Drone
+##SDK Requirements
+* OpenNI
+* OpenCV
+* AR.Drone
+
+Note: This has been tested on 10.7 and 10.8 using Xcode 4.6 (4H127).
+
+***
+#Building the Xcode Project
+This is fairly straight forward. If all the above requirements are there just open up the KARD.xcodeproj, build and fly the drone. Otherwise, go to the <a href="#gettingSetup">setup steps</a>. 
+
+#Running
+The application is fairly simple. Once built and running in Xcode, it will initially look for a wiimote. If you opt to pilot using the Kinect select the "Kinect" tab and click "Start Tracking" to begin piloting using your body.
+
+***
+#<a id="gettingSetup">Getting the Environment Setup for Kinect & A.R. Drone</a>
 
 ##Using Kinect and OpenNI/PrimeSense in Xcode
-Use the script *_install_mac_kinect.sh*
+Use the script *_install_mac_kinect.sh* located in the  *Tools* folder
 * Command line options:
 	* "--devel": use the Unstable libraries
 	* "uninstall": remove all OpenNI/PrimeSense/Kinect/libusb packages
-	
+
 ##Using A.R. Drone with Xcode
+We are currently referencing Mike Hamer's workaround for the Drone's SDK to be used on Mac:
+	https://github.com/mikehamer/ARDrone_SDK_2_0_OSX/tree/a49356610b1b72c872e4432cff52ac868faa8bfd
+
 To use the A.R. Drone SDK 2.0 with Xcode do the following:
 
 ###Building the Libraries
@@ -47,7 +65,7 @@ Under *_Link Binary With Libraries_*:
 	* libavutil.a
 	
 #LICENSE
-Copyright (C) 2012 Tyler Pham, Raymond Padillo and Many Ayromlou of Ryerson University
+Copyright (C) 2013 Tyler Pham, Raymond Padillo and Many Ayromlou of Ryerson University
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as

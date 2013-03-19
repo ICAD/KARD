@@ -7,6 +7,8 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "display_stage.h"
+
 @interface KPilotView : NSOpenGLView
 
 @property (nonatomic, retain) IBOutlet NSTextField * batteryLevel;

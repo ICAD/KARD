@@ -10,14 +10,12 @@
 #import "AppDelegate.h"
 #include <ardrone_api.h>
 #include <signal.h>
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
 //#include "../vision/vision.h"
 //#include "navdata.h"
 
 @implementation KPilotView
 
-@synthesize batteryLevel, delegate;
+@synthesize batteryLevel;
 
 
 - (id)initWithFrame:(NSRect)frame

@@ -123,7 +123,7 @@ C_RESULT display_stage_transform (display_stage_cfg_t *cfg, vp_api_io_data_t *in
     uint32_t width = 0, height = 0;
     getPicSizeFromBufferSize (in->size, &width, &height);
 
-    IplImage *img = ipl_image_from_data((uint8_t*)in->buffers[0], 1, cfg->decoder_info->width, cfg->decoder_info->height);
+    img = ipl_image_from_data((uint8_t*)in->buffers[0], 1, cfg->decoder_info->width, cfg->decoder_info->height);
 	//cvShowImage("Camera",img);
 	//cvReleaseImage(&img);
 	//cvWaitKey(1);

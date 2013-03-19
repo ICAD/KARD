@@ -1,0 +1,39 @@
+//
+// Prefix header for all source files of the 'KARD' target in the 'KARD' project
+//
+
+#ifdef __OBJC__
+    // OPENGL
+    #include <GL/glew.h>
+    #include <GL/gl.h>
+    #include <GL/glu.h>
+    #include <GL/gl.h>
+    #include <GL/glut.h>
+    #include <GL/glext.h>
+
+    #import <Cocoa/Cocoa.h>
+
+    #include <stdio.h>
+    #include <Soft/Common/ardrone_api.h>
+    #include <Soft/Common/config.h>
+    #include <VP_Api/vp_api_thread_helper.h>
+    #include <ardrone_tool/ardrone_tool.h>
+
+
+    // Video Headers
+    #include <ATcodec/ATcodec_api.h>
+    #include <VP_Os/vp_os_print.h>
+    #include <VP_Os/vp_os_signal.h>
+    #include <ardrone_tool/Video/video_com_stage.h>
+    #include <ardrone_tool/Video/video_stage.h>
+
+    #include <XnOpenNI.h>
+
+    /* Constants */
+    #define RECORDING_PORT      5553 //TCP
+    #define NAVDATA_PORT        5554 //UDP
+    #define VIDEO_PORT          5555 //TCP
+    #define AT_PORT             5556 //UDP
+    #define VIDEO_CONTROL_PORT  5559 //TCP
+    #define AT_BUFFER_SIZE      1024
+#endif

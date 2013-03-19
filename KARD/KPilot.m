@@ -46,6 +46,12 @@
 @implementation KPilot
 @synthesize pilotView;
 
+float _theta;
+float _phi;
+float _gaz;
+float _yaw;
+
+float _batteryLevel;
 
 XnBool kUSE_ARDRONE = TRUE;
 XnBool kUSE_VISION = FALSE;
@@ -87,13 +93,6 @@ END_NAVDATA_HANDLER_TABLE
 
 int32_t exit_ihm_program = 1;
 
-enum KARD_WINDOW_ENUM {
-    KARD_WINDOW_WIDTH   = 640,
-    KARD_WINDOW_HEIGHT  = 480,
-    KARD_WINDOW_X       = 300,
-    KARD_WINDOW_Y       = 100
-};
-
 void controlCHandler (int signal)
 {
     // Flush all streams before terminating
@@ -110,7 +109,7 @@ void kdPrintText(float x, float y, float z, float r, float g, float b, float a, 
     glRasterPos3d(x,y,z);
     
     //glLoadIdentity();
-    int limit = strlen(text);
+    int limit = (int)strlen(text);
     int counter = -1;
     
     while(counter++ <  limit - 1) {
@@ -153,9 +152,65 @@ void kpShowStatus() {
     ardrone_tool_set_ui_pad_start(0);
 }
 
+
+- (void) descend {
+    _gaz = -0.5f;
+    ardrone_tool_set_progressive_cmd(1, _phi, _theta, _gaz, _yaw, 0, 0);
+}
+
+- (void) ascend {
+    _gaz = 0.5f;
+    ardrone_tool_set_progressive_cmd(1, _phi, _theta, _gaz, _yaw, 0, 0);
+}
+
+- (void) hover {
+    _gaz = 0.0f;
+    _yaw = 0.0f;
+    
+    ardrone_tool_set_progressive_cmd(1, _phi, _theta, _gaz, _yaw, 0, 0);
+}
+
+- (void) emergency {
+    ardrone_tool_set_ui_pad_select(1);
+}
+
+- (void) rotateRight {
+    _yaw = 0.5f;
+    ardrone_tool_set_progressive_cmd(1, _phi, _theta, _gaz, _yaw, 0, 0);
+}
+
+- (void) rotateLeft {
+    _yaw = -0.5f;
+    ardrone_tool_set_progressive_cmd(1, _phi, _theta, _gaz, _yaw, 0, 0);
+}
+
 - (void) moveTheta: (float) theta
-               phi: (float) phi {
-    ardrone_tool_set_progressive_cmd(1, phi, theta, 0, 0, 0, 0);
+               phi: (float) phi
+               gaz: (float) gaz
+               yaw: (float) yaw
+{
+
+    _phi = phi;
+    _theta = theta;
+    _gaz = gaz;
+    _yaw = yaw;
+    
+    
+    //ardrone_tool_set_progressive_cmd(1, phi, theta, gaz, yaw, 0, 0);
+    //ardrone_tool_set_progressive_cmd(<#int32_t flag#>, <#float32_t phi#>, <#float32_t theta#>, <#float32_t gaz#>, <#float32_t yaw#>, <#float32_t psi#>, <#float32_t psi_accuracy#>);
+}
+
+
+- (void) moveTheta: (float) theta phi: (float) phi {
+    _theta = theta;
+    _phi = phi;
+    
+    ardrone_tool_set_progressive_cmd(1, _phi, _theta, _gaz, _yaw, 0, 0);
+}
+
+// TODO: implement this
+- (BOOL) isFlying {
+    return FALSE;
 }
 
 - (void) initPilot {
@@ -391,6 +446,10 @@ C_RESULT navdata_client_init( void* data ) {
     return C_OK;
 }
 
+- (CGFloat) batteryLevel {
+    return _batteryLevel;
+}
+
 /* Receving navdata during the event loop */
 C_RESULT navdata_client_process( const navdata_unpacked_t* const navdata ) {
 	/*const navdata_demo_t*nd = &navdata->navdata_demo;
@@ -405,6 +464,8 @@ C_RESULT navdata_client_process( const navdata_unpacked_t* const navdata ) {
      */
     
     const navdata_demo_t * nd = &navdata->navdata_demo;
+    _batteryLevel = nd->vbat_flying_percentage;
+    
     //printf("Battery level : %i mV\n",nd->vbat_flying_percentage);
     
     
@@ -412,6 +473,7 @@ C_RESULT navdata_client_process( const navdata_unpacked_t* const navdata ) {
     //AppDelegate *appDelegate = (AppDelegate *)[NSApp delegate];
     
     //[[[appDelegate pilotView] batteryLevel] setStringValue:[NSString stringWithFormat:@"%i", nd->vbat_flying_percentage]];
+    
     
     return C_OK;
 }

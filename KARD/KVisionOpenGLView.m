@@ -28,8 +28,8 @@
 }
 
 - (void)awakeFromNib {
-    [[self window] setAcceptsMouseMovedEvents:YES];
-    BOOL tracking = [self initTracking];
+    //[[self window] setAcceptsMouseMovedEvents:YES];
+    //BOOL tracking = [self initTracking];
 }
 
 //============================================================
@@ -797,23 +797,25 @@ void XN_CALLBACK_TYPE kvPoseDetected(XnNodeHandle hUserNode, const XnChar* pose,
 
 - (void)idle:(NSTimer*)timer
 {
-    [self setNeedsDisplay:YES];
+    //[self setNeedsDisplay:YES];
 }
 
 - (void) update
 {
-    [self renderScene];
+    /*
+     [self renderScene];
     NSTimer *updateTimer = [NSTimer timerWithTimeInterval:1.0f/30.0f target:self selector:@selector(idle:) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:updateTimer forMode:NSDefaultRunLoopMode];
     
     glFlush();
+     */
 }
 
 
 - (void)drawRect:(NSRect)dirtyRect
 {
-    [self initScene];
-    [self update];
+    //[self initScene];
+    //[self update];
 }
 
 @end

@@ -43,8 +43,8 @@
 
 
 - (void) awakeFromNib {
-    //pilot = [KPilot new];
-    //[pilot initPilot];
+     pilot = [KPilot new];
+    [pilot initPilot];
     
     isKinectTracking = FALSE;
     isWiiConnected = FALSE;

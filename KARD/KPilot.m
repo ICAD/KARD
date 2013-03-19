@@ -347,7 +347,7 @@ C_RESULT ardrone_tool_init_custom (void) {
         START_THREAD (video_recorder, NULL);
         video_recorder_init ();
     }
-    
+    NSLog(@"\n\n\n\n\nWTF\n\n\n\n\n\n\n");
     video_stage_resume_thread ();
     
 	//START_THREAD(main_application_thread, NULL);

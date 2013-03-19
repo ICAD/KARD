@@ -7,6 +7,8 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#include "display_stage.h"
+
 @protocol KPilotViewDelegate <NSObject>
 @optional
 - (void)updateBatteryStatus:(NSString *)batteryStatus;

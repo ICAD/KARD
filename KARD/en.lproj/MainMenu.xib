@@ -1706,7 +1706,6 @@
 							<string key="NSFrame">{{451, 13}, {704, 600}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView"/>
 							<string key="NSReuseIdentifierKey">_NS:24</string>
 							<object class="NSOpenGLPixelFormat" key="NSPixelFormat">
 								<object class="NSMutableData" key="NSPixelAttributes">
@@ -1720,7 +1719,7 @@
 							<string key="NSFrame">{{309, 418}, {49, 195}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView"/>
+							<reference key="NSNextKeyView" ref="674993602"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="909204229">
@@ -3560,7 +3559,6 @@
 							<reference ref="805129960"/>
 							<reference ref="446718328"/>
 							<reference ref="702042725"/>
-							<reference ref="674993602"/>
 							<reference ref="593350112"/>
 							<reference ref="781419644"/>
 							<reference ref="557283466"/>
@@ -3573,6 +3571,7 @@
 							<reference ref="202908063"/>
 							<reference ref="534164996"/>
 							<reference ref="372588404"/>
+							<reference ref="674993602"/>
 						</array>
 						<reference key="parent" ref="972006081"/>
 					</object>
@@ -3985,9 +3984,9 @@
 				<string key="856.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="857.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="858.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="859.CustomClassName">KVisionOpenGLView</string>
 				<string key="859.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="860.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="861.CustomClassName">KPilotView</string>
 				<string key="861.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="862.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="863.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -4135,11 +4134,22 @@
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
-					<string key="className">KVisionOpenGLView</string>
+					<string key="className">KPilotView</string>
 					<string key="superclassName">NSOpenGLView</string>
+					<object class="NSMutableDictionary" key="outlets">
+						<string key="NS.key.0">batteryLevel</string>
+						<string key="NS.object.0">NSTextField</string>
+					</object>
+					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<string key="NS.key.0">batteryLevel</string>
+						<object class="IBToOneOutletInfo" key="NS.object.0">
+							<string key="name">batteryLevel</string>
+							<string key="candidateClassName">NSTextField</string>
+						</object>
+					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/KVisionOpenGLView.h</string>
+						<string key="minorKey">./Classes/KPilotView.h</string>
 					</object>
 				</object>
 			</array>

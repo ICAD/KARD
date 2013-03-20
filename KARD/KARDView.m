@@ -319,7 +319,7 @@ accelerometerChangedPitch:(double)pitch
     float theta;
     float phi;
     
-    if (isWiimoteOrientationVertical) {
+    if (!isWiimoteOrientationVertical) {
         theta = -roll / kAngleThreshold;
         phi = -pitch / kAngleThreshold;
         

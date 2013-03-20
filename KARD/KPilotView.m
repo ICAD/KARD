@@ -49,7 +49,6 @@ GLfloat angle = 0.0;
 
 - (void) initScene
 {
-    glutReshapeFunc (reshape);
     glTranslatef(-1, 1, 0);
 }
 
@@ -63,16 +62,6 @@ void plane (void) {
     glTexCoord2d(0.0,1.0); glVertex2d(-1.0,+1.0);
     glEnd();
     
-}
-
-void reshape (int w, int h) {
-    NSLog(@"\n\nprint me\n\n");
-    glViewport (0, 0, w, h);
-    glMatrixMode (GL_PROJECTION);
-    glLoadIdentity ();
-    gluPerspective (45, w/h, 0.1f, 100.0);
-    glScalef(1, -1, 1);
-    glMatrixMode (GL_MODELVIEW);
 }
 
 -(void)reshape
